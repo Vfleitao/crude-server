@@ -11,7 +11,7 @@ namespace CrudeServer.HttpCommands
         protected HttpListenerRequest Request { get; private set; }
         protected HttpListenerResponse Response { get; private set; }
 
-        internal void SetContext(HttpListenerContext context)
+        public void SetContext(HttpListenerContext context)
         {
             RequestContext = context;
             Request = context.Request;

@@ -1,11 +1,13 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 
+using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models;
 using CrudeServer.Server;
+using CrudeServer.Server.Contracts;
 
 namespace CrudeServer
 {
@@ -14,15 +16,15 @@ namespace CrudeServer
 
         public static async Task Main(string[] args)
         {
-            ServerBuilder server = new ServerBuilder();
-            server.CommandRegistry.RegisterCommand<DemoHttpCommand>("/");
-
-            server.SetConfiguration(new ServerConfig
+            IServerBuilder serverBuilder = new ServerBuilder();
+            serverBuilder.CommandRegistry.RegisterCommand<DemoHttpCommand>("/", HttpMethod.GET);
+            serverBuilder.SetConfiguration(new ServerConfig
             {
                 Host = "http://localhost",
                 Port = "9000"
             });
 
+            IServerRunner server = serverBuilder.Buid();
             await server.Run();
         }
 
