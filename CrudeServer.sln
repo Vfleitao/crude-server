@@ -7,17 +7,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer", "CrudeServer\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{758137AB-8513-4340-A68B-801424C2D742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.Enums", "Lib\CrudeServer.Enums\CrudeServer.Enums.csproj", "{3D968BC1-5212-47B7-BA62-34CE04FE50DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.Enums", "Lib\CrudeServer.Enums\CrudeServer.Enums.csproj", "{3D968BC1-5212-47B7-BA62-34CE04FE50DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.Server", "Lib\CrudeServer.Server\CrudeServer.Server.csproj", "{3C58E1BD-DEED-4EB2-9E8D-7044B192F367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.Server", "Lib\CrudeServer.Server\CrudeServer.Server.csproj", "{3C58E1BD-DEED-4EB2-9E8D-7044B192F367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.Models", "Lib\CrudeServer.Models\CrudeServer.Models.csproj", "{26B676CE-6AB3-4CA3-94E8-38554804F11A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.Models", "Lib\CrudeServer.Models\CrudeServer.Models.csproj", "{26B676CE-6AB3-4CA3-94E8-38554804F11A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.HttpCommands", "Lib\CrudeServer.HttpCommands\CrudeServer.HttpCommands.csproj", "{7DD1D001-0FD5-4664-9F05-1FEFA3757337}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.HttpCommands", "Lib\CrudeServer.HttpCommands\CrudeServer.HttpCommands.csproj", "{7DD1D001-0FD5-4664-9F05-1FEFA3757337}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C37B1A46-4D6E-48CB-8F06-80F8C6E96884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.CommandRegistration", "Lib\CrudeServer.CommandRegistration\CrudeServer.CommandRegistration.csproj", "{1D344E72-61EF-4248-9A0B-3655C41E77F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.CommandRegistration", "Lib\CrudeServer.CommandRegistration\CrudeServer.CommandRegistration.csproj", "{1D344E72-61EF-4248-9A0B-3655C41E77F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.MiddlewareRegistration", "Lib\CrudeServer.MiddlewareRegistration\CrudeServer.MiddlewareRegistration.csproj", "{13F8645B-E401-4B2F-A597-9F5DA6B737C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.Middleware", "Lib\CrudeServer.Middleware\CrudeServer.Middleware.csproj", "{EF295357-F8FF-4D81-87A2-72BBE9894DA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,14 @@ Global
 		{1D344E72-61EF-4248-9A0B-3655C41E77F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D344E72-61EF-4248-9A0B-3655C41E77F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D344E72-61EF-4248-9A0B-3655C41E77F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13F8645B-E401-4B2F-A597-9F5DA6B737C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13F8645B-E401-4B2F-A597-9F5DA6B737C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13F8645B-E401-4B2F-A597-9F5DA6B737C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13F8645B-E401-4B2F-A597-9F5DA6B737C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF295357-F8FF-4D81-87A2-72BBE9894DA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF295357-F8FF-4D81-87A2-72BBE9894DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF295357-F8FF-4D81-87A2-72BBE9894DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF295357-F8FF-4D81-87A2-72BBE9894DA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +71,8 @@ Global
 		{26B676CE-6AB3-4CA3-94E8-38554804F11A} = {758137AB-8513-4340-A68B-801424C2D742}
 		{7DD1D001-0FD5-4664-9F05-1FEFA3757337} = {758137AB-8513-4340-A68B-801424C2D742}
 		{1D344E72-61EF-4248-9A0B-3655C41E77F1} = {758137AB-8513-4340-A68B-801424C2D742}
+		{13F8645B-E401-4B2F-A597-9F5DA6B737C7} = {758137AB-8513-4340-A68B-801424C2D742}
+		{EF295357-F8FF-4D81-87A2-72BBE9894DA5} = {758137AB-8513-4340-A68B-801424C2D742}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {617AEADD-6B31-4349-88E7-59D97174191A}

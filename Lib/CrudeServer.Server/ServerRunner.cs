@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -7,6 +9,7 @@ using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.MiddlewareRegistration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Server.Contracts;
 
@@ -20,15 +23,15 @@ namespace CrudeServer.Server
 
         private readonly ServerConfig _configuration;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ICommandRegistry _commandRegistry;
+        private readonly IMiddlewareRegistry _middlewareRegistry;
 
         public ServerRunner(
             IServiceProvider serviceProvider,
-            ICommandRegistry CommandRegistry,
+            IMiddlewareRegistry middlewareRegistry,
             ServerConfig Configuration)
         {
             this._serviceProvider = serviceProvider;
-            this._commandRegistry = CommandRegistry;
+            this._middlewareRegistry = middlewareRegistry;
             this._configuration = Configuration;
 
             _listener = new HttpListener();
@@ -55,31 +58,25 @@ namespace CrudeServer.Server
 
                     try
                     {
-                        Console.WriteLine("Request #: {0}", ++requestCount);
-                        Console.WriteLine(req.Url.ToString());
-                        Console.WriteLine(req.HttpMethod);
-                        Console.WriteLine(req.UserHostName);
-                        Console.WriteLine(req.UserAgent);
-                        Console.WriteLine();
+                        RequestContext requestContext = new RequestContext(context, req, resp, this._serviceProvider);
 
-                        HttpCommandRegistration commandRegistration = _commandRegistry.GetCommand(req.Url.AbsolutePath, HttpMethodExtensions.FromHttpString(req.HttpMethod.ToUpper()));
-                        IHttpResponse httpResponse = null;
+                        List<Type> middlewareTypes = this._middlewareRegistry.GetMiddlewares().ToList();
 
-                        if (commandRegistration == null)
+                        if (!middlewareTypes.Any())
                         {
-                            httpResponse = new NotFoundResponse();
-                        }
-                        else
-                        {
-                            HttpCommand command = (HttpCommand)_serviceProvider.GetService(commandRegistration.Command);
-                            command.SetContext(context);
-                            httpResponse = await command.Process();
+                            throw new InvalidOperationException("No middleware registered.");
                         }
 
-                        resp.StatusCode = httpResponse.StatusCode;
-                        resp.ContentType = httpResponse.ContentType;
+                        Func<Task> endOfChain = () => Task.CompletedTask;
+                        Func<Task> executionChain = endOfChain;
 
-                        await resp.OutputStream.WriteAsync(httpResponse.ResponseData, 0, httpResponse.ResponseData.Length);
+                        IEnumerable<Type> reversedList = middlewareTypes.AsReadOnly().Reverse();
+                        foreach (Type type in reversedList)
+                        {
+                            executionChain = BuildNext(_serviceProvider, type, executionChain, requestContext);
+                        }
+
+                        await executionChain();
 
                         resp.Close();
                     }
@@ -98,6 +95,15 @@ namespace CrudeServer.Server
             {
                 _listener.Close();
             }
+        }
+
+        private Func<Task> BuildNext(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, RequestContext context)
+        {
+            return async () =>
+            {
+                IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
+                await middleware.Process(context, next);
+            };
         }
     }
 }

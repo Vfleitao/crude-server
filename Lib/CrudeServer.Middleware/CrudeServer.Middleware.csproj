@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CrudeServer.CommandRegistration\CrudeServer.CommandRegistration.csproj" />
+    <ProjectReference Include="..\CrudeServer.MiddlewareRegistration\CrudeServer.MiddlewareRegistration.csproj" />
+  </ItemGroup>
+
+</Project>

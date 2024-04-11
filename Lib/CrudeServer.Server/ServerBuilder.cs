@@ -2,6 +2,9 @@
 
 using CrudeServer.CommandRegistration;
 using CrudeServer.CommandRegistration.Contracts;
+using CrudeServer.Middleware;
+using CrudeServer.MiddlewareRegistration;
+using CrudeServer.MiddlewareRegistration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Server.Contracts;
 
@@ -13,14 +16,14 @@ namespace CrudeServer.Server
     {
         private ServerConfig configuration;
 
-        public IServiceCollection ServiceCollection { get; }
+        public IServiceCollection ServiceCollection { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
-        public ICommandRegistry CommandRegistry { get; }
+        public ICommandRegistry CommandRegistry { get; private set; }
+        public IMiddlewareRegistry MiddlewareRegistry { get; private set; }
 
         public ServerBuilder()
         {
-            ServiceCollection = new ServiceCollection();
-            CommandRegistry = new CommandRegistry(ServiceCollection);
+            this.RegisterItems();
 
             this.configuration = new ServerConfig
             {
@@ -40,9 +43,31 @@ namespace CrudeServer.Server
 
         public IServerRunner Buid()
         {
+            this.ServiceCollection.AddSingleton<ServerConfig>(this.configuration);
+            
+            this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
+
             this.ServiceProvider = ServiceCollection.BuildServiceProvider(true);
 
-            return new ServerRunner(ServiceProvider, CommandRegistry, configuration);
+            return this.ServiceProvider.GetService<IServerRunner>();
+        }
+
+        private void RegisterItems()
+        {
+            this.ServiceCollection = new ServiceCollection();
+            this.ServiceCollection.AddSingleton<IServiceCollection>(ServiceCollection);
+
+            this.CommandRegistry = new CommandRegistry(ServiceCollection);
+            this.ServiceCollection.AddSingleton<ICommandRegistry>(CommandRegistry);
+
+            this.MiddlewareRegistry = new MiddlewareRegistry(ServiceCollection);
+            this.ServiceCollection.AddSingleton<IMiddlewareRegistry>(MiddlewareRegistry);
+
+            this.ServiceCollection.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
+
+            this.ServiceCollection.AddSingleton<IServerRunner, ServerRunner>();
+
+            this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
         }
     }
 }
