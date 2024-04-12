@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,6 +16,8 @@ namespace CrudeServer.HttpCommands
 {
     public class FileHttpCommand : HttpCommand
     {
+        private readonly IDictionary<string, byte[]> cache;
+
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
         private readonly FileExtensionContentTypeProvider fileExtentionProvider;
@@ -28,6 +31,7 @@ namespace CrudeServer.HttpCommands
             this._fileRoot = fileRoot;
 
             this.fileExtentionProvider = new FileExtensionContentTypeProvider();
+            this.cache = new Dictionary<string, byte[]>();
         }
 
         public async override Task<IHttpResponse> Process()
@@ -42,30 +46,32 @@ namespace CrudeServer.HttpCommands
                     return new NotFoundResponse();
                 }
 
-                using (Stream resourceStream = this._fileAssembly.GetManifestResourceStream(wantedResource))
+                byte[] fileData;
+
+                if (this.cache.ContainsKey(wantedResource))
                 {
-                    if (resourceStream == null)
+                    fileData = this.cache[wantedResource];
+                }
+                else
+                {
+                    fileData = await GetData(wantedResource);
+
+                    if(fileData == null)
                     {
-                        Console.WriteLine("Resource not found. Make sure the resource name is spelled correctly.");
                         return new NotFoundResponse();
                     }
 
-                    // Create a MemoryStream to read the resource into a byte array
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        await resourceStream.CopyToAsync(ms);
-                        byte[] data = ms.ToArray();
-
-                        return new OkResponse()
-                        {
-                            StatusCode = 200,
-                            ResponseData = data,
-                            ContentType = fileExtentionProvider.TryGetContentType(resourceName, out string contentType) ?
-                                                contentType :
-                                                "application/octet-stream"
-                        };
-                    }
+                    this.cache.TryAdd(wantedResource, fileData);
                 }
+
+                return new OkResponse()
+                {
+                    StatusCode = 200,
+                    ResponseData = fileData,
+                    ContentType = fileExtentionProvider.TryGetContentType(resourceName, out string contentType) ?
+                                            contentType :
+                                            "application/octet-stream"
+                };
             }
             catch (Exception ex)
             {
@@ -74,6 +80,23 @@ namespace CrudeServer.HttpCommands
                 {
                     StatusCode = 500
                 };
+            }
+        }
+
+        private async Task<byte[]> GetData(string wantedResource)
+        {
+            using (Stream resourceStream = this._fileAssembly.GetManifestResourceStream(wantedResource))
+            {
+                if (resourceStream == null)
+                {
+                    return null;
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await resourceStream.CopyToAsync(ms);
+                    return ms.ToArray();
+                }
             }
         }
     }
