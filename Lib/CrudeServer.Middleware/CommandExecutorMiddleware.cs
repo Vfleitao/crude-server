@@ -8,6 +8,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.MiddlewareRegistration.Contracts;
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Middleware
 {
@@ -22,30 +23,35 @@ namespace CrudeServer.Middleware
 
         public async Task Process(RequestContext context, Func<Task> next)
         {
-            HttpMethod httpMethod = HttpMethodExtensions.FromHttpString(context.Request.HttpMethod.ToUpper());
+            HttpMethod httpMethod = HttpMethodExtensions.FromHttpString(context.HttpRequest.HttpMethod.ToUpper());
 
             HttpCommandRegistration commandRegistration = _commandRegistry.GetCommand(
-                context.Request.Url.AbsolutePath,
+                context.HttpRequest.Url.AbsolutePath,
                 httpMethod
             );
 
-            IHttpResponse httpResponse;
+            context.HttpRegistration = commandRegistration;
+
+            IHttpResponse httpResponse = null;
             if (commandRegistration == null)
             {
                 httpResponse = new NotFoundResponse();
             }
+            else if (commandRegistration.RequiresAuthentication && context.User == null)
+            {
+                httpResponse = new UnauthorizedResponse();
+            }
             else
             {
                 HttpCommand command = (HttpCommand)context.Services.GetService(commandRegistration.Command);
-                command.SetContext(context.Context);
+                command.SetContext(context.HttpContext);
 
                 httpResponse = await command.Process();
             }
 
-            context.Response.StatusCode = httpResponse.StatusCode;
-            context.Response.ContentType = httpResponse.ContentType;
+            context.Response = httpResponse;
 
-            await context.Response.OutputStream.WriteAsync(httpResponse.ResponseData, 0, httpResponse.ResponseData.Length);
+            await next();
         }
     }
 }

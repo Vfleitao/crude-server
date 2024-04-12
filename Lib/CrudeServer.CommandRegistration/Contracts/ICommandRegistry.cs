@@ -18,6 +18,6 @@ namespace CrudeServer.CommandRegistration.Contracts
         /// Register a command with against a path
         /// It will also automatically register the command withing the Service Provider as a Singleton for automatic IOC resolution
         /// </summary>
-        void RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand, new();
+        HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand, new();
     }
 }

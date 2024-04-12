@@ -12,7 +12,9 @@ namespace CrudeServer.Server.Contracts
         IServiceCollection ServiceCollection { get; }
         IServiceProvider ServiceProvider { get; }
 
+        IServerBuilder AddAuthentication();
+        IServerBuilder AddLogs();
         IServerRunner Buid();
-        void SetConfiguration(ServerConfig config);
+        IServerBuilder SetConfiguration(ServerConfig config);
     }
 }

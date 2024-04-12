@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 
 using CrudeServer.Enums;
@@ -17,12 +18,26 @@ namespace CrudeServer
         public static async Task Main(string[] args)
         {
             IServerBuilder serverBuilder = new ServerBuilder();
+            serverBuilder
+                .AddLogs()
+                .AddAuthentication()
+                .SetConfiguration(new ServerConfig()
+                {
+                    Host = "http://localhost",
+                    Port = "9000",
+                    AuthenticationPath = "/login"
+                });
+
             serverBuilder.CommandRegistry.RegisterCommand<DemoHttpCommand>("/", HttpMethod.GET);
-            serverBuilder.SetConfiguration(new ServerConfig
-            {
-                Host = "http://localhost",
-                Port = "9000"
-            });
+            serverBuilder.CommandRegistry
+                .RegisterCommand<LoginCommand>("/login", HttpMethod.GET);
+            serverBuilder.CommandRegistry
+                .RegisterCommand<AccountCommand>("/account", HttpMethod.GET)
+                .RequireAuthentication();
+            serverBuilder.CommandRegistry
+                .RegisterCommand<DemoGetAPICommand>("/api", HttpMethod.GET);
+            serverBuilder.CommandRegistry
+                .RegisterCommand<DemoPostAPICommand>("/api", HttpMethod.POST);
 
             IServerRunner server = serverBuilder.Buid();
             await server.Run();
@@ -31,6 +46,7 @@ namespace CrudeServer
         private class DemoHttpCommand : HttpCommand
         {
             private static int pageViews = 0;
+            private static Random random = new Random();
 
             private const string pageData =
             @"<!DOCTYPE>
@@ -43,14 +59,80 @@ namespace CrudeServer
                     </body>
                 </html>";
 
-            public override Task<IHttpResponse> Process()
+            public override async Task<IHttpResponse> Process()
             {
                 pageViews++;
 
                 OkResponse response = new OkResponse();
                 response.ResponseData = Encoding.UTF8.GetBytes(string.Format(pageData, pageViews));
 
-                return Task.FromResult<IHttpResponse>(response);
+                return response;
+            }
+        }
+
+        private class LoginCommand : HttpCommand
+        {
+            private const string pageData =
+            @"<!DOCTYPE>
+                <html>
+                    <head>
+                    <title>Here is a demo login page</title>
+                    </head>
+                    <body>
+                    <p>LOGIN PAGE HERE</p>
+                    </body>
+                </html>";
+
+            public override async Task<IHttpResponse> Process()
+            {
+                OkResponse response = new OkResponse();
+                response.ResponseData = Encoding.UTF8.GetBytes(pageData);
+
+                return response;
+            }
+        }
+
+        private class AccountCommand : HttpCommand
+        {
+            private const string pageData =
+            @"<!DOCTYPE>
+                <html>
+                    <head>
+                    <title>Here is a demo account page</title>
+                    </head>
+                    <body>
+                    <p>Acount PAGE HERE</p>
+                    </body>
+                </html>";
+
+            public override async Task<IHttpResponse> Process()
+            {
+                OkResponse response = new OkResponse();
+                response.ResponseData = Encoding.UTF8.GetBytes(pageData);
+
+                return response;
+            }
+        }
+
+        private class DemoGetAPICommand : HttpCommand
+        {
+            public override async Task<IHttpResponse> Process()
+            {
+                OkResponse response = new JsonResponse();
+                response.SetData(new { message = "Hello ", to = "world" });
+
+                return response;
+            }
+        }
+
+        private class DemoPostAPICommand : HttpCommand
+        {
+            public override async Task<IHttpResponse> Process()
+            {
+                OkResponse response = new JsonResponse();
+                response.SetData(new { message = "Hello ", to = "world", from = "POST" });
+
+                return response;
             }
         }
     }

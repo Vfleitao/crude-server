@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CrudeServer.CommandRegistration\CrudeServer.CommandRegistration.csproj" />
     <ProjectReference Include="..\CrudeServer.MiddlewareRegistration\CrudeServer.MiddlewareRegistration.csproj" />
+    <ProjectReference Include="..\CrudeServer.Providers\CrudeServer.Providers.csproj" />
   </ItemGroup>
 
 </Project>

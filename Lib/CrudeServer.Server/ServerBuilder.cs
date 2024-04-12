@@ -6,6 +6,9 @@ using CrudeServer.Middleware;
 using CrudeServer.MiddlewareRegistration;
 using CrudeServer.MiddlewareRegistration.Contracts;
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
+using CrudeServer.Providers;
+using CrudeServer.Providers.Contracts;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +17,7 @@ namespace CrudeServer.Server
 {
     public class ServerBuilder : IServerBuilder
     {
-        private ServerConfig configuration;
+        private IServerConfig configuration;
 
         public IServiceCollection ServiceCollection { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
@@ -23,7 +26,7 @@ namespace CrudeServer.Server
 
         public ServerBuilder()
         {
-            this.RegisterItems();
+            this.RegisterBaseIOCItems();
 
             this.configuration = new ServerConfig
             {
@@ -32,27 +35,40 @@ namespace CrudeServer.Server
             };
         }
 
-        /// <summary>
-        /// Allows the user to set the configuration of the server in case they need a different host or port
-        /// </summary>
-        /// <param name="config"></param>
-        public void SetConfiguration(ServerConfig config)
+        public IServerBuilder SetConfiguration(ServerConfig config)
         {
             this.configuration = config;
+
+            return this;
+        }
+
+        public IServerBuilder AddLogs()
+        {
+            this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddAuthentication()
+        {
+            this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
+            this.ServiceCollection.AddSingleton<IAuthenticationProvider, JTWAuthenticationProvider>();
+
+            return this;
         }
 
         public IServerRunner Buid()
         {
-            this.ServiceCollection.AddSingleton<ServerConfig>(this.configuration);
-            
+            this.ServiceCollection.AddSingleton<IServerConfig>(this.configuration);
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
+            this.MiddlewareRegistry.AddMiddleware<ResponseProcessorMiddleware>();
 
             this.ServiceProvider = ServiceCollection.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
         }
 
-        private void RegisterItems()
+        private void RegisterBaseIOCItems()
         {
             this.ServiceCollection = new ServiceCollection();
             this.ServiceCollection.AddSingleton<IServiceCollection>(ServiceCollection);
@@ -64,10 +80,8 @@ namespace CrudeServer.Server
             this.ServiceCollection.AddSingleton<IMiddlewareRegistry>(MiddlewareRegistry);
 
             this.ServiceCollection.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
-
             this.ServiceCollection.AddSingleton<IServerRunner, ServerRunner>();
-
-            this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
+            this.ServiceCollection.AddSingleton<IHttpRequestExecutor, HttpRequestExecutor>();
         }
     }
 }

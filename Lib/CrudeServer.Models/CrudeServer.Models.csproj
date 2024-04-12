@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CrudeServer.Enums\CrudeServer.Enums.csproj" />
+    <ProjectReference Include="..\CrudeServer.HttpCommands\CrudeServer.HttpCommands.csproj" />
   </ItemGroup>
 
 </Project>

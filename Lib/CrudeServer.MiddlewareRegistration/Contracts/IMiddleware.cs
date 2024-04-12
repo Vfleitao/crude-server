@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-
-using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.MiddlewareRegistration.Contracts
 {

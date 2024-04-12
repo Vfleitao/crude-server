@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
@@ -21,7 +20,7 @@ namespace CrudeServer.CommandRegistration
             this._services = services;
         }
 
-        public void RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand, new()
+        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand, new()
         {
             string key = $"{path}_${httpMethod}";
 
@@ -41,6 +40,8 @@ namespace CrudeServer.CommandRegistration
 
             this._commandRegistry.Add(key, httpCommandRegistration);
             this._services.AddSingleton(commandType);
+
+            return httpCommandRegistration;
         }
 
         public HttpCommandRegistration GetCommand(string path, HttpMethod httpMethod)

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CrudeServer.MiddlewareRegistration.Contracts;
-using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Middleware
 {
@@ -16,10 +16,10 @@ namespace CrudeServer.Middleware
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Request #{++_counter}");
-            sb.AppendLine(context.Request.Url.ToString());
-            sb.AppendLine(context.Request.HttpMethod);
-            sb.AppendLine(context.Request.UserHostName);
-            sb.AppendLine(context.Request.UserAgent);
+            sb.AppendLine(context.HttpRequest.Url.ToString());
+            sb.AppendLine(context.HttpRequest.HttpMethod);
+            sb.AppendLine(context.HttpRequest.UserHostName);
+            sb.AppendLine(context.HttpRequest.UserAgent);
             sb.AppendLine();
 
             Console.Write(sb);
