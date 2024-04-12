@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
@@ -20,7 +22,7 @@ namespace CrudeServer.CommandRegistration
             this._services = services;
         }
 
-        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand, new()
+        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
         {
             string key = $"{path}_${httpMethod}";
 
@@ -35,7 +37,8 @@ namespace CrudeServer.CommandRegistration
             {
                 Path = path,
                 HttpMethod = httpMethod,
-                Command = commandType
+                Command = commandType,
+                PathRegex = new Regex($"^{path}$")
             };
 
             this._commandRegistry.Add(key, httpCommandRegistration);
@@ -46,14 +49,17 @@ namespace CrudeServer.CommandRegistration
 
         public HttpCommandRegistration GetCommand(string path, HttpMethod httpMethod)
         {
-            string key = $"{path}_${httpMethod}";
-
-            if (!this._commandRegistry.ContainsKey(key))
+            IEnumerable<KeyValuePair<string, HttpCommandRegistration>> allEntriesForMethod = this._commandRegistry.Where(x => x.Value.HttpMethod == httpMethod);
+            foreach (KeyValuePair<string, HttpCommandRegistration> entry in allEntriesForMethod)
             {
-                return null;
+                if (entry.Value.PathRegex.IsMatch(path))
+                {
+                    return entry.Value;
+                }
             }
 
-            return this._commandRegistry[key];
+
+            return null;
         }
     }
 }

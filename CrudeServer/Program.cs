@@ -21,6 +21,7 @@ namespace CrudeServer
             serverBuilder
                 .AddLogs()
                 .AddAuthentication()
+                .AddFiles("wwwroot", typeof(Program).Assembly)
                 .SetConfiguration(new ServerConfig()
                 {
                     Host = "http://localhost",
@@ -52,7 +53,8 @@ namespace CrudeServer
             @"<!DOCTYPE>
                 <html>
                     <head>
-                    <title>Here is a demo command</title>
+                        <title>Here is a demo command</title>
+                        <link rel=""stylesheet"" type=""text/css"" href=""main.css"">
                     </head>
                     <body>
                     <p>HELLO WORLD. I have been called {0} times.</p>

@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Reflection;
 
 using CrudeServer.CommandRegistration;
 using CrudeServer.CommandRegistration.Contracts;
+using CrudeServer.Consts;
+using CrudeServer.Enums;
+using CrudeServer.HttpCommands;
 using CrudeServer.Middleware;
 using CrudeServer.MiddlewareRegistration;
 using CrudeServer.MiddlewareRegistration.Contracts;
@@ -53,6 +57,16 @@ namespace CrudeServer.Server
         {
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
             this.ServiceCollection.AddSingleton<IAuthenticationProvider, JTWAuthenticationProvider>();
+
+            return this;
+        }
+
+        public IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly)
+        {
+            this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
+
+            this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
+            this.ServiceCollection.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
 
             return this;
         }

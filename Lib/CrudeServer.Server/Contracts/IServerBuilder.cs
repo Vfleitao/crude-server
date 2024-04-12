@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Reflection;
+
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Models;
 
@@ -13,6 +15,7 @@ namespace CrudeServer.Server.Contracts
         IServiceProvider ServiceProvider { get; }
 
         IServerBuilder AddAuthentication();
+        IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly);
         IServerBuilder AddLogs();
         IServerRunner Buid();
         IServerBuilder SetConfiguration(ServerConfig config);
