@@ -61,7 +61,7 @@ namespace CrudeServer
                     </body>
                 </html>";
 
-            public override async Task<IHttpResponse> Process()
+            protected override async Task<IHttpResponse> Process()
             {
                 pageViews++;
 
@@ -85,7 +85,7 @@ namespace CrudeServer
                     </body>
                 </html>";
 
-            public override async Task<IHttpResponse> Process()
+            protected override async Task<IHttpResponse> Process()
             {
                 OkResponse response = new OkResponse();
                 response.ResponseData = Encoding.UTF8.GetBytes(pageData);
@@ -107,7 +107,7 @@ namespace CrudeServer
                     </body>
                 </html>";
 
-            public override async Task<IHttpResponse> Process()
+            protected override async Task<IHttpResponse> Process()
             {
                 OkResponse response = new OkResponse();
                 response.ResponseData = Encoding.UTF8.GetBytes(pageData);
@@ -118,7 +118,7 @@ namespace CrudeServer
 
         private class DemoGetAPICommand : HttpCommand
         {
-            public override async Task<IHttpResponse> Process()
+            protected override async Task<IHttpResponse> Process()
             {
                 OkResponse response = new JsonResponse();
                 response.SetData(new { message = "Hello ", to = "world" });
@@ -129,7 +129,7 @@ namespace CrudeServer
 
         private class DemoPostAPICommand : HttpCommand
         {
-            public override async Task<IHttpResponse> Process()
+            protected override async Task<IHttpResponse> Process()
             {
                 OkResponse response = new JsonResponse();
                 response.SetData(new { message = "Hello ", to = "world", from = "POST" });

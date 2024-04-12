@@ -46,7 +46,7 @@ namespace CrudeServer.Middleware
                 HttpCommand command = (HttpCommand)context.Services.GetService(commandRegistration.Command);
                 command.SetContext(context.HttpContext);
 
-                httpResponse = await command.Process();
+                httpResponse = await command.HandleRequest();
             }
 
             context.Response = httpResponse;

@@ -34,7 +34,7 @@ namespace CrudeServer.HttpCommands
             this.cache = new Dictionary<string, byte[]>();
         }
 
-        public async override Task<IHttpResponse> Process()
+        protected async override Task<IHttpResponse> Process()
         {
             try
             {

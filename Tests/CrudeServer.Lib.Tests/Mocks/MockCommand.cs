@@ -7,7 +7,7 @@ namespace CrudeServer.Lib.Tests.Mocks
 {
     public class MockCommand : HttpCommand
     {
-        public override Task<IHttpResponse> Process()
+        protected override Task<IHttpResponse> Process()
         {
             return Task.FromResult<IHttpResponse>(new MockHttpResponse());
         }

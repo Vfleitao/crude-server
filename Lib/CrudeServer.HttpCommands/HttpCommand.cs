@@ -18,6 +18,11 @@ namespace CrudeServer.HttpCommands
             Response = context.Response;
         }
 
-        public abstract Task<IHttpResponse> Process();
+        public async virtual Task<IHttpResponse> HandleRequest()
+        {
+            return await Process();
+        }
+
+        protected abstract Task<IHttpResponse> Process();
     }
 }
