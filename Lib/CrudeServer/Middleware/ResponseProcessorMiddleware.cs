@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
-using CrudeServer.MiddlewareRegistration.Contracts;
+using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Middleware

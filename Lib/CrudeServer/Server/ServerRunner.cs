@@ -33,6 +33,7 @@ namespace CrudeServer.Server
 
         public async Task Run()
         {
+
             if (this._serviceProvider == null)
             {
                 throw new InvalidOperationException("Service provider is not set. Please call Build() before running the server.");

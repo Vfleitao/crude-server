@@ -6,7 +6,7 @@ using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
-using CrudeServer.MiddlewareRegistration.Contracts;
+using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 

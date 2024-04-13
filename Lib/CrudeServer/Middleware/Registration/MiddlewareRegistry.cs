@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CrudeServer.MiddlewareRegistration.Contracts;
+using CrudeServer.Middleware.Registration.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CrudeServer.MiddlewareRegistration
+namespace CrudeServer.Middleware.Registration
 {
     public class MiddlewareRegistry : IMiddlewareRegistry
     {

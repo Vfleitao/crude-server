@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CrudeServer.MiddlewareRegistration.Contracts
+namespace CrudeServer.Middleware.Registration.Contracts
 {
     public interface IMiddlewareRegistry
     {

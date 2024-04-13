@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,6 +6,14 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="files\demo.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="files\demo.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
@@ -16,13 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Lib\CrudeServer.CommandRegistration\CrudeServer.CommandRegistration.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.Enums\CrudeServer.Enums.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.HttpCommands\CrudeServer.HttpCommands.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.MiddlewareRegistration\CrudeServer.MiddlewareRegistration.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.Middleware\CrudeServer.Middleware.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.Models\CrudeServer.Models.csproj" />
-    <ProjectReference Include="..\..\Lib\CrudeServer.Providers\CrudeServer.Providers.csproj" />
+    <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

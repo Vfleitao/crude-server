@@ -2,7 +2,7 @@
 using System.Security.Principal;
 using System.Threading.Tasks;
 
-using CrudeServer.MiddlewareRegistration.Contracts;
+using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 

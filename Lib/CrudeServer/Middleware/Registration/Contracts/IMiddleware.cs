@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CrudeServer.Models.Contracts;
 
-namespace CrudeServer.MiddlewareRegistration.Contracts
+namespace CrudeServer.Middleware.Registration.Contracts
 {
     public interface IMiddleware
     {

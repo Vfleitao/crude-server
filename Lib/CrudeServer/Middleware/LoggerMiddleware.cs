@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
-using CrudeServer.MiddlewareRegistration.Contracts;
+using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Middleware

@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lib\CrudeServer.Server\CrudeServer.Server.csproj" />
+    <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
   </ItemGroup>
 
 </Project>
