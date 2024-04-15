@@ -6,6 +6,8 @@ using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Consts;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
+using CrudeServer.HttpCommands.Contract;
+using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware;
 using CrudeServer.Middleware.Registration;
 using CrudeServer.Middleware.Registration.Contracts;
@@ -67,6 +69,31 @@ namespace CrudeServer.Server
 
             this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
             this.ServiceCollection.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
+
+            return this;
+        }
+
+        public IServerBuilder AddViews(
+            string viewRoot,
+            Assembly viewAssembly,
+            Type viewProvider = null
+        )
+        {
+            if (viewProvider == null)
+            {
+                viewProvider = typeof(HandleBarsViewProvider);
+            }
+
+            if (!typeof(ITemplatedViewProvider).IsAssignableFrom(viewProvider))
+            {
+                throw new ArgumentException("View provider must implement ITemplatedViewProvider");
+            }
+
+            this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.VIEW_ROOT, viewRoot);
+            this.ServiceCollection.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
+
+            this.ServiceCollection.AddSingleton(typeof(ITemplatedViewProvider), viewProvider);
+            this.ServiceCollection.AddTransient<IHttpViewResponse, ViewResponse>();
 
             return this;
         }

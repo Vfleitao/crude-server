@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 
 using CrudeServer.Enums;
@@ -22,6 +21,7 @@ namespace CrudeServer
                 .AddLogs()
                 .AddAuthentication()
                 .AddFiles("wwwroot", typeof(Program).Assembly)
+                .AddViews("views", typeof(Program).Assembly)
                 .SetConfiguration(new ServerConfig()
                 {
                     Host = "http://localhost",
@@ -47,28 +47,18 @@ namespace CrudeServer
         private class DemoHttpCommand : HttpCommand
         {
             private static int pageViews = 0;
-            private static Random random = new Random();
-
-            private const string pageData =
-            @"<!DOCTYPE>
-                <html>
-                    <head>
-                        <title>Here is a demo command</title>
-                        <link rel=""stylesheet"" type=""text/css"" href=""main.css"">
-                    </head>
-                    <body>
-                    <p>HELLO WORLD. I have been called {0} times.</p>
-                    </body>
-                </html>";
 
             protected override async Task<IHttpResponse> Process()
             {
                 pageViews++;
 
-                OkResponse response = new OkResponse();
-                response.ResponseData = Encoding.UTF8.GetBytes(string.Format(pageData, pageViews));
+                this.RequestContext.Items.Add("title", "Hey Vitor!");
 
-                return response;
+                return await View("index.html", new
+                {
+                    name = "Vitor",
+                    number = pageViews
+                });
             }
         }
 

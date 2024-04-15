@@ -17,7 +17,7 @@ namespace CrudeServer.Middleware
             this._authenticationProvider = authenticationProvider;
         }
 
-        public async Task Process(RequestContext context, Func<Task> next)
+        public async Task Process(IRequestContext context, Func<Task> next)
         {
             IPrincipal user = await this._authenticationProvider.GetUser(context);
             if (user != null)

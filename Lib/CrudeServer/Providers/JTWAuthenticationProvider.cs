@@ -7,11 +7,11 @@ namespace CrudeServer.Providers
 {
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
-        public Task<IPrincipal> GetUser(RequestContext requestContext)
+        public Task<IPrincipal> GetUser(IRequestContext requestContext)
         {
             return Task.Run(() =>
             {
-                string token = requestContext.HttpRequest.Headers["Authorization"];
+                string token = requestContext.Headers["Authorization"];
                 if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer"))
                 {
                     return (IPrincipal)null;

@@ -1,16 +1,18 @@
-﻿using CrudeServer.CommandRegistration.Contracts;
-using CrudeServer.CommandRegistration;
-using CrudeServer.Lib.Tests.Mocks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Threading.Tasks;
+
 using CrudeServer.HttpCommands;
-using System.Net;
+using CrudeServer.HttpCommands.Contract;
+using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models.Contracts;
+using Moq;
 
 namespace CrudeServer.Lib.Tests
 {
     public class FileHttpCommandTests
     {
         [Test]
-        public void FilesDoesNotExist_Returns404()
+        public async Task FilesDoesNotExist_Returns404()
         {
             // Arrange
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
@@ -18,11 +20,42 @@ namespace CrudeServer.Lib.Tests
                 "files"
             );
 
-            //fileHttpCommand.SetContext(new HttpListenerContext());
+            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            requestContext.SetupGet(rc => rc.Url).Returns(new Uri("http://localhost:8080/files/doesnotexist.txt"));
+
+            fileHttpCommand.SetContext(requestContext.Object);
 
             // Act
+            IHttpResponse response = await fileHttpCommand.ExecuteRequest();
 
             // Assert
+            Assert.That(response, Is.InstanceOf<NotFoundResponse>());
+            Assert.That(response.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        public async Task FilesExists_Returns200WithData()
+        {
+            // Arrange
+            FileHttpCommand fileHttpCommand = new FileHttpCommand(
+                this.GetType().Assembly,
+                "files"
+            );
+
+            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            requestContext.SetupGet(rc => rc.Url).Returns(new Uri("http://localhost:8080/demo.json"));
+
+            fileHttpCommand.SetContext(requestContext.Object);
+
+            // Act
+            IHttpResponse response = await fileHttpCommand.ExecuteRequest();
+
+            // Assert
+            Assert.That(response, Is.InstanceOf<OkResponse>());
+            Assert.That(response.StatusCode, Is.EqualTo(200));
+            Assert.That(response.ResponseData, Is.Not.Null);
+            Assert.That(response.ResponseData.Length, Is.GreaterThan(0));
+            Assert.That(response.ContentType, Is.EqualTo("application/json"));
         }
     }
 }

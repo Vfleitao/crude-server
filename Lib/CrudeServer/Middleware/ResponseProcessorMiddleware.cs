@@ -30,7 +30,7 @@ namespace CrudeServer.Middleware
             }
         }
 
-        public async Task Process(RequestContext context, Func<Task> next)
+        public async Task Process(IRequestContext context, Func<Task> next)
         {
             IHttpResponse httpResponse = context.Response;
 
@@ -45,16 +45,16 @@ namespace CrudeServer.Middleware
                 httpResponse = new RedirectResponse(redirectSetup.location, redirectSetup.redirectStatusCode);
             }
 
-            context.HttpResponse.StatusCode = httpResponse.StatusCode;
-            context.HttpResponse.ContentType = httpResponse.ContentType;
+            context.HttpListenerResponse.StatusCode = httpResponse.StatusCode;
+            context.HttpListenerResponse.ContentType = httpResponse.ContentType;
 
             if (httpResponse is RedirectResponse)
             {
-                context.HttpResponse.RedirectLocation = Encoding.UTF8.GetString(httpResponse.ResponseData);
+                context.HttpListenerResponse.RedirectLocation = Encoding.UTF8.GetString(httpResponse.ResponseData);
             }
             else if (httpResponse.ResponseData != null && httpResponse.ResponseData.Length > 0)
             {
-                await context.HttpResponse.OutputStream.WriteAsync(httpResponse.ResponseData, 0, httpResponse.ResponseData.Length);
+                await context.HttpListenerResponse.OutputStream.WriteAsync(httpResponse.ResponseData, 0, httpResponse.ResponseData.Length);
             }
 
             await next();

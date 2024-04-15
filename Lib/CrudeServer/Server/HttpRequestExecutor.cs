@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 
 using CrudeServer.Middleware.Registration.Contracts;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Server.Contracts;
 
@@ -26,15 +27,15 @@ namespace CrudeServer.Server
 
         public async Task Execute(HttpListenerContext context)
         {
-            HttpListenerRequest req = context.Request;
-            HttpListenerResponse resp = context.Response;
+            HttpListenerRequest request = context.Request;
+            HttpListenerResponse response = context.Response;
 
             try
             {
-                RequestContext requestContext = new RequestContext(
+                IRequestContext requestContext = new RequestContext(
                     context,
-                    req,
-                    resp,
+                    request,
+                    response,
                     this._serviceProvider
                 );
 
@@ -62,16 +63,16 @@ namespace CrudeServer.Server
                 stopwatch.Stop();
                 Console.WriteLine($"executionChain Took {stopwatch.ElapsedMilliseconds}ms");
 
-                resp.Close();
+                response.Close();
             }
             catch (Exception e)
             {
-                resp.OutputStream.SetLength(0);
-                resp.StatusCode = 500;
+                response.OutputStream.SetLength(0);
+                response.StatusCode = 500;
             }
         }
 
-        private Func<Task> BuildNextItemInChain(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, RequestContext context)
+        private Func<Task> BuildNextItemInChain(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, IRequestContext context)
         {
             return async () =>
             {

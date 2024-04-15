@@ -16,11 +16,11 @@ namespace CrudeServer.HttpCommands
 {
     public class FileHttpCommand : HttpCommand
     {
-        private readonly IDictionary<string, byte[]> cache;
+        private readonly IDictionary<string, byte[]> _cache;
 
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
-        private readonly FileExtensionContentTypeProvider fileExtentionProvider;
+        private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
@@ -30,15 +30,15 @@ namespace CrudeServer.HttpCommands
             this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;
 
-            this.fileExtentionProvider = new FileExtensionContentTypeProvider();
-            this.cache = new Dictionary<string, byte[]>();
+            this._fileExtentionProvider = new FileExtensionContentTypeProvider();
+            this._cache = new Dictionary<string, byte[]>();
         }
 
         protected async override Task<IHttpResponse> Process()
         {
             try
             {
-                string resourceName = $"{this._fileRoot}.{this.Request.Url.LocalPath.Substring(1).Replace("\\", ".")}";
+                string resourceName = $"{this._fileRoot}.{this.RequestContext.Url.LocalPath.Substring(1).Replace("\\", ".")}";
                 string wantedResource = this._fileAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
 
                 if (string.IsNullOrEmpty(wantedResource))
@@ -48,9 +48,9 @@ namespace CrudeServer.HttpCommands
 
                 byte[] fileData;
 
-                if (this.cache.ContainsKey(wantedResource))
+                if (this._cache.ContainsKey(wantedResource))
                 {
-                    fileData = this.cache[wantedResource];
+                    fileData = this._cache[wantedResource];
                 }
                 else
                 {
@@ -61,14 +61,14 @@ namespace CrudeServer.HttpCommands
                         return new NotFoundResponse();
                     }
 
-                    this.cache.TryAdd(wantedResource, fileData);
+                    this._cache.TryAdd(wantedResource, fileData);
                 }
 
                 return new OkResponse()
                 {
                     StatusCode = 200,
                     ResponseData = fileData,
-                    ContentType = fileExtentionProvider.TryGetContentType(resourceName, out string contentType) ?
+                    ContentType = _fileExtentionProvider.TryGetContentType(resourceName, out string contentType) ?
                                             contentType :
                                             "application/octet-stream"
                 };

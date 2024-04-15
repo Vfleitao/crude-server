@@ -1,39 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net;
 using System.Security.Principal;
+using CrudeServer.Enums;
 using CrudeServer.HttpCommands.Contract;
 
 namespace CrudeServer.Models.Contracts
 {
-    public class RequestContext
+    public interface IRequestContext
     {
-        public readonly HttpListenerContext HttpContext;
-        public readonly HttpListenerRequest HttpRequest;
-        public readonly HttpListenerResponse HttpResponse;
-        public readonly IServiceProvider Services;
+        IDictionary<string, object> Items { get; set; }
+        IHttpResponse Response { get; set; }
+        IPrincipal User { get; set; }
 
-        public IPrincipal User { get; set; }
-        public IHttpResponse Response { get; set; }
-        public IDictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
-        public HttpCommandRegistration HttpRegistration { get; set; }
+        HttpMethod HttpMethod { get; }
+        bool IsAjaxRequest { get; }
+        Uri Url { get; }
+        string ContentType { get; }
+        string UserAgent { get; }
+        string Host { get; }
+        HttpListenerContext HttpListenerContext { get; }
+        HttpListenerRequest HttpListenerRequest { get; }
+        HttpListenerResponse HttpListenerResponse { get; }
+        NameValueCollection Headers { get; }
 
-        public bool IsAjaxRequest
-        {
-            get { return HttpRequest.Headers["X-Requested-With"] == "XMLHttpRequest"; }
-        }
-
-        public RequestContext(
-            HttpListenerContext context,
-            HttpListenerRequest request,
-            HttpListenerResponse response,
-            IServiceProvider services
-        )
-        {
-            HttpContext = context;
-            HttpRequest = request;
-            HttpResponse = response;
-            Services = services;
-        }
+        HttpCommandRegistration HttpRegistration { get; set; }
+        IServiceProvider Services { get; }
     }
 }

@@ -1,23 +1,31 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CrudeServer.HttpCommands.Contract
 {
-    public interface IHttpResponse
+    public interface IHttpResponse : IHttpResponse<object> { }
+
+    public interface IHttpResponse<T>
     {
         /// <summary>
-        /// Response Status Code
+        /// Data passed to the view. Contains generic data and is created from the middlewares.
         /// </summary>
-        public byte[] ResponseData { get; set; }
+        IDictionary<string, object> Items { get; set; }
 
         /// <summary>
         /// Response Status Code
         /// </summary>
-        public string ContentType { get; set; }
+        byte[] ResponseData { get; set; }
 
         /// <summary>
         /// Response Status Code
         /// </summary>
-        public int StatusCode { get; set; }
+        string ContentType { get; set; }
+
+        /// <summary>
+        /// Response Status Code
+        /// </summary>
+        int StatusCode { get; set; }
 
         /// <summary>
         /// Method which processes the internal response and transforms it into a byte array.

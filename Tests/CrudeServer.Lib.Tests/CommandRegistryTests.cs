@@ -22,14 +22,14 @@ namespace CrudeServer.Lib.Tests
             commandRegistry.RegisterCommand<MockCommand>("/", HttpMethod.POST);
 
             // Assert
-            Assert.NotNull(commandRegistry.GetCommand("/", HttpMethod.GET));
+            Assert.That(commandRegistry.GetCommand("/", HttpMethod.GET), Is.Not.Null);
 
             Models.HttpCommandRegistration getRegistry = commandRegistry.GetCommand("/", HttpMethod.GET);
             Assert.That(getRegistry.Path, Is.EqualTo("/"));
             Assert.That(getRegistry.HttpMethod, Is.EqualTo(HttpMethod.GET));
             Assert.That(getRegistry.Command, Is.EqualTo(typeof(MockCommand)));
 
-            Assert.NotNull(commandRegistry.GetCommand("/", HttpMethod.POST));
+            Assert.That(commandRegistry.GetCommand("/", HttpMethod.POST), Is.Not.Null);
 
             Models.HttpCommandRegistration postRegistry = commandRegistry.GetCommand("/", HttpMethod.POST);
             Assert.That(postRegistry.Path, Is.EqualTo("/"));

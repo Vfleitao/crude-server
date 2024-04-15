@@ -6,6 +6,6 @@ namespace CrudeServer.Middleware.Registration.Contracts
 {
     public interface IMiddleware
     {
-        Task Process(RequestContext context, Func<Task> next);
+        Task Process(IRequestContext context, Func<Task> next);
     }
 }

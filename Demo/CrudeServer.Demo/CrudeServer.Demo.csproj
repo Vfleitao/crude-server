@@ -8,11 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="views\index.html" />
+    <None Remove="views\layout.html" />
     <None Remove="wwwroot\image.jpg" />
     <None Remove="wwwroot\main.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="views\layout.html" />
+    <EmbeddedResource Include="views\index.html" />
     <EmbeddedResource Include="wwwroot\image.jpg" />
     <EmbeddedResource Include="wwwroot\main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

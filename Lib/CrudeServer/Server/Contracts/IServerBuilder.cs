@@ -17,6 +17,7 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder AddAuthentication();
         IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly);
         IServerBuilder AddLogs();
+        IServerBuilder AddViews(string viewRoot, Assembly viewAssembly, Type viewProvider = null);
         IServerRunner Buid();
         IServerBuilder SetConfiguration(ServerConfig config);
     }

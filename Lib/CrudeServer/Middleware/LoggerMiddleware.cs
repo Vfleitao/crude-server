@@ -12,14 +12,14 @@ namespace CrudeServer.Middleware
     {
         private static int _counter = 0;
 
-        public async Task Process(RequestContext context, Func<Task> next)
+        public async Task Process(IRequestContext context, Func<Task> next)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Request #{++_counter}");
-            sb.AppendLine(context.HttpRequest.Url.ToString());
-            sb.AppendLine(context.HttpRequest.HttpMethod);
-            sb.AppendLine(context.HttpRequest.UserHostName);
-            sb.AppendLine(context.HttpRequest.UserAgent);
+            sb.AppendLine(context.Url.ToString());
+            sb.AppendLine(context.HttpMethod.ToString());
+            sb.AppendLine(context.Host);
+            sb.AppendLine(context.UserAgent);
             sb.AppendLine();
 
             Console.Write(sb);

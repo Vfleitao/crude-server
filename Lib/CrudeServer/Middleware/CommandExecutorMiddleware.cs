@@ -15,18 +15,20 @@ namespace CrudeServer.Middleware
     public class CommandExecutorMiddleware : IMiddleware
     {
         private readonly ICommandRegistry _commandRegistry;
+        private readonly IServiceProvider serviceProvider;
 
-        public CommandExecutorMiddleware(ICommandRegistry commandRegistry)
+        public CommandExecutorMiddleware(ICommandRegistry commandRegistry, IServiceProvider serviceProvider)
         {
             this._commandRegistry = commandRegistry;
+            this.serviceProvider = serviceProvider;
         }
 
-        public async Task Process(RequestContext context, Func<Task> next)
+        public async Task Process(IRequestContext context, Func<Task> next)
         {
-            HttpMethod httpMethod = HttpMethodExtensions.FromHttpString(context.HttpRequest.HttpMethod.ToUpper());
+            HttpMethod httpMethod = context.HttpMethod;
 
             HttpCommandRegistration commandRegistration = _commandRegistry.GetCommand(
-                context.HttpRequest.Url.AbsolutePath,
+                context.Url.AbsolutePath,
                 httpMethod
             );
 
@@ -43,10 +45,10 @@ namespace CrudeServer.Middleware
             }
             else
             {
-                HttpCommand command = (HttpCommand)context.Services.GetService(commandRegistration.Command);
-                command.SetContext(context.HttpContext);
+                HttpCommand command = (HttpCommand)this.serviceProvider.GetService(commandRegistration.Command);
+                command.SetContext(context);
 
-                httpResponse = await command.HandleRequest();
+                httpResponse = await command.ExecuteRequest();
             }
 
             context.Response = httpResponse;
