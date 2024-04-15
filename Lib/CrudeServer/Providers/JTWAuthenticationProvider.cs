@@ -8,11 +8,6 @@ namespace CrudeServer.Providers
 {
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
-        public Task<bool> AuthenticateUser(IRequestContext requestContext, IPrincipal user)
-        {
-            return Task.FromResult(true);
-        }
-
         public Task<IPrincipal> GetUser(IRequestContext requestContext)
         {
             return Task.Run(() =>

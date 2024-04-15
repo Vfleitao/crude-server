@@ -50,6 +50,7 @@ namespace CrudeServer.Server
 
         public IServerBuilder AddLogs()
         {
+            this.ServiceCollection.AddSingleton<ILoggerProvider, LoggerProvider>();
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
 
             return this;
