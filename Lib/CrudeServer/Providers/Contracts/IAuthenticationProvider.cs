@@ -7,5 +7,6 @@ namespace CrudeServer.Providers.Contracts
     public interface IAuthenticationProvider
     {
         Task<IPrincipal> GetUser(IRequestContext requestContext);
+        Task<bool> AuthenticateUser(IRequestContext requestContext, IPrincipal user);
     }
 }

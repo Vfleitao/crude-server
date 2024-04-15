@@ -11,7 +11,7 @@ namespace CrudeServer.HttpCommands.Responses
     {
         private readonly ITemplatedViewProvider templatedViewProvider;
         private string TemplatePath { get; set; }
-        
+
         public byte[] ResponseData { get; set; }
         public string ContentType { get; set; } = "text/html";
         public int StatusCode { get; set; } = 200;
@@ -30,12 +30,13 @@ namespace CrudeServer.HttpCommands.Responses
 
         public async Task ProcessResponse()
         {
-            string template = await templatedViewProvider.GetTemplate(TemplatePath, new { 
+            string template = await templatedViewProvider.GetTemplate(TemplatePath, new
+            {
                 viewModel = this.ViewModel,
                 viewData = this.Items
             });
 
-            if (template == null)
+            if (string.IsNullOrEmpty(template))
             {
                 throw new InvalidOperationException(string.Format("Could not parse template {0}", TemplatePath));
             }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Principal;
 using System.Threading.Tasks;
+
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
@@ -7,6 +8,11 @@ namespace CrudeServer.Providers
 {
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
+        public Task<bool> AuthenticateUser(IRequestContext requestContext, IPrincipal user)
+        {
+            return Task.FromResult(true);
+        }
+
         public Task<IPrincipal> GetUser(IRequestContext requestContext)
         {
             return Task.Run(() =>

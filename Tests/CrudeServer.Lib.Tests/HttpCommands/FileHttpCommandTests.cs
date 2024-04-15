@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-
 using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models.Contracts;
 using Moq;
 
-namespace CrudeServer.Lib.Tests
+namespace CrudeServer.Lib.Tests.HttpCommands
 {
     public class FileHttpCommandTests
     {
@@ -16,7 +15,7 @@ namespace CrudeServer.Lib.Tests
         {
             // Arrange
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
-                this.GetType().Assembly,
+                GetType().Assembly,
                 "files"
             );
 
@@ -38,7 +37,7 @@ namespace CrudeServer.Lib.Tests
         {
             // Arrange
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
-                this.GetType().Assembly,
+                GetType().Assembly,
                 "files"
             );
 

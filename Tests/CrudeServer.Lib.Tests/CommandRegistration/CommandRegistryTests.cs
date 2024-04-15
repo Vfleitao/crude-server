@@ -6,7 +6,7 @@ using CrudeServer.Lib.Tests.Mocks;
 using System;
 using CrudeServer.Enums;
 
-namespace CrudeServer.Lib.Tests
+namespace CrudeServer.Lib.Tests.CommandRegistration
 {
     public class CommandRegistryTests
     {

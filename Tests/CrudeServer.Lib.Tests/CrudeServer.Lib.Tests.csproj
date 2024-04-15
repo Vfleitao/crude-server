@@ -9,10 +9,22 @@
 
   <ItemGroup>
     <None Remove="files\demo.json" />
+    <None Remove="files\layout.html" />
+    <None Remove="files\simpleView.html" />
+    <None Remove="files\viewWithLayout.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="files\demo.json" />
+    <EmbeddedResource Include="files\simpleView.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="files\viewWithLayout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="files\layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
