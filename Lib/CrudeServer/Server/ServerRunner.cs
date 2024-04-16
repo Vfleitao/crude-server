@@ -2,26 +2,27 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 using CrudeServer.Models.Contracts;
 using CrudeServer.Server.Contracts;
+
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Server
 {
     public class ServerRunner : IServerRunner
     {
+        private bool _isRunning;
+
         private readonly HttpListener _listener;
 
         private readonly IServerConfig _configuration;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IHttpRequestExecutor _httpRequestExecutor;
 
-        public ServerRunner(
-            IServiceProvider serviceProvider,
-            IHttpRequestExecutor httpRequestExecutor,
-            IServerConfig Configuration)
+        public ServerRunner(IServiceProvider serviceProvider, IServerConfig Configuration)
         {
             this._serviceProvider = serviceProvider;
-            this._httpRequestExecutor = httpRequestExecutor;
             this._configuration = Configuration;
 
             bool couldChange = ThreadPool.SetMinThreads(600, 600);
@@ -33,11 +34,12 @@ namespace CrudeServer.Server
 
         public async Task Run()
         {
-
             if (this._serviceProvider == null)
             {
                 throw new InvalidOperationException("Service provider is not set. Please call Build() before running the server.");
             }
+
+            _isRunning = true;
 
             _listener.Prefixes.Add($"{this._configuration.Host}:{this._configuration.Port}/");
             _listener.Start();
@@ -45,10 +47,25 @@ namespace CrudeServer.Server
             Console.WriteLine("Listening for connections on {0}:{1}", this._configuration.Host, this._configuration.Port);
             try
             {
-                while (true)
+                while (_isRunning)
                 {
                     HttpListenerContext context = await _listener.GetContextAsync();
-                    this._httpRequestExecutor.Execute(context);
+
+                    Task.Run(async () =>
+                    {
+                        try
+                        {
+                            using (var scope = this._serviceProvider.CreateAsyncScope())
+                            {
+                                IHttpRequestExecutor httpRequestExecutor = (IHttpRequestExecutor)scope.ServiceProvider.GetService(typeof(IHttpRequestExecutor));
+                                await httpRequestExecutor.Execute(context);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                    });
                 }
             }
             catch (Exception e)
@@ -59,6 +76,13 @@ namespace CrudeServer.Server
             {
                 _listener.Close();
             }
+        }
+
+        public Task Stop()
+        {
+            _isRunning = false;
+
+            return Task.CompletedTask;
         }
     }
 }

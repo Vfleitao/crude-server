@@ -21,14 +21,15 @@ namespace CrudeServer.Models
         public IPrincipal User { get; set; }
         public IHttpResponse Response { get; set; }
         public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
+        public IDictionary<string, string> ResponseHeaders { get; set; } = new Dictionary<string, string>();
 
-        public Uri Url => HttpListenerRequest.Url;
-        public HttpMethod HttpMethod => HttpMethodExtensions.FromHttpString(HttpListenerRequest.HttpMethod);
-        public string ContentType => HttpListenerRequest.ContentType;
+        public Uri RequestUrl => HttpListenerRequest.Url;
+        public HttpMethod RequestHttpMethod => HttpMethodExtensions.FromHttpString(HttpListenerRequest.HttpMethod);
+        public string RequestContentType => HttpListenerRequest.ContentType;
         public string UserAgent => HttpListenerRequest.UserAgent;
-        public string Host => HttpListenerRequest.UserHostName;
+        public string RequestHost => HttpListenerRequest.UserHostName;
         public bool IsAjaxRequest => HttpListenerRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
-        public NameValueCollection Headers => HttpListenerRequest.Headers;
+        public NameValueCollection RequestHeaders => HttpListenerRequest.Headers;
 
         public RequestContext(
             HttpListenerContext context,

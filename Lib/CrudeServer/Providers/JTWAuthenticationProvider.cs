@@ -12,7 +12,7 @@ namespace CrudeServer.Providers
         {
             return Task.Run(() =>
             {
-                string token = requestContext.Headers["Authorization"];
+                string token = requestContext.RequestHeaders["Authorization"];
                 if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer"))
                 {
                     return (IPrincipal)null;

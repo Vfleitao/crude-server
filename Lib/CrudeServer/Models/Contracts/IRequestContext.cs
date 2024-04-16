@@ -14,18 +14,19 @@ namespace CrudeServer.Models.Contracts
         IHttpResponse Response { get; set; }
         IPrincipal User { get; set; }
 
-        HttpMethod HttpMethod { get; }
+        HttpMethod RequestHttpMethod { get; }
         bool IsAjaxRequest { get; }
-        Uri Url { get; }
-        string ContentType { get; }
+        Uri RequestUrl { get; }
+        string RequestContentType { get; }
         string UserAgent { get; }
-        string Host { get; }
+        string RequestHost { get; }
         HttpListenerContext HttpListenerContext { get; }
         HttpListenerRequest HttpListenerRequest { get; }
         HttpListenerResponse HttpListenerResponse { get; }
-        NameValueCollection Headers { get; }
+        NameValueCollection RequestHeaders { get; }
 
         HttpCommandRegistration HttpRegistration { get; set; }
         IServiceProvider Services { get; }
+        IDictionary<string, string> ResponseHeaders { get; set; }
     }
 }

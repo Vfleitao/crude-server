@@ -25,7 +25,7 @@ namespace CrudeServer.Middleware.Registration
             }
 
             _middlewareTypes.Add(typeof(T));
-            _services.AddSingleton(typeof(T));
+            _services.AddScoped(typeof(T));
         }
 
         public IEnumerable<Type> GetMiddlewares()
@@ -33,5 +33,9 @@ namespace CrudeServer.Middleware.Registration
             return _middlewareTypes;
         }
 
+        public bool ContainsMiddleware<T>() where T : IMiddleware
+        {
+            return _middlewareTypes.Contains(typeof(T));
+        }
     }
 }

@@ -19,6 +19,7 @@ namespace CrudeServer
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
                 .AddLogs()
+                .AddRequestTagging()
                 .AddAuthentication()
                 .AddFiles("wwwroot", typeof(Program).Assembly)
                 .AddViews("views", typeof(Program).Assembly)
@@ -29,16 +30,11 @@ namespace CrudeServer
                     AuthenticationPath = "/login"
                 });
 
-            serverBuilder.CommandRegistry.RegisterCommand<DemoHttpCommand>("/", HttpMethod.GET);
-            serverBuilder.CommandRegistry
-                .RegisterCommand<LoginCommand>("/login", HttpMethod.GET);
-            serverBuilder.CommandRegistry
-                .RegisterCommand<AccountCommand>("/account", HttpMethod.GET)
-                .RequireAuthentication();
-            serverBuilder.CommandRegistry
-                .RegisterCommand<DemoGetAPICommand>("/api", HttpMethod.GET);
-            serverBuilder.CommandRegistry
-                .RegisterCommand<DemoPostAPICommand>("/api", HttpMethod.POST);
+            serverBuilder.AddCommand<DemoHttpCommand>("/", HttpMethod.GET);
+            serverBuilder.AddCommand<LoginCommand>("/login", HttpMethod.GET);
+            serverBuilder.AddCommand<AccountCommand>("/account", HttpMethod.GET).RequireAuthentication();
+            serverBuilder.AddCommand<DemoGetAPICommand>("/api", HttpMethod.GET);
+            serverBuilder.AddCommand<DemoPostAPICommand>("/api", HttpMethod.POST);
 
             IServerRunner server = serverBuilder.Buid();
             await server.Run();

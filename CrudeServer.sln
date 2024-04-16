@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer.Lib.Tests", "Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{A7F47F25-1E49-4901-A2CE-4AA85D336318}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer", "Lib\CrudeServer\CrudeServer.csproj", "{E77276B1-D46B-4240-B0D1-6269B0857271}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrudeServer", "Lib\CrudeServer\CrudeServer.csproj", "{E77276B1-D46B-4240-B0D1-6269B0857271}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrudeServer.Integration", "Tests\CrudeServer.Integration\CrudeServer.Integration.csproj", "{311290FA-7786-4EF5-B3D7-FB65F01287B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E77276B1-D46B-4240-B0D1-6269B0857271}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E77276B1-D46B-4240-B0D1-6269B0857271}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E77276B1-D46B-4240-B0D1-6269B0857271}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311290FA-7786-4EF5-B3D7-FB65F01287B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311290FA-7786-4EF5-B3D7-FB65F01287B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311290FA-7786-4EF5-B3D7-FB65F01287B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311290FA-7786-4EF5-B3D7-FB65F01287B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 		{E3D332A4-5C3B-42EE-B309-C6769EA71AE3} = {A7F47F25-1E49-4901-A2CE-4AA85D336318}
 		{4EEC1522-0ABC-4443-9BD9-8CB6524EC144} = {C37B1A46-4D6E-48CB-8F06-80F8C6E96884}
 		{E77276B1-D46B-4240-B0D1-6269B0857271} = {758137AB-8513-4340-A68B-801424C2D742}
+		{311290FA-7786-4EF5-B3D7-FB65F01287B0} = {C37B1A46-4D6E-48CB-8F06-80F8C6E96884}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {617AEADD-6B31-4349-88E7-59D97174191A}

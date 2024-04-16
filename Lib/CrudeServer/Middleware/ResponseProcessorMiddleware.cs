@@ -48,6 +48,14 @@ namespace CrudeServer.Middleware
             context.HttpListenerResponse.StatusCode = httpResponse.StatusCode;
             context.HttpListenerResponse.ContentType = httpResponse.ContentType;
 
+            if (context.ResponseHeaders != null)
+            {
+                foreach (KeyValuePair<string, string> header in context.ResponseHeaders)
+                {
+                    context.HttpListenerResponse.AddHeader(header.Key, header.Value);
+                }
+            }
+
             if (httpResponse is RedirectResponse)
             {
                 context.HttpListenerResponse.RedirectLocation = Encoding.UTF8.GetString(httpResponse.ResponseData);

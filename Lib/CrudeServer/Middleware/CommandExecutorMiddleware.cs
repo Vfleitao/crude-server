@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CrudeServer.CommandRegistration.Contracts;
@@ -15,20 +16,20 @@ namespace CrudeServer.Middleware
     public class CommandExecutorMiddleware : IMiddleware
     {
         private readonly ICommandRegistry _commandRegistry;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IServiceProvider _serviceProvider;
 
         public CommandExecutorMiddleware(ICommandRegistry commandRegistry, IServiceProvider serviceProvider)
         {
             this._commandRegistry = commandRegistry;
-            this.serviceProvider = serviceProvider;
+            this._serviceProvider = serviceProvider;
         }
 
         public async Task Process(IRequestContext context, Func<Task> next)
         {
-            HttpMethod httpMethod = context.HttpMethod;
+            HttpMethod httpMethod = context.RequestHttpMethod;
 
             HttpCommandRegistration commandRegistration = _commandRegistry.GetCommand(
-                context.Url.AbsolutePath,
+                context.RequestUrl.AbsolutePath,
                 httpMethod
             );
 
@@ -39,13 +40,13 @@ namespace CrudeServer.Middleware
             {
                 httpResponse = new NotFoundResponse();
             }
-            else if (commandRegistration.RequiresAuthentication && context.User == null)
+            else if (commandRegistration.RequiresAuthentication && !IsUserAuthenticated(commandRegistration, context))
             {
                 httpResponse = new UnauthorizedResponse();
             }
             else
             {
-                HttpCommand command = (HttpCommand)this.serviceProvider.GetService(commandRegistration.Command);
+                HttpCommand command = (HttpCommand)this._serviceProvider.GetService(commandRegistration.Command);
                 command.SetContext(context);
 
                 httpResponse = await command.ExecuteRequest();
@@ -54,6 +55,28 @@ namespace CrudeServer.Middleware
             context.Response = httpResponse;
 
             await next();
+        }
+
+        private bool IsUserAuthenticated(HttpCommandRegistration commandRegistration, IRequestContext context)
+        {
+            if (!UserIsLoggedIn(context))
+            {
+                return false;
+            }
+
+            if (commandRegistration.AuthenticationRoles == null || !commandRegistration.AuthenticationRoles.Any())
+            {
+                return true;
+            }
+
+            return commandRegistration.AuthenticationRoles.Any(x => context.User.IsInRole(x));
+        }
+
+        private bool UserIsLoggedIn(IRequestContext context)
+        {
+            return context.User != null &&
+                   context.User.Identity != null &&
+                   context.User.Identity.IsAuthenticated;
         }
     }
 }

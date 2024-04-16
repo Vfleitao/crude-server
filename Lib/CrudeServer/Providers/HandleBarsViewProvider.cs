@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,10 +25,9 @@ namespace CrudeServer.Providers
 
         private readonly Regex layoutRegex = new Regex(LAYOUT_REGEX, RegexOptions.Compiled);
 
-        private readonly IDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
+        private readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
         private readonly Assembly _viewAssembly;
         private readonly string _viewRoot;
-        private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public HandleBarsViewProvider(
            [FromKeyedServices(ServerConstants.VIEW_ASSEMBLY)] Assembly fileAssembly,
@@ -36,8 +37,7 @@ namespace CrudeServer.Providers
             this._viewAssembly = fileAssembly;
             this._viewRoot = fileRoot;
 
-            this._fileExtentionProvider = new FileExtensionContentTypeProvider();
-            this._compiledViewCache = new Dictionary<string, HandlebarsTemplate<object, object>>();
+            this._compiledViewCache = new ConcurrentDictionary<string, HandlebarsTemplate<object, object>>(StringComparer.OrdinalIgnoreCase);
         }
 
         public async Task<string> GetTemplate(string templatePath, object data)
@@ -53,7 +53,7 @@ namespace CrudeServer.Providers
                 string template = await GetTemplateStringFromFiles(templatePath);
                 compiledTemplate = Handlebars.Compile(template);
 
-                this._compiledViewCache.Add(templatePath, compiledTemplate);
+                this._compiledViewCache.TryAdd(templatePath, compiledTemplate);
             }
 
             return compiledTemplate(data);

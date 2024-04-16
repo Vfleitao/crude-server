@@ -55,13 +55,7 @@ namespace CrudeServer.Server
                     executionChain = BuildNextItemInChain(_serviceProvider, type, executionChain, requestContext);
                 }
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-
                 await executionChain();
-
-                stopwatch.Stop();
-                Console.WriteLine($"executionChain Took {stopwatch.ElapsedMilliseconds}ms");
 
                 response.Close();
             }
@@ -69,18 +63,17 @@ namespace CrudeServer.Server
             {
                 response.OutputStream.SetLength(0);
                 response.StatusCode = 500;
+                response.Close();
             }
         }
 
         private Func<Task> BuildNextItemInChain(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, IRequestContext context)
         {
-            return async () =>
+            return () =>
             {
                 IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
 
-                await middleware
-                        .Process(context, next)
-                        .ConfigureAwait(false);
+                return middleware.Process(context, next);
             };
         }
     }

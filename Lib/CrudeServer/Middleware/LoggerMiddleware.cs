@@ -23,9 +23,9 @@ namespace CrudeServer.Middleware
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Request #{++_counter}");
-            sb.AppendLine(context.Url.ToString());
-            sb.AppendLine(context.HttpMethod.ToString());
-            sb.AppendLine(context.Host);
+            sb.AppendLine(context.RequestUrl.ToString());
+            sb.AppendLine(context.RequestHttpMethod.ToString());
+            sb.AppendLine(context.RequestHost);
             sb.AppendLine(context.UserAgent);
             sb.AppendLine();
 

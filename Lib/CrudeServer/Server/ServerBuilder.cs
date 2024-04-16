@@ -50,7 +50,7 @@ namespace CrudeServer.Server
 
         public IServerBuilder AddLogs()
         {
-            this.ServiceCollection.AddSingleton<ILoggerProvider, LoggerProvider>();
+            this.ServiceCollection.AddScoped<ILoggerProvider, LoggerProvider>();
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
 
             return this;
@@ -59,7 +59,7 @@ namespace CrudeServer.Server
         public IServerBuilder AddAuthentication()
         {
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
-            this.ServiceCollection.AddSingleton<IAuthenticationProvider, JTWAuthenticationProvider>();
+            this.ServiceCollection.AddScoped<IAuthenticationProvider, JTWAuthenticationProvider>();
 
             return this;
         }
@@ -99,6 +99,26 @@ namespace CrudeServer.Server
             return this;
         }
 
+        public HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
+        {
+            return this.CommandRegistry.RegisterCommand<T>(path, httpMethod);
+        }
+
+        public IServerBuilder AddMiddleware<T>() where T : IMiddleware
+        {
+            this.MiddlewareRegistry.AddMiddleware<T>();
+
+            return this;
+        }
+
+        public IServerBuilder AddRequestTagging()
+        {
+            this.MiddlewareRegistry.AddMiddleware<RequestTaggerMiddleware>();
+
+            return this;
+        }
+
+
         public IServerRunner Buid()
         {
             this.ServiceCollection.AddSingleton<IServerConfig>(this.configuration);
@@ -123,7 +143,8 @@ namespace CrudeServer.Server
 
             this.ServiceCollection.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
             this.ServiceCollection.AddSingleton<IServerRunner, ServerRunner>();
-            this.ServiceCollection.AddSingleton<IHttpRequestExecutor, HttpRequestExecutor>();
+
+            this.ServiceCollection.AddScoped<IHttpRequestExecutor, HttpRequestExecutor>();
         }
     }
 }

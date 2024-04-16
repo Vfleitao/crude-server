@@ -38,7 +38,7 @@ namespace CrudeServer.HttpCommands
         {
             try
             {
-                string resourceName = $"{this._fileRoot}.{this.RequestContext.Url.LocalPath.Substring(1).Replace("\\", ".")}";
+                string resourceName = $"{this._fileRoot}.{this.RequestContext.RequestUrl.LocalPath.Substring(1).Replace("\\", ".")}";
                 string wantedResource = this._fileAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
 
                 if (string.IsNullOrEmpty(wantedResource))

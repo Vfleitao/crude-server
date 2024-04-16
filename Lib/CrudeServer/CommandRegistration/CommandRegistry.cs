@@ -42,7 +42,7 @@ namespace CrudeServer.CommandRegistration
             };
 
             this._commandRegistry.Add(key, httpCommandRegistration);
-            this._services.AddSingleton(commandType);
+            this._services.AddScoped(commandType);
 
             return httpCommandRegistration;
         }
