@@ -19,7 +19,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
                 "files"
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/files/doesnotexist.txt"));
 
             fileHttpCommand.SetContext(requestContext.Object);
@@ -41,7 +41,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
                 "files"
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/demo.json"));
 
             fileHttpCommand.SetContext(requestContext.Object);

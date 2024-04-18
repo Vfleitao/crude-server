@@ -17,10 +17,10 @@ namespace CrudeServer.Lib.Tests.Middleware
             // Arrange
             Mock<IAuthenticationProvider> authenticationProvider = new Mock<IAuthenticationProvider>();
             authenticationProvider
-                .Setup(ap => ap.GetUser(It.IsAny<IRequestContext>()))
+                .Setup(ap => ap.GetUser(It.IsAny<ICommandContext>()))
                 .ReturnsAsync(new Mock<IPrincipal>().Object);
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
 
             AuthenticatorMiddleware authenticator = new AuthenticatorMiddleware(authenticationProvider.Object);
 
@@ -28,7 +28,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             await authenticator.Process(requestContext.Object, () => Task.CompletedTask);
 
             // Assert
-            authenticationProvider.Verify(ap => ap.GetUser(It.IsAny<IRequestContext>()), Times.Once);
+            authenticationProvider.Verify(ap => ap.GetUser(It.IsAny<ICommandContext>()), Times.Once);
             requestContext.VerifySet(rc => rc.User = It.IsAny<IPrincipal>(), Times.Once);
         }
 
@@ -38,10 +38,10 @@ namespace CrudeServer.Lib.Tests.Middleware
             // Arrange
             Mock<IAuthenticationProvider> authenticationProvider = new Mock<IAuthenticationProvider>();
             authenticationProvider
-                .Setup(ap => ap.GetUser(It.IsAny<IRequestContext>()))
+                .Setup(ap => ap.GetUser(It.IsAny<ICommandContext>()))
                 .ReturnsAsync((IPrincipal)null);
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
 
             AuthenticatorMiddleware authenticator = new AuthenticatorMiddleware(authenticationProvider.Object);
 
@@ -49,7 +49,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             await authenticator.Process(requestContext.Object, () => Task.CompletedTask);
 
             // Assert
-            authenticationProvider.Verify(ap => ap.GetUser(It.IsAny<IRequestContext>()), Times.Once);
+            authenticationProvider.Verify(ap => ap.GetUser(It.IsAny<ICommandContext>()), Times.Once);
             requestContext.VerifySet(rc => rc.User = It.IsAny<IPrincipal>(), Times.Never);
         }
     }

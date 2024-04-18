@@ -19,7 +19,7 @@ namespace CrudeServer.Middleware
             this._loggerProvider = loggerProvider;
         }
 
-        public async Task Process(IRequestContext context, Func<Task> next)
+        public async Task Process(ICommandContext context, Func<Task> next)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Request #{++_counter}");

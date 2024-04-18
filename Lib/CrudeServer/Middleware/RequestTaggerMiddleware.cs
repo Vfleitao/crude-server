@@ -14,7 +14,7 @@ namespace CrudeServer.Middleware
         {
         }
 
-        public async Task Process(IRequestContext context, Func<Task> next)
+        public async Task Process(ICommandContext context, Func<Task> next)
         {
             if (context.ResponseHeaders == null)
             {

@@ -8,9 +8,11 @@ using CrudeServer.HttpCommands.Contract;
 
 namespace CrudeServer.Models.Contracts
 {
-    public interface IRequestContext
+    public interface ICommandContext
     {
         IDictionary<string, object> Items { get; set; }
+        IList<HttpFile > Files { get; set; }
+
         IHttpResponse Response { get; set; }
         IPrincipal User { get; set; }
 

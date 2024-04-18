@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Server.Contracts;
 
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Server

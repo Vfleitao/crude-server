@@ -10,9 +10,9 @@ namespace CrudeServer.HttpCommands
 {
     public abstract class HttpCommand
     {
-        public IRequestContext RequestContext { get; private set; }
+        public ICommandContext RequestContext { get; private set; }
 
-        public void SetContext(IRequestContext context)
+        public void SetContext(ICommandContext context)
         {
             this.RequestContext = context;
         }

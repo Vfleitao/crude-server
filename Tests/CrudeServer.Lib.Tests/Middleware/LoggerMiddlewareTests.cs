@@ -18,7 +18,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             // Arrange
             Mock<ILoggerProvider> loggerProviderMock = new Mock<ILoggerProvider>();
 
-            Mock<IRequestContext> context = new Mock<IRequestContext>();
+            Mock<ICommandContext> context = new Mock<ICommandContext>();
             context.Setup(x => x.RequestUrl).Returns(new Uri("http://localhost:8080"));
             context.Setup(x => x.RequestHttpMethod).Returns(HttpMethod.GET);
             context.Setup(x => x.RequestHost).Returns("localhost");

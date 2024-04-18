@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
-using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Lib.Tests.Mocks;
 using CrudeServer.Middleware;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers;
+using CrudeServer.Providers.Contracts;
+using CrudeServer.Providers.DataParser;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using Moq;
 
@@ -30,10 +35,11 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
+                null,
                 null
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext
                 .Setup(x => x.RequestUrl)
                 .Returns(new System.Uri("http://localhost:8080/"));
@@ -63,10 +69,11 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
+                null,
                 null
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext
                 .Setup(x => x.RequestUrl)
                 .Returns(new System.Uri("http://localhost:8080/"));
@@ -97,10 +104,11 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
+                null,
                 null
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext
                 .Setup(x => x.RequestUrl)
                 .Returns(new System.Uri("http://localhost:8080/"));
@@ -137,10 +145,11 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
+                null,
                 null
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext
                 .Setup(x => x.RequestUrl)
                 .Returns(new System.Uri("http://localhost:8080/"));
@@ -181,12 +190,18 @@ namespace CrudeServer.Lib.Tests.Middleware
                 .Setup(x => x.GetService(It.IsAny<Type>()))
                 .Returns(new MockCommand());
 
+            Mock<IHttpRequestDataProvider> dataParser = new Mock<IHttpRequestDataProvider>();
+            dataParser
+                .Setup(x => x.GetDataFromRequest(It.IsAny<ICommandContext>()))
+                .Returns(Task.FromResult(new HttpRequestData()));
+
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
-                serviceProviderMock.Object
+                serviceProviderMock.Object,
+                dataParser.Object
             );
 
-            Mock<IRequestContext> requestContext = new Mock<IRequestContext>();
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext
                 .Setup(x => x.RequestUrl)
                 .Returns(new System.Uri("http://localhost:8080/"));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace CrudeServer.Server
 
             try
             {
-                IRequestContext requestContext = new RequestContext(
+                ICommandContext requestContext = new CommandContext(
                     context,
                     request,
                     response,
@@ -61,19 +60,25 @@ namespace CrudeServer.Server
             }
             catch (Exception e)
             {
-                response.OutputStream.SetLength(0);
+                try
+                {
+                    response.OutputStream.SetLength(0);
+                }
+                catch (Exception) { 
+                }
+
                 response.StatusCode = 500;
                 response.Close();
             }
         }
 
-        private Func<Task> BuildNextItemInChain(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, IRequestContext context)
+        private Func<Task> BuildNextItemInChain(IServiceProvider serviceProvider, Type middlewareType, Func<Task> next, ICommandContext context)
         {
-            return () =>
+            return async () =>
             {
                 IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
 
-                return middleware.Process(context, next);
+                await middleware.Process(context, next);
             };
         }
     }

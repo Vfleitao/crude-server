@@ -15,6 +15,7 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
 using CrudeServer.Providers.Contracts;
+using CrudeServer.Providers.DataParser;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -145,6 +146,10 @@ namespace CrudeServer.Server
             this.ServiceCollection.AddSingleton<IServerRunner, ServerRunner>();
 
             this.ServiceCollection.AddScoped<IHttpRequestExecutor, HttpRequestExecutor>();
+            this.ServiceCollection.AddScoped<IHttpRequestDataProvider, HttpRequestDataProvider>();
+
+            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
+            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
         }
     }
 }

@@ -8,7 +8,6 @@ namespace CrudeServer.Integration.Mocks
     {
         public static IServerBuilder CreateTestServerBuilder(int port)
         {
-
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
                 .AddLogs()

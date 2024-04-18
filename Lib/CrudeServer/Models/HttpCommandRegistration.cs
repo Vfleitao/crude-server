@@ -9,12 +9,12 @@ namespace CrudeServer.Models
     public class HttpCommandRegistration
     {
         public string Path { get; set; }
+        public Regex PathRegex { get; set; }
+        public List<KeyValuePair<string, string>> UrlParameters { get; set; } = new List<KeyValuePair<string, string>>();
         public HttpMethod HttpMethod { get; set; }
-        public Type Command { get; set; }
         public bool RequiresAuthentication { get; set; }
         public IEnumerable<string> AuthenticationRoles { get; set; } = new List<string>();
-
-        public Regex PathRegex { get; set; }
+        public Type Command { get; set; }
 
         public void RequireAuthentication(IEnumerable<string> roles = null)
         {

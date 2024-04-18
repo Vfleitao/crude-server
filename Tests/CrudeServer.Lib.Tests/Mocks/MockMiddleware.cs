@@ -8,7 +8,7 @@ namespace CrudeServer.Lib.Tests.Mocks
 {
     public class MockMiddleware : IMiddleware
     {
-        public Task Process(IRequestContext context, Func<Task> next)
+        public Task Process(ICommandContext context, Func<Task> next)
         {
             throw new NotImplementedException();
         }

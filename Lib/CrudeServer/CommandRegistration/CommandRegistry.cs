@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -33,12 +34,15 @@ namespace CrudeServer.CommandRegistration
 
             Type commandType = typeof(T);
 
+
+
             HttpCommandRegistration httpCommandRegistration = new HttpCommandRegistration
             {
                 Path = path,
                 HttpMethod = httpMethod,
                 Command = commandType,
-                PathRegex = new Regex($"^{path}$")
+                PathRegex = new Regex(GetRegexPath(path)),
+                UrlParameters = GetParameterRegistrations(path)
             };
 
             this._commandRegistry.Add(key, httpCommandRegistration);
@@ -58,8 +62,33 @@ namespace CrudeServer.CommandRegistration
                 }
             }
 
-
             return null;
+        }
+
+        private string GetRegexPath(string path)
+        {
+            string pattern = "{\\w+:\\\\([^}]+)}";
+            string replacement = "\\$1";
+            string regexPath = Regex.Replace(path, pattern, replacement);
+
+            return $"^{regexPath}$";
+        }
+
+        private List<KeyValuePair<string, string>> GetParameterRegistrations(string path)
+        {
+            string pattern = "{(\\w+):(\\\\[^}]+)}";
+
+            MatchCollection matches = Regex.Matches(path, pattern);
+            List<KeyValuePair<string, string>> parameterPatterns = new List<KeyValuePair<string, string>>();
+
+            foreach (Match match in matches)
+            {
+                parameterPatterns.Add(
+                    new KeyValuePair<string, string>(match.Groups[1].Value, match.Groups[2].Value)
+                );
+            }
+
+            return parameterPatterns;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.Middleware
 {
@@ -17,14 +19,20 @@ namespace CrudeServer.Middleware
     {
         private readonly ICommandRegistry _commandRegistry;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IHttpRequestDataProvider httpRequestDataProvider;
 
-        public CommandExecutorMiddleware(ICommandRegistry commandRegistry, IServiceProvider serviceProvider)
+        public CommandExecutorMiddleware(
+            ICommandRegistry commandRegistry,
+            IServiceProvider serviceProvider,
+            IHttpRequestDataProvider httpRequestDataProvider
+        )
         {
             this._commandRegistry = commandRegistry;
             this._serviceProvider = serviceProvider;
+            this.httpRequestDataProvider = httpRequestDataProvider;
         }
 
-        public async Task Process(IRequestContext context, Func<Task> next)
+        public async Task Process(ICommandContext context, Func<Task> next)
         {
             HttpMethod httpMethod = context.RequestHttpMethod;
 
@@ -47,9 +55,18 @@ namespace CrudeServer.Middleware
             else
             {
                 HttpCommand command = (HttpCommand)this._serviceProvider.GetService(commandRegistration.Command);
-                command.SetContext(context);
 
-                httpResponse = await command.ExecuteRequest();
+                if (command == null)
+                {
+                    httpResponse = new NotFoundResponse();
+                }
+                else
+                {
+                    UpdateRequestContext(await httpRequestDataProvider.GetDataFromRequest(context), context);
+
+                    command.SetContext(context);
+                    httpResponse = await command.ExecuteRequest();
+                }
             }
 
             context.Response = httpResponse;
@@ -57,7 +74,25 @@ namespace CrudeServer.Middleware
             await next();
         }
 
-        private bool IsUserAuthenticated(HttpCommandRegistration commandRegistration, IRequestContext context)
+        private void UpdateRequestContext(HttpRequestData data, ICommandContext context)
+        {
+            if (data == null)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, object> item in data.Data)
+            {
+                context.Items.Add(item.Key, item.Value);
+            }
+
+            foreach (HttpFile file in data.Files)
+            {
+                context.Files.Add(file);
+            }
+        }
+
+        private bool IsUserAuthenticated(HttpCommandRegistration commandRegistration, ICommandContext context)
         {
             if (!UserIsLoggedIn(context))
             {
@@ -72,7 +107,7 @@ namespace CrudeServer.Middleware
             return commandRegistration.AuthenticationRoles.Any(x => context.User.IsInRole(x));
         }
 
-        private bool UserIsLoggedIn(IRequestContext context)
+        private bool UserIsLoggedIn(ICommandContext context)
         {
             return context.User != null &&
                    context.User.Identity != null &&

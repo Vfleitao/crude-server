@@ -10,7 +10,7 @@ using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Models
 {
-    public class RequestContext : IRequestContext
+    public class CommandContext : ICommandContext
     {
         public HttpListenerContext HttpListenerContext { get; }
         public HttpListenerRequest HttpListenerRequest { get; }
@@ -21,6 +21,7 @@ namespace CrudeServer.Models
         public IPrincipal User { get; set; }
         public IHttpResponse Response { get; set; }
         public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
+        public IList<HttpFile> Files { get; set; } = new List<HttpFile>();
         public IDictionary<string, string> ResponseHeaders { get; set; } = new Dictionary<string, string>();
 
         public Uri RequestUrl => HttpListenerRequest.Url;
@@ -31,7 +32,8 @@ namespace CrudeServer.Models
         public bool IsAjaxRequest => HttpListenerRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
         public NameValueCollection RequestHeaders => HttpListenerRequest.Headers;
 
-        public RequestContext(
+
+        public CommandContext(
             HttpListenerContext context,
             HttpListenerRequest request,
             HttpListenerResponse response,

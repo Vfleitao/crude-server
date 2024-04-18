@@ -15,7 +15,7 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task Process_AddGuidToResponseHeaders()
         {
             // Arrange
-            Mock<IRequestContext> context = new Mock<IRequestContext>();
+            Mock<ICommandContext> context = new Mock<ICommandContext>();
             Dictionary<string, string> headers = new Dictionary<string, string>();
 
             context.Setup(x => x.ResponseHeaders).Returns(headers);

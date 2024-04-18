@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using CrudeServer.Lib.Tests.Mocks;
 using System;
 using CrudeServer.Enums;
+using System.Threading.Tasks;
+using CrudeServer.Models;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace CrudeServer.Lib.Tests.CommandRegistration
 {
@@ -49,6 +53,27 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
 
             // Assert
             Assert.Throws<ArgumentException>(() => commandRegistry.RegisterCommand<MockCommand>("/", HttpMethod.GET));
+        }
+
+        [Test]
+        public void PathHasModel_ConfiguresResgistrationCorrectly()
+        {
+            // Arrange
+            IServiceCollection services = new ServiceCollection();
+            ICommandRegistry commandRegistry = new CommandRegistry(services);
+
+            // Act
+            commandRegistry.RegisterCommand<MockCommand>("/{id:\\d+}/{action:\\w+}", HttpMethod.GET);
+
+            // Assert
+            HttpCommandRegistration registeredModel = commandRegistry.GetCommand("/9/test", HttpMethod.GET);
+            Assert.That(registeredModel, Is.Not.Null);
+            Assert.That(registeredModel.Path, Is.EqualTo("/{id:\\d+}/{action:\\w+}"));
+            Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/\\d+/\\w+$"));
+            Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("id"));
+            Assert.That(registeredModel.UrlParameters[0].Value, Is.EqualTo("\\d+"));
+            Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("action"));
+            Assert.That(registeredModel.UrlParameters[1].Value, Is.EqualTo("\\w+"));
         }
     }
 }
