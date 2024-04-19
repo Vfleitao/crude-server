@@ -59,6 +59,7 @@ namespace CrudeServer.Providers
                     ValidAudience = serverConfig.JTWConfiguration.Audience,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(serverConfig.JTWConfiguration.SigningKey)),
+                    ClockSkew = TimeSpan.FromMinutes(1)
                 };
 
                 JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
