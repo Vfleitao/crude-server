@@ -150,6 +150,7 @@ namespace CrudeServer.Server
 
             this.ServiceCollection.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
             this.ServiceCollection.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
+            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, MultiPartFormDataParser>("dataparser_multipart/form-data");
         }
     }
 }

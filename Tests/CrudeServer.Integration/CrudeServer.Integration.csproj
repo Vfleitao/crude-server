@@ -15,6 +15,17 @@
     <None Remove="views\simple.html" />
     <None Remove="wwwroot\image.jpg" />
     <None Remove="wwwroot\main.css" />
+    <None Remove="wwwroot\testfile.txt" />
+    <None Remove="wwwroot\testfile2.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\testfile2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="wwwroot\testfile.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

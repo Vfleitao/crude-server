@@ -62,7 +62,8 @@ namespace CrudeServer.Middleware
                 }
                 else
                 {
-                    UpdateRequestContext(await httpRequestDataProvider.GetDataFromRequest(context), context);
+                    HttpRequestData data = await httpRequestDataProvider.GetDataFromRequest(context);
+                    UpdateRequestContext(data, context);
 
                     command.SetContext(context);
                     httpResponse = await command.ExecuteRequest();

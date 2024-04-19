@@ -9,5 +9,6 @@ namespace CrudeServer.Models
         public string AuthenticationPath { get; set; }
         public string NotFoundPath { get; }
         public bool RedirectOnAjaxCalls { get; set; }
+        public JTWConfig JTWConfiguration { get; set; }
     }
 }

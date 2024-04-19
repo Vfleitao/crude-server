@@ -15,38 +15,35 @@ namespace CrudeServer.Providers.DataParser
     {
         public Task<HttpRequestData> GetData(ICommandContext request)
         {
-            return Task.Run<HttpRequestData>(() =>
+            HttpRequestData httpRequestData = new HttpRequestData();
+
+            HttpCommandRegistration commandRegistration = request.HttpRegistration;
+
+            Dictionary<string, string> urlParameters = new Dictionary<string, string>();
+
+            if (commandRegistration.UrlParameters == null || !commandRegistration.UrlParameters.Any())
             {
-                HttpRequestData httpRequestData = new HttpRequestData();
+                return Task.FromResult(httpRequestData);
+            }
 
-                HttpCommandRegistration commandRegistration = request.HttpRegistration;
+            string regexPattern = "^";
 
-                Dictionary<string, string> urlParameters = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> param in commandRegistration.UrlParameters)
+            {
+                regexPattern += $"/({param.Value})";
+            }
+            regexPattern += "$";
 
-                if (commandRegistration.UrlParameters == null || !commandRegistration.UrlParameters.Any())
+            Match match = Regex.Match(request.RequestUrl.AbsolutePath, regexPattern);
+            if (match.Success)
+            {
+                for (int i = 0; i < commandRegistration.UrlParameters.Count; i++)
                 {
-                    return httpRequestData;
+                    httpRequestData.Data.Add(commandRegistration.UrlParameters[i].Key, match.Groups[i + 1].Value);
                 }
+            }
 
-                string regexPattern = "^";
-
-                foreach (KeyValuePair<string, string> param in commandRegistration.UrlParameters)
-                {
-                    regexPattern += $"/({param.Value})";
-                }
-                regexPattern += "$";
-
-                Match match = Regex.Match(request.RequestUrl.AbsolutePath, regexPattern);
-                if (match.Success)
-                {
-                    for (int i = 0; i < commandRegistration.UrlParameters.Count; i++)
-                    {
-                        httpRequestData.Data.Add(commandRegistration.UrlParameters[i].Key, match.Groups[i + 1].Value);
-                    }
-                }
-
-                return httpRequestData;
-            });
+            return Task.FromResult(httpRequestData);
         }
     }
 }

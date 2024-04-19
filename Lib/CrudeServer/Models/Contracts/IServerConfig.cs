@@ -7,5 +7,6 @@
         string Port { get; set; }
         string NotFoundPath { get; }
         bool RedirectOnAjaxCalls { get; set; }
+        JTWConfig JTWConfiguration { get; set; }
     }
 }

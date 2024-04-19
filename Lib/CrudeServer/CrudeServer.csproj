@@ -16,7 +16,9 @@
     <PackageReference Include="Handlebars.Net.Helpers.Json" Version="2.4.1.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
   </ItemGroup>
 
 </Project>
