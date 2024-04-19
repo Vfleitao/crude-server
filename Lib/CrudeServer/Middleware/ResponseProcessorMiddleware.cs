@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.Middleware
 {
@@ -15,11 +15,12 @@ namespace CrudeServer.Middleware
     {
         private readonly IDictionary<int, (string location, int redirectStatusCode)> defaultStatusCodePaths = new Dictionary<int, (string location, int redirectStatusCode)>();
         private readonly IServerConfig _serverConfiguraton;
+        private readonly ILoggerProvider loggerProvider;
 
-        public ResponseProcessorMiddleware(IServerConfig serverConfiguraton)
+        public ResponseProcessorMiddleware(IServerConfig serverConfiguraton, ILoggerProvider loggerProvider)
         {
             this._serverConfiguraton = serverConfiguraton;
-
+            this.loggerProvider = loggerProvider;
             if (!string.IsNullOrEmpty(this._serverConfiguraton.AuthenticationPath))
             {
                 this.defaultStatusCodePaths.Add(401, (this._serverConfiguraton.AuthenticationPath, 302));
@@ -41,6 +42,9 @@ namespace CrudeServer.Middleware
                 )
             )
             {
+
+                loggerProvider.Log($"[6] Redirecting to {defaultStatusCodePaths[context.Response.StatusCode].location} for status code {context.Response.StatusCode}");
+
                 (string location, int redirectStatusCode) redirectSetup = defaultStatusCodePaths[context.Response.StatusCode];
                 httpResponse = new RedirectResponse(redirectSetup.location, redirectSetup.redirectStatusCode);
             }
@@ -64,13 +68,19 @@ namespace CrudeServer.Middleware
                 }
             }
 
+            context.HttpListenerResponse.AddHeader("X-Powered-By", "CrudeServer");
+
             if (httpResponse is RedirectResponse)
             {
                 context.HttpListenerResponse.RedirectLocation = Encoding.UTF8.GetString(httpResponse.ResponseData);
+
+                loggerProvider.Log($"[7] Redirect Response {context.HttpListenerResponse.RedirectLocation} written");
             }
             else if (httpResponse.ResponseData != null && httpResponse.ResponseData.Length > 0)
             {
+                loggerProvider.Log($"[8] Writting bytes");
                 await context.HttpListenerResponse.OutputStream.WriteAsync(httpResponse.ResponseData, 0, httpResponse.ResponseData.Length);
+                loggerProvider.Log($"[9] bytes written");
             }
 
             await next();

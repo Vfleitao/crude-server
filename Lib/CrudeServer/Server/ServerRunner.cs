@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,6 @@ namespace CrudeServer.Server
         {
             this._serviceProvider = serviceProvider;
             this._configuration = Configuration;
-
             bool couldChange = ThreadPool.SetMinThreads(600, 600);
             ServicePointManager.DefaultConnectionLimit = 600;
             ServicePointManager.MaxServicePoints = 600;
@@ -69,7 +69,7 @@ namespace CrudeServer.Server
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _isRunning = false;
             }
             finally
             {

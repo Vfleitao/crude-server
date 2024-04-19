@@ -9,6 +9,7 @@ using CrudeServer.Consts;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,17 +23,20 @@ namespace CrudeServer.HttpCommands
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
         private readonly IServerConfig serverConfig;
+        private readonly ILoggerProvider loggerProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
-            IServerConfig serverConfig
+            IServerConfig serverConfig,
+            ILoggerProvider loggerProvider
         )
         {
             this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;
             this.serverConfig = serverConfig;
+            this.loggerProvider = loggerProvider;
             this._fileExtentionProvider = new FileExtensionContentTypeProvider();
             this._cache = new Dictionary<string, byte[]>();
         }
@@ -46,6 +50,7 @@ namespace CrudeServer.HttpCommands
 
                 if (string.IsNullOrEmpty(wantedResource))
                 {
+                    loggerProvider.Log($"[4] Resource {resourceName} not found");
                     return new NotFoundResponse();
                 }
 
@@ -82,7 +87,7 @@ namespace CrudeServer.HttpCommands
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred while reading the embedded resource: " + ex.Message);
+                this.loggerProvider.Error($"[5] An error occurred while reading the embedded resource", ex);
                 return new StatusCodeResponse()
                 {
                     StatusCode = 500

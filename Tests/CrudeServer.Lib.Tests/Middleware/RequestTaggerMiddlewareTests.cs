@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using CrudeServer.Middleware;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 
 using Moq;
 
@@ -22,7 +23,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             Func<Task> next = () => Task.CompletedTask;
 
-            RequestTaggerMiddleware loggerMiddleware = new RequestTaggerMiddleware();
+            RequestTaggerMiddleware loggerMiddleware = new RequestTaggerMiddleware(Mock.Of<ILoggerProvider>());
 
             // Act
             await loggerMiddleware.Process(context.Object, next);

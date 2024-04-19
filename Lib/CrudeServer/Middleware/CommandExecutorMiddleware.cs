@@ -20,16 +20,19 @@ namespace CrudeServer.Middleware
         private readonly ICommandRegistry _commandRegistry;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHttpRequestDataProvider httpRequestDataProvider;
+        private readonly ILoggerProvider loggerProvider;
 
         public CommandExecutorMiddleware(
             ICommandRegistry commandRegistry,
             IServiceProvider serviceProvider,
-            IHttpRequestDataProvider httpRequestDataProvider
+            IHttpRequestDataProvider httpRequestDataProvider,
+            ILoggerProvider loggerProvider
         )
         {
             this._commandRegistry = commandRegistry;
             this._serviceProvider = serviceProvider;
             this.httpRequestDataProvider = httpRequestDataProvider;
+            this.loggerProvider = loggerProvider;
         }
 
         public async Task Process(ICommandContext context, Func<Task> next)
@@ -46,10 +49,14 @@ namespace CrudeServer.Middleware
             IHttpResponse httpResponse = null;
             if (commandRegistration == null)
             {
+                this.loggerProvider.Log($"[0] Command not found for {context.RequestUrl.AbsolutePath}");
+
                 httpResponse = new NotFoundResponse();
             }
             else if (commandRegistration.RequiresAuthentication && !IsUserAuthenticated(commandRegistration, context))
             {
+                this.loggerProvider.Log($"[1] Command is unauthorized for {context.RequestUrl.AbsolutePath}");
+
                 httpResponse = new UnauthorizedResponse();
             }
             else
@@ -58,10 +65,14 @@ namespace CrudeServer.Middleware
 
                 if (command == null)
                 {
+
+                    this.loggerProvider.Log($"[2] Command not found for {context.RequestUrl.AbsolutePath}");
                     httpResponse = new NotFoundResponse();
                 }
                 else
                 {
+                    this.loggerProvider.Log($"[3] Command not found for {context.RequestUrl.AbsolutePath}");
+
                     HttpRequestData data = await httpRequestDataProvider.GetDataFromRequest(context);
                     UpdateRequestContext(data, context);
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 using CrudeServer.Server.Contracts;
 
 namespace CrudeServer.Server
@@ -15,13 +16,17 @@ namespace CrudeServer.Server
     {
         private readonly IMiddlewareRegistry _middlewareRegistry;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILoggerProvider loggerProvider;
 
         public HttpRequestExecutor(
             IMiddlewareRegistry middlewareRegistry,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ILoggerProvider loggerProvider
+        )
         {
             this._middlewareRegistry = middlewareRegistry;
             this._serviceProvider = serviceProvider;
+            this.loggerProvider = loggerProvider;
         }
 
         public async Task Execute(HttpListenerContext context)
@@ -58,8 +63,10 @@ namespace CrudeServer.Server
 
                 response.Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                this.loggerProvider.Error(ex);
+
                 try
                 {
                     response.OutputStream.SetLength(0);
@@ -76,9 +83,12 @@ namespace CrudeServer.Server
         {
             return async () =>
             {
-                IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
+                loggerProvider.Log($"Executing middleware {middlewareType.Name}");
 
+                IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
                 await middleware.Process(context, next);
+
+                loggerProvider.Log($"Executed middleware {middlewareType.Name}");
             };
         }
     }

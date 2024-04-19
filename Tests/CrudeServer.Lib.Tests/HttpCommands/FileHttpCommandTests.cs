@@ -6,6 +6,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
+using CrudeServer.Providers.Contracts;
 
 using Moq;
 
@@ -20,7 +21,8 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
                 GetType().Assembly,
                 "files",
-                new ServerConfig() { }
+                new ServerConfig() { },
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -43,7 +45,8 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
                 GetType().Assembly,
                 "files",
-                new ServerConfig() { }
+                new ServerConfig() { },
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();

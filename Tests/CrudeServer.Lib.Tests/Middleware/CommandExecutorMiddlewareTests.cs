@@ -36,7 +36,8 @@ namespace CrudeServer.Lib.Tests.Middleware
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
                 null,
-                null
+                null,
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -70,7 +71,8 @@ namespace CrudeServer.Lib.Tests.Middleware
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
                 null,
-                null
+                null,
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -105,7 +107,8 @@ namespace CrudeServer.Lib.Tests.Middleware
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
                 null,
-                null
+                null,
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -146,7 +149,8 @@ namespace CrudeServer.Lib.Tests.Middleware
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
                 null,
-                null
+                null,
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -198,7 +202,8 @@ namespace CrudeServer.Lib.Tests.Middleware
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 commandRegistry.Object,
                 serviceProviderMock.Object,
-                dataParser.Object
+                dataParser.Object,
+                Mock.Of<ILoggerProvider>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
