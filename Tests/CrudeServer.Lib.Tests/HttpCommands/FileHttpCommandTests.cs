@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.HttpCommands
@@ -16,7 +19,8 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             // Arrange
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
                 GetType().Assembly,
-                "files"
+                "files",
+                new ServerConfig() { }
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -38,7 +42,8 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             // Arrange
             FileHttpCommand fileHttpCommand = new FileHttpCommand(
                 GetType().Assembly,
-                "files"
+                "files",
+                new ServerConfig() { }
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();

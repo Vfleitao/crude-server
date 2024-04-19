@@ -12,6 +12,8 @@ namespace CrudeServer.HttpCommands.Contract
         /// </summary>
         IDictionary<string, object> Items { get; set; }
 
+        IDictionary<string, string> Headers { get; set; }
+
         /// <summary>
         /// Response Status Code
         /// </summary>

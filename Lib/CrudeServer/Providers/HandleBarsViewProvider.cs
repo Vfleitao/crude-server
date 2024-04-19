@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,18 +11,17 @@ using CrudeServer.Providers.Contracts;
 
 using HandlebarsDotNet;
 
-using Microsoft.AspNetCore.StaticFiles;
-
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
 
 namespace CrudeServer.Providers
 {
     public class HandleBarsViewProvider : ITemplatedViewProvider
     {
         private const string LAYOUT_REGEX = @"@@layout\s+(\S+)(?=\s|$)";
+        private const string PARTIAL_REGEX = @"@@partial\s+(\S+)(?=\s|$)";
 
         private readonly Regex layoutRegex = new Regex(LAYOUT_REGEX, RegexOptions.Compiled);
+        private readonly Regex partialRegex = new Regex(PARTIAL_REGEX, RegexOptions.Compiled);
 
         private readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
         private readonly Assembly _viewAssembly;
@@ -61,7 +59,7 @@ namespace CrudeServer.Providers
 
         private async Task<string> GetTemplateStringFromFiles(string templatePath)
         {
-            string resourceName = $"{this._viewRoot}.{templatePath.Replace("\\", ".")}";
+            string resourceName = $"{this._viewRoot}.{templatePath.Replace("\\", ".").Replace("/", ".")}";
             string wantedResource = this._viewAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
             string templateString = null;
 
@@ -84,22 +82,35 @@ namespace CrudeServer.Providers
             }
 
             if (templateString.Contains("@@layout") && layoutRegex.IsMatch(templateString))
-            {   
+            {
                 Match match = layoutRegex.Match(templateString);
                 string layoutPath = match.Groups[1].Value;
 
                 string layoutTemplate = await GetTemplateStringFromFiles(layoutPath);
 
                 templateString = Regex.Replace(
-                    templateString, 
-                    LAYOUT_REGEX, 
-                    string.Empty, 
+                    templateString,
+                    LAYOUT_REGEX,
+                    string.Empty,
                     RegexOptions.Multiline
                 ).Trim();
 
                 layoutTemplate = layoutTemplate.Replace("@@body", templateString);
 
                 templateString = layoutTemplate;
+            }
+
+            if (templateString.Contains("@@partial"))
+            {
+                while (partialRegex.IsMatch(templateString))
+                {
+                    Match match = partialRegex.Match(templateString);
+                    string layoutPath = match.Groups[1].Value;
+
+                    string partial = await GetTemplateStringFromFiles(layoutPath);
+
+                    templateString = templateString.Replace($"@@partial {layoutPath}", partial);
+                }
             }
 
             return templateString;

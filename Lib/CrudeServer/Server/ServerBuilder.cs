@@ -24,8 +24,7 @@ namespace CrudeServer.Server
 {
     public class ServerBuilder : IServerBuilder
     {
-        private IServerConfig configuration;
-
+        private IServerConfig __ServerConfiguration;
         public IServiceCollection ServiceCollection { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
         public ICommandRegistry CommandRegistry { get; private set; }
@@ -35,7 +34,7 @@ namespace CrudeServer.Server
         {
             this.RegisterBaseIOCItems();
 
-            this.configuration = new ServerConfig
+            this.__ServerConfiguration = new ServerConfig
             {
                 Host = "http://localhost",
                 Port = "8000"
@@ -44,7 +43,7 @@ namespace CrudeServer.Server
 
         public IServerBuilder SetConfiguration(ServerConfig config)
         {
-            this.configuration = config;
+            this.__ServerConfiguration = config;
 
             return this;
         }
@@ -65,8 +64,13 @@ namespace CrudeServer.Server
             return this;
         }
 
-        public IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly)
+        public IServerBuilder AddFiles(
+            string fileRoot,
+            Assembly fileAssembly,
+            long cacheDurationMinutes = 10
+        )
         {
+            this.__ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
             this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
 
             this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
@@ -122,7 +126,7 @@ namespace CrudeServer.Server
 
         public IServerRunner Buid()
         {
-            this.ServiceCollection.AddSingleton<IServerConfig>(this.configuration);
+            this.ServiceCollection.AddSingleton<IServerConfig>(this.__ServerConfiguration);
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<ResponseProcessorMiddleware>();
 

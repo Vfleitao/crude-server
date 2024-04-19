@@ -12,6 +12,7 @@ namespace CrudeServer.Lib.Tests.Mocks
         public int StatusCode { get; set; }
         public object ViewData { get; set; }
         public IDictionary<string, object> Items { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
 
         public Task ProcessResponse()
         {

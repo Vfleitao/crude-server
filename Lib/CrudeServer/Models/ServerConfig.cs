@@ -10,5 +10,6 @@ namespace CrudeServer.Models
         public string NotFoundPath { get; }
         public bool RedirectOnAjaxCalls { get; set; }
         public JTWConfig JTWConfiguration { get; set; }
+        public long CachedDurationMinutes { get; set; }
     }
 }

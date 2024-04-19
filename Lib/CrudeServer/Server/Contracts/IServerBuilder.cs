@@ -19,7 +19,7 @@ namespace CrudeServer.Server.Contracts
 
         IServerBuilder AddAuthentication();
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
-        IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly);
+        IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly, long cacheDurationMinutes = 10);
         IServerBuilder AddLogs();
         IServerBuilder AddMiddleware<T>() where T : IMiddleware;
         IServerBuilder AddRequestTagging();

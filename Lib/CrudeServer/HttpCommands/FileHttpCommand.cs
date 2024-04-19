@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CrudeServer.Consts;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models.Contracts;
 
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,16 +21,18 @@ namespace CrudeServer.HttpCommands
 
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
+        private readonly IServerConfig serverConfig;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
-            [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot
+            [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
+            IServerConfig serverConfig
         )
         {
             this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;
-
+            this.serverConfig = serverConfig;
             this._fileExtentionProvider = new FileExtensionContentTypeProvider();
             this._cache = new Dictionary<string, byte[]>();
         }
@@ -38,7 +41,7 @@ namespace CrudeServer.HttpCommands
         {
             try
             {
-                string resourceName = $"{this._fileRoot}.{this.RequestContext.RequestUrl.LocalPath.Substring(1).Replace("\\", ".")}";
+                string resourceName = $"{this._fileRoot}.{this.RequestContext.RequestUrl.LocalPath.Substring(1).Replace("\\", ".").Replace("/", ".")}";
                 string wantedResource = this._fileAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
 
                 if (string.IsNullOrEmpty(wantedResource))
@@ -56,7 +59,7 @@ namespace CrudeServer.HttpCommands
                 {
                     fileData = await GetData(wantedResource);
 
-                    if(fileData == null)
+                    if (fileData == null)
                     {
                         return new NotFoundResponse();
                     }
@@ -70,7 +73,11 @@ namespace CrudeServer.HttpCommands
                     ResponseData = fileData,
                     ContentType = _fileExtentionProvider.TryGetContentType(resourceName, out string contentType) ?
                                             contentType :
-                                            "application/octet-stream"
+                                            "application/octet-stream",
+                    Headers = new Dictionary<string, string>()
+                    {
+                        { "Cache-Control", $"max-age={this.serverConfig.CachedDurationMinutes * 60}" }
+                    }
                 };
             }
             catch (Exception ex)

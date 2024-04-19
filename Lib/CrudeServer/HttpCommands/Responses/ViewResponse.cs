@@ -17,6 +17,7 @@ namespace CrudeServer.HttpCommands.Responses
         public int StatusCode { get; set; } = 200;
         public IDictionary<string, object> Items { get; set; }
         public object ViewModel { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
 
         public ViewResponse(ITemplatedViewProvider templatedViewProvider)
         {

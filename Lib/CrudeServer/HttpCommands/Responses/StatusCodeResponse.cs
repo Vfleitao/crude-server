@@ -12,6 +12,7 @@ namespace CrudeServer.HttpCommands.Responses
         public virtual int StatusCode { get; set; }
         public object ViewData { get; set; }
         public IDictionary<string, object> Items { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
 
         public virtual Task ProcessResponse()
         {

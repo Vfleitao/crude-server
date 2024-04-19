@@ -6,6 +6,8 @@ using CrudeServer.Models.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Newtonsoft.Json;
+
 namespace CrudeServer.HttpCommands
 {
     public abstract class HttpCommand
@@ -24,15 +26,16 @@ namespace CrudeServer.HttpCommands
 
         protected abstract Task<IHttpResponse> Process();
 
-        protected async Task<IHttpResponse> View(string path, object data)
+        protected async Task<IHttpResponse> View(string path, object data = null)
         {
             IHttpViewResponse viewResponse = this.RequestContext.Services.GetService<IHttpViewResponse>();
 
-            viewResponse.ViewModel = data;
+            viewResponse.ViewModel = data ?? new { };
             viewResponse.Items = new Dictionary<string, object>();
             viewResponse.Items.Add("User", RequestContext.User);
 
-            if (RequestContext.Items != null) { 
+            if (RequestContext.Items != null)
+            {
                 foreach (var item in RequestContext.Items)
                 {
                     viewResponse.Items.Add(item.Key, item.Value);
@@ -44,6 +47,22 @@ namespace CrudeServer.HttpCommands
             await viewResponse.ProcessResponse();
 
             return viewResponse;
+        }
+
+        protected T GetModelFromRequest<T>()
+        {
+            string stringedItems = JsonConvert.SerializeObject(RequestContext.Items);
+            return JsonConvert.DeserializeObject<T>(stringedItems);
+        }
+
+        protected object GetRequestItem(string key)
+        {
+            if (RequestContext.Items.ContainsKey(key))
+            {
+                return RequestContext.Items[key];
+            }
+
+            return null;
         }
     }
 }

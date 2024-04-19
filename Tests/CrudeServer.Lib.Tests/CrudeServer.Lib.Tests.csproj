@@ -10,13 +10,25 @@
   <ItemGroup>
     <None Remove="files\demo.json" />
     <None Remove="files\layout.html" />
+    <None Remove="files\partials\partial.html" />
+    <None Remove="files\partials\partial2.html" />
     <None Remove="files\simpleView.html" />
     <None Remove="files\viewWithLayout.html" />
+    <None Remove="files\viewWithLayoutAndPartial.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="files\demo.json" />
+    <EmbeddedResource Include="files\partials\partial2.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="files\partials\partial.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="files\simpleView.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="files\viewWithLayoutAndPartial.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="files\viewWithLayout.html">

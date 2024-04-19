@@ -56,6 +56,14 @@ namespace CrudeServer.Middleware
                 }
             }
 
+            if (httpResponse.Headers != null)
+            {
+                foreach (KeyValuePair<string, string> header in httpResponse.Headers)
+                {
+                    context.HttpListenerResponse.AddHeader(header.Key, header.Value);
+                }
+            }
+
             if (httpResponse is RedirectResponse)
             {
                 context.HttpListenerResponse.RedirectLocation = Encoding.UTF8.GetString(httpResponse.ResponseData);

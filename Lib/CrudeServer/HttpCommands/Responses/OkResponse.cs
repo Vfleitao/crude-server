@@ -7,6 +7,20 @@ namespace CrudeServer.HttpCommands.Responses
 {
     public class OkResponse : StatusCodeResponse
     {
+        public OkResponse()
+        {
+        }
+
+        public OkResponse(object data)
+        {
+            SetData(data);
+        }
+
+        public OkResponse(Stream stream)
+        {
+            SetData(stream);
+        }
+
         public override int StatusCode { get; set; } = 200;
 
         public void SetData(object data)

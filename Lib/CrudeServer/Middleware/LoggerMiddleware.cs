@@ -11,7 +11,6 @@ namespace CrudeServer.Middleware
 {
     public class LoggerMiddleware : IMiddleware
     {
-        private static int _counter = 0;
         private readonly ILoggerProvider _loggerProvider;
 
         public LoggerMiddleware(ILoggerProvider loggerProvider)
@@ -22,7 +21,6 @@ namespace CrudeServer.Middleware
         public async Task Process(ICommandContext context, Func<Task> next)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Request #{++_counter}");
             sb.AppendLine(context.RequestUrl.ToString());
             sb.AppendLine(context.RequestHttpMethod.ToString());
             sb.AppendLine(context.RequestHost);
@@ -38,7 +36,7 @@ namespace CrudeServer.Middleware
 
             stopwatch.Stop();
 
-            this._loggerProvider.Log($"Request #{0} completed in {1}ms", _counter, stopwatch.ElapsedMilliseconds);
+            this._loggerProvider.Log($"Request completed in {0}ms", stopwatch.ElapsedMilliseconds);
         }
     }
 }
