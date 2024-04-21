@@ -8,7 +8,7 @@ using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.Middleware
 {
-    public class RequestTaggerMiddleware(ILoggerProvider loggerProvider) : IMiddleware
+    public class RequestTaggerMiddleware(ILogger loggerProvider) : IMiddleware
     {
         public async Task Process(ICommandContext context, Func<Task> next)
         {

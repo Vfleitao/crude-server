@@ -11,9 +11,9 @@ namespace CrudeServer.Middleware
 {
     public class LoggerMiddleware : IMiddleware
     {
-        private readonly ILoggerProvider _loggerProvider;
+        private readonly ILogger _loggerProvider;
 
-        public LoggerMiddleware(ILoggerProvider loggerProvider)
+        public LoggerMiddleware(ILogger loggerProvider)
         {
             this._loggerProvider = loggerProvider;
         }

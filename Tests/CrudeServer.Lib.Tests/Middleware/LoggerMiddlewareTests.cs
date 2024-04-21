@@ -16,7 +16,7 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task Process_ShouldLogRequestDetails()
         {
             // Arrange
-            Mock<ILoggerProvider> loggerProviderMock = new Mock<ILoggerProvider>();
+            Mock<ILogger> loggerProviderMock = new Mock<ILogger>();
 
             Mock<ICommandContext> context = new Mock<ICommandContext>();
             context.Setup(x => x.RequestUrl).Returns(new Uri("http://localhost:8080"));

@@ -22,7 +22,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -46,7 +46,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();

@@ -16,12 +16,12 @@ namespace CrudeServer.Server
     {
         private readonly IMiddlewareRegistry _middlewareRegistry;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly ILogger loggerProvider;
 
         public HttpRequestExecutor(
             IMiddlewareRegistry middlewareRegistry,
             IServiceProvider serviceProvider,
-            ILoggerProvider loggerProvider
+            ILogger loggerProvider
         )
         {
             this._middlewareRegistry = middlewareRegistry;

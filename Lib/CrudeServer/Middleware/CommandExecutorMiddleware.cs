@@ -20,13 +20,13 @@ namespace CrudeServer.Middleware
         private readonly ICommandRegistry _commandRegistry;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHttpRequestDataProvider httpRequestDataProvider;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly ILogger loggerProvider;
 
         public CommandExecutorMiddleware(
             ICommandRegistry commandRegistry,
             IServiceProvider serviceProvider,
             IHttpRequestDataProvider httpRequestDataProvider,
-            ILoggerProvider loggerProvider
+            ILogger loggerProvider
         )
         {
             this._commandRegistry = commandRegistry;

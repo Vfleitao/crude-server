@@ -15,9 +15,9 @@ namespace CrudeServer.Providers
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
         private readonly IServerConfig serverConfig;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly ILogger loggerProvider;
 
-        public JTWAuthenticationProvider(IServerConfig serverConfig, ILoggerProvider loggerProvider)
+        public JTWAuthenticationProvider(IServerConfig serverConfig, ILogger loggerProvider)
         {
             this.serverConfig = serverConfig;
             this.loggerProvider = loggerProvider;

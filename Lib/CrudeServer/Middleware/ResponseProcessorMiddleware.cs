@@ -15,9 +15,9 @@ namespace CrudeServer.Middleware
     {
         private readonly IDictionary<int, (string location, int redirectStatusCode)> defaultStatusCodePaths = new Dictionary<int, (string location, int redirectStatusCode)>();
         private readonly IServerConfig _serverConfiguraton;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly ILogger loggerProvider;
 
-        public ResponseProcessorMiddleware(IServerConfig serverConfiguraton, ILoggerProvider loggerProvider)
+        public ResponseProcessorMiddleware(IServerConfig serverConfiguraton, ILogger loggerProvider)
         {
             this._serverConfiguraton = serverConfiguraton;
             this.loggerProvider = loggerProvider;

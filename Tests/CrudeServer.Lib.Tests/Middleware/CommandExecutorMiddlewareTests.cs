@@ -37,7 +37,7 @@ namespace CrudeServer.Lib.Tests.Middleware
                 commandRegistry.Object,
                 null,
                 null,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -72,7 +72,7 @@ namespace CrudeServer.Lib.Tests.Middleware
                 commandRegistry.Object,
                 null,
                 null,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -108,7 +108,7 @@ namespace CrudeServer.Lib.Tests.Middleware
                 commandRegistry.Object,
                 null,
                 null,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -150,7 +150,7 @@ namespace CrudeServer.Lib.Tests.Middleware
                 commandRegistry.Object,
                 null,
                 null,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -203,7 +203,7 @@ namespace CrudeServer.Lib.Tests.Middleware
                 commandRegistry.Object,
                 serviceProviderMock.Object,
                 dataParser.Object,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();

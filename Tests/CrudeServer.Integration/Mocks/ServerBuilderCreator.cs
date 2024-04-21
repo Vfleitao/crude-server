@@ -10,15 +10,13 @@ namespace CrudeServer.Integration.Mocks
         {
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
-                .AddLogs()
                 .AddRequestTagging()
                 .AddAuthentication()
                 .AddFiles("wwwroot", typeof(ServerBuilderCreator).Assembly)
                 .AddViews("views", typeof(ServerBuilderCreator).Assembly)
                 .SetConfiguration(new ServerConfig()
                 {
-                    Host = "http://localhost",
-                    Port = port.ToString(),
+                    Hosts = new List<string>() { "http://localhost:" + port.ToString() },
                     AuthenticationPath = "/login"
                 });
 

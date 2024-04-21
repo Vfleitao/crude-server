@@ -23,14 +23,14 @@ namespace CrudeServer.HttpCommands
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
         private readonly IServerConfig serverConfig;
-        private readonly ILoggerProvider loggerProvider;
+        private readonly ILogger loggerProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
-            ILoggerProvider loggerProvider
+            ILogger loggerProvider
         )
         {
             this._fileAssembly = fileAssembly;

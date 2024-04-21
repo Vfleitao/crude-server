@@ -1,10 +1,11 @@
-﻿namespace CrudeServer.Models.Contracts
+﻿using System.Collections.Generic;
+
+namespace CrudeServer.Models.Contracts
 {
     public interface IServerConfig
     {
         string AuthenticationPath { get; set; }
-        string Host { get; set; }
-        string Port { get; set; }
+        List<string> Hosts { get; set; }
         string NotFoundPath { get; }
         bool RedirectOnAjaxCalls { get; set; }
         JTWConfig JTWConfiguration { get; set; }

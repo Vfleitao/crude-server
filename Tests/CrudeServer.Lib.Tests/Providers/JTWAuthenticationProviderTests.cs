@@ -62,7 +62,7 @@ namespace CrudeServer.Lib.Tests.Providers
 
             JTWAuthenticationProvider authenticationProvider = new JTWAuthenticationProvider(
                 serverConfig,
-                Mock.Of<ILoggerProvider>()
+                Mock.Of<ILogger>()
             );
 
             NameValueCollection nameValueCollection = new NameValueCollection();

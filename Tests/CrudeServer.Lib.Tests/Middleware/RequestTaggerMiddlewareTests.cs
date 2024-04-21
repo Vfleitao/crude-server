@@ -23,7 +23,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             Func<Task> next = () => Task.CompletedTask;
 
-            RequestTaggerMiddleware loggerMiddleware = new RequestTaggerMiddleware(Mock.Of<ILoggerProvider>());
+            RequestTaggerMiddleware loggerMiddleware = new RequestTaggerMiddleware(Mock.Of<ILogger>());
 
             // Act
             await loggerMiddleware.Process(context.Object, next);

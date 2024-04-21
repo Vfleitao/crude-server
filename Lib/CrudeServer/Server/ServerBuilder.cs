@@ -34,24 +34,12 @@ namespace CrudeServer.Server
         {
             this.RegisterBaseIOCItems();
 
-            this.__ServerConfiguration = new ServerConfig
-            {
-                Host = "http://localhost",
-                Port = "8000"
-            };
+            this.__ServerConfiguration = new ServerConfig() { };
         }
 
         public IServerBuilder SetConfiguration(ServerConfig config)
         {
             this.__ServerConfiguration = config;
-
-            return this;
-        }
-
-        public IServerBuilder AddLogs()
-        {
-            this.ServiceCollection.AddScoped<ILoggerProvider, LoggerProvider>();
-            this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
 
             return this;
         }
@@ -155,6 +143,9 @@ namespace CrudeServer.Server
             this.ServiceCollection.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
             this.ServiceCollection.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
             this.ServiceCollection.AddKeyedScoped<IRequestDataParser, MultiPartFormDataParser>("dataparser_multipart/form-data");
+
+            this.ServiceCollection.AddScoped<ILogger, ConsoleLogger>();
+            this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
         }
     }
 }

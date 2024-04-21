@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CrudeServer.Models.Contracts;
-using CrudeServer.Providers.Contracts;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -33,17 +32,20 @@ namespace CrudeServer.Server
 
         public async Task Run()
         {
-            if (this._serviceProvider == null)
-            {
-                throw new InvalidOperationException("Service provider is not set. Please call Build() before running the server.");
-            }
-
             _isRunning = true;
 
-            _listener.Prefixes.Add($"{this._configuration.Host}:{this._configuration.Port}/");
+            foreach (string host in this._configuration.Hosts)
+            {
+                _listener.Prefixes.Add(host);
+            }
+
             _listener.Start();
 
-            Console.WriteLine("Listening for connections on {0}:{1}", this._configuration.Host, this._configuration.Port);
+            foreach (string host in this._configuration.Hosts)
+            {
+                Console.WriteLine("Listening for connections on {0}", host);
+            }
+
             try
             {
                 while (_isRunning)
