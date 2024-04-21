@@ -71,7 +71,7 @@ namespace CrudeServer.Middleware
                 }
                 else
                 {
-                    this.loggerProvider.Log($"[3] Command not found for {context.RequestUrl.AbsolutePath}");
+                    this.loggerProvider.Log($"[3] Command found for {context.RequestUrl.AbsolutePath}");
 
                     HttpRequestData data = await httpRequestDataProvider.GetDataFromRequest(context);
                     UpdateRequestContext(data, context);

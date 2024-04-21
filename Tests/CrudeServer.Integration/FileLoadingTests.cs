@@ -1,8 +1,6 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Net;
 
-using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Integration.Mocks;
 using CrudeServer.Server.Contracts;
 

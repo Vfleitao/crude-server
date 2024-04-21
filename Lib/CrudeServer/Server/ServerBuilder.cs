@@ -25,7 +25,7 @@ namespace CrudeServer.Server
     public class ServerBuilder : IServerBuilder
     {
         private IServerConfig __ServerConfiguration;
-        public IServiceCollection ServiceCollection { get; private set; }
+        public IServiceCollection Services { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
         public ICommandRegistry CommandRegistry { get; private set; }
         public IMiddlewareRegistry MiddlewareRegistry { get; private set; }
@@ -47,7 +47,7 @@ namespace CrudeServer.Server
         public IServerBuilder AddAuthentication()
         {
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
-            this.ServiceCollection.AddScoped<IAuthenticationProvider, JTWAuthenticationProvider>();
+            this.Services.AddScoped<IAuthenticationProvider, JTWAuthenticationProvider>();
 
             return this;
         }
@@ -61,8 +61,8 @@ namespace CrudeServer.Server
             this.__ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
             this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
 
-            this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
-            this.ServiceCollection.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
+            this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
+            this.Services.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
 
             return this;
         }
@@ -83,11 +83,11 @@ namespace CrudeServer.Server
                 throw new ArgumentException("View provider must implement ITemplatedViewProvider");
             }
 
-            this.ServiceCollection.AddKeyedSingleton<string>(ServerConstants.VIEW_ROOT, viewRoot);
-            this.ServiceCollection.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
+            this.Services.AddKeyedSingleton<string>(ServerConstants.VIEW_ROOT, viewRoot);
+            this.Services.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
 
-            this.ServiceCollection.AddSingleton(typeof(ITemplatedViewProvider), viewProvider);
-            this.ServiceCollection.AddTransient<IHttpViewResponse, ViewResponse>();
+            this.Services.AddSingleton(typeof(ITemplatedViewProvider), viewProvider);
+            this.Services.AddTransient<IHttpViewResponse, ViewResponse>();
 
             return this;
         }
@@ -114,37 +114,42 @@ namespace CrudeServer.Server
 
         public IServerRunner Buid()
         {
-            this.ServiceCollection.AddSingleton<IServerConfig>(this.__ServerConfiguration);
-            this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<ResponseProcessorMiddleware>();
-
-            this.ServiceProvider = ServiceCollection.BuildServiceProvider(true);
+            this.Services.AddSingleton<IServerConfig>(this.__ServerConfiguration);
+            this.ServiceProvider = Services.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
         }
 
+        public IServerBuilder AddCommands()
+        {
+            this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
+
+            return this;
+        }
+
         private void RegisterBaseIOCItems()
         {
-            this.ServiceCollection = new ServiceCollection();
-            this.ServiceCollection.AddSingleton<IServiceCollection>(ServiceCollection);
+            this.Services = new ServiceCollection();
+            this.Services.AddSingleton<IServiceCollection>(Services);
 
-            this.CommandRegistry = new CommandRegistry(ServiceCollection);
-            this.ServiceCollection.AddSingleton<ICommandRegistry>(CommandRegistry);
+            this.CommandRegistry = new CommandRegistry(Services);
+            this.Services.AddSingleton<ICommandRegistry>(CommandRegistry);
 
-            this.MiddlewareRegistry = new MiddlewareRegistry(ServiceCollection);
-            this.ServiceCollection.AddSingleton<IMiddlewareRegistry>(MiddlewareRegistry);
+            this.MiddlewareRegistry = new MiddlewareRegistry(Services);
+            this.Services.AddSingleton<IMiddlewareRegistry>(MiddlewareRegistry);
 
-            this.ServiceCollection.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
-            this.ServiceCollection.AddSingleton<IServerRunner, ServerRunner>();
+            this.Services.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
+            this.Services.AddSingleton<IServerRunner, ServerRunner>();
 
-            this.ServiceCollection.AddScoped<IHttpRequestExecutor, HttpRequestExecutor>();
-            this.ServiceCollection.AddScoped<IHttpRequestDataProvider, HttpRequestDataProvider>();
+            this.Services.AddScoped<IHttpRequestExecutor, HttpRequestExecutor>();
+            this.Services.AddScoped<IHttpRequestDataProvider, HttpRequestDataProvider>();
 
-            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
-            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
-            this.ServiceCollection.AddKeyedScoped<IRequestDataParser, MultiPartFormDataParser>("dataparser_multipart/form-data");
+            this.Services.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
+            this.Services.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
+            this.Services.AddKeyedScoped<IRequestDataParser, MultiPartFormDataParser>("dataparser_multipart/form-data");
 
-            this.ServiceCollection.AddScoped<ILogger, ConsoleLogger>();
+            this.Services.AddScoped<ILogger, ConsoleLogger>();
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
         }
     }

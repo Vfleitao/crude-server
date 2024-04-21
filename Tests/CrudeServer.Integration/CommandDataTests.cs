@@ -31,10 +31,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -91,10 +91,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -156,10 +156,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -271,10 +271,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -347,10 +347,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -439,10 +439,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -553,10 +553,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -685,10 +685,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -757,10 +757,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });
@@ -873,10 +873,10 @@ namespace CrudeServer.Integration
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
-            serverBuilder.ServiceCollection.Remove(
-                serverBuilder.ServiceCollection.First(x => x.ServiceType == typeof(DataFromRequestCommand))
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
             );
-            serverBuilder.ServiceCollection.AddScoped<DataFromRequestCommand>((s) =>
+            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
             {
                 return commandInstance;
             });

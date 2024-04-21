@@ -14,11 +14,12 @@ namespace CrudeServer.Server.Contracts
     public interface IServerBuilder
     {
         ICommandRegistry CommandRegistry { get; }
-        IServiceCollection ServiceCollection { get; }
+        IServiceCollection Services { get; }
         IServiceProvider ServiceProvider { get; }
 
         IServerBuilder AddAuthentication();
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
+        IServerBuilder AddCommands();
         IServerBuilder AddFiles(string fileRoot, Assembly fileAssembly, long cacheDurationMinutes = 10);
         IServerBuilder AddMiddleware<T>() where T : IMiddleware;
         IServerBuilder AddRequestTagging();
