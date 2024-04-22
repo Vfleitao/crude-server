@@ -12,5 +12,6 @@ namespace CrudeServer.Models
         public bool RedirectOnAjaxCalls { get; set; }
         public JTWConfig JTWConfiguration { get; set; }
         public long CachedDurationMinutes { get; set; }
+        public bool EnableServerFileCache { get; set; }
     }
 }

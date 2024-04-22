@@ -11,7 +11,7 @@ using CrudeServer.Server.Contracts;
 
 namespace CrudeServer.Integration
 {
-    public class FileLoadingTests
+    public class EmbeddedFileLoadingTests
     {
         [Test]
         [Sequential]
@@ -19,7 +19,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try
@@ -58,7 +58,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try
@@ -95,7 +95,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try

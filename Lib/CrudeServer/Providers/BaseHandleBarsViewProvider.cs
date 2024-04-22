@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-using CrudeServer.Consts;
+using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using HandlebarsDotNet;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace CrudeServer.Providers
 {
-    public class HandleBarsViewProvider : ITemplatedViewProvider
+    public abstract class BaseHandleBarsViewProvider : ITemplatedViewProvider
     {
         private const string LAYOUT_REGEX = @"@@layout\s+(\S+)(?=\s|$)";
         private const string PARTIAL_REGEX = @"@@partial\s+(\S+)(?=\s|$)";
@@ -24,17 +19,11 @@ namespace CrudeServer.Providers
         private readonly Regex partialRegex = new Regex(PARTIAL_REGEX, RegexOptions.Compiled);
 
         private readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
-        private readonly Assembly _viewAssembly;
-        private readonly string _viewRoot;
+        private readonly IServerConfig serverConfig;
 
-        public HandleBarsViewProvider(
-           [FromKeyedServices(ServerConstants.VIEW_ASSEMBLY)] Assembly fileAssembly,
-           [FromKeyedServices(ServerConstants.VIEW_ROOT)] string fileRoot
-       )
+        public BaseHandleBarsViewProvider(IServerConfig serverConfig)
         {
-            this._viewAssembly = fileAssembly;
-            this._viewRoot = fileRoot;
-
+            this.serverConfig = serverConfig;
             this._compiledViewCache = new ConcurrentDictionary<string, HandlebarsTemplate<object, object>>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -42,7 +31,7 @@ namespace CrudeServer.Providers
         {
             HandlebarsTemplate<object, object> compiledTemplate = null;
 
-            if (this._compiledViewCache.ContainsKey(templatePath))
+            if (this.serverConfig.EnableServerFileCache && this._compiledViewCache.ContainsKey(templatePath))
             {
                 compiledTemplate = this._compiledViewCache[templatePath] as HandlebarsTemplate<object, object>;
             }
@@ -50,35 +39,25 @@ namespace CrudeServer.Providers
             {
                 string template = await GetTemplateStringFromFiles(templatePath);
                 compiledTemplate = Handlebars.Compile(template);
-
-                this._compiledViewCache.TryAdd(templatePath, compiledTemplate);
+                
+                if (this.serverConfig.EnableServerFileCache)
+                {
+                    this._compiledViewCache.TryAdd(templatePath, compiledTemplate);
+                }
             }
 
             return compiledTemplate(data);
         }
 
-        private async Task<string> GetTemplateStringFromFiles(string templatePath)
+        protected abstract Task<string> GetTemplateFile(string templatePath);
+
+        protected async Task<string> GetTemplateStringFromFiles(string templatePath)
         {
-            string resourceName = $"{this._viewRoot}.{templatePath.Replace("\\", ".").Replace("/", ".")}";
-            string wantedResource = this._viewAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
-            string templateString = null;
+            string templateString = await GetTemplateFile(templatePath);
 
-            if (string.IsNullOrEmpty(wantedResource))
+            if (string.IsNullOrEmpty(templateString))
             {
-                return templateString;
-            }
-
-            using (Stream resourceStream = this._viewAssembly.GetManifestResourceStream(wantedResource))
-            {
-                if (resourceStream == null)
-                {
-                    return null;
-                }
-
-                using (StreamReader ms = new StreamReader(resourceStream))
-                {
-                    templateString = await ms.ReadToEndAsync();
-                }
+                return null;
             }
 
             if (templateString.Contains("@@layout") && layoutRegex.IsMatch(templateString))

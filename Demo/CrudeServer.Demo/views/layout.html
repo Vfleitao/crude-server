@@ -4,10 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <title>{{viewData.title}}</title>
-
-    <link href="main.css" type="text/css" rel="stylesheet" />
+    @@partial partials/base-styles.html
 </head>
 <body>
-    @@body
+    <div class="container-fluid container-xxl">
+        <div>
+            @@body
+        </div>
+        <div>
+            @@partial partials/base-scripts.html
+        </div>
+    </div>
 </body>
 </html>

@@ -10,14 +10,28 @@
   <ItemGroup>
     <None Remove="views\index.html" />
     <None Remove="views\layout.html" />
+    <None Remove="views\partials\base-scripts.html" />
+    <None Remove="views\partials\base-styles.html" />
     <None Remove="wwwroot\image.jpg" />
     <None Remove="wwwroot\main.css" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="views\layout.html" />
-    <EmbeddedResource Include="views\index.html" />
-    <EmbeddedResource Include="wwwroot\image.jpg" />
+    <EmbeddedResource Include="views\layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\partials\base-styles.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\partials\base-scripts.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\image.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -25,6 +39,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>

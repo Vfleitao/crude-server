@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -15,21 +16,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.HttpCommands
 {
-    public class FileHttpCommand : HttpCommand
+    public class EmbeddedFileHttpCommand : HttpCommand
     {
         private readonly IDictionary<string, byte[]> _cache;
 
+        private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
         private readonly IServerConfig serverConfig;
         private readonly ILogger loggerProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
-        public FileHttpCommand(
+        public EmbeddedFileHttpCommand(
+            [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
             ILogger loggerProvider
         )
         {
+            this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;
             this.serverConfig = serverConfig;
             this.loggerProvider = loggerProvider;
@@ -41,24 +45,24 @@ namespace CrudeServer.HttpCommands
         {
             try
             {
-                string requestedFile = this.RequestContext.RequestUrl.LocalPath.Substring(1);
-                string resourceName = $"{this._fileRoot}\\{requestedFile}";
+                string resourceName = $"{this._fileRoot}.{this.RequestContext.RequestUrl.LocalPath.Substring(1).Replace("\\", ".").Replace("/", ".")}";
+                string wantedResource = this._fileAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
 
-                if (!File.Exists(resourceName))
+                if (string.IsNullOrEmpty(wantedResource))
                 {
-                    loggerProvider.Log($"[FileHttpCommand - 1] Resource {resourceName} not found");
+                    loggerProvider.Log($"[4] Resource {resourceName} not found");
                     return new NotFoundResponse();
                 }
 
                 byte[] fileData;
 
-                if (this.serverConfig.EnableServerFileCache && this._cache.ContainsKey(resourceName))
+                if (this.serverConfig.EnableServerFileCache && this._cache.ContainsKey(wantedResource))
                 {
-                    fileData = this._cache[resourceName];
+                    fileData = this._cache[wantedResource];
                 }
                 else
                 {
-                    fileData = await File.ReadAllBytesAsync(resourceName);
+                    fileData = await GetData(wantedResource);
 
                     if (fileData == null)
                     {
@@ -67,7 +71,7 @@ namespace CrudeServer.HttpCommands
 
                     if (this.serverConfig.EnableServerFileCache)
                     {
-                        this._cache.TryAdd(resourceName, fileData);
+                        this._cache.TryAdd(wantedResource, fileData);
                     }
                 }
 
@@ -91,6 +95,23 @@ namespace CrudeServer.HttpCommands
                 {
                     StatusCode = 500
                 };
+            }
+        }
+
+        private async Task<byte[]> GetData(string wantedResource)
+        {
+            using (Stream resourceStream = this._fileAssembly.GetManifestResourceStream(wantedResource))
+            {
+                if (resourceStream == null)
+                {
+                    return null;
+                }
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await resourceStream.CopyToAsync(ms);
+                    return ms.ToArray();
+                }
             }
         }
     }

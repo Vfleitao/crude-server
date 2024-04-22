@@ -1,4 +1,6 @@
-﻿using CrudeServer.HttpCommands;
+﻿using System.Threading.Tasks;
+
+using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 

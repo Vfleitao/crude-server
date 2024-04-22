@@ -9,7 +9,7 @@ namespace CrudeServer.Models.Contracts
         string NotFoundPath { get; }
         bool RedirectOnAjaxCalls { get; set; }
         JTWConfig JTWConfiguration { get; set; }
-
         long CachedDurationMinutes { get; set; }
+        bool EnableServerFileCache { get; set; }
     }
 }

@@ -2,8 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
@@ -20,19 +18,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="wwwroot\testfile2.txt">
+    <EmbeddedResource Include="wwwroot\testfile2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="wwwroot\testfile.txt">
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\testfile.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="views\index.html" />
     <EmbeddedResource Include="views\layout.html" />
     <EmbeddedResource Include="views\simple.html" />
-    <EmbeddedResource Include="wwwroot\image.jpg" />
+    <EmbeddedResource Include="wwwroot\image.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

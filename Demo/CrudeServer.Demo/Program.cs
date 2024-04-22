@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models;
+using CrudeServer.Providers;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
 
@@ -17,6 +19,12 @@ namespace CrudeServer
 
         public static async Task Main(string[] args)
         {
+            string assemblyPath = System.AppContext.BaseDirectory;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+
+            string fileRoot = Path.Combine(assemblyDir, "wwwroot");
+            string viewRoot = Path.Combine(assemblyDir, "views");
+
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
                 .SetConfiguration(new ServerConfig()
@@ -24,11 +32,9 @@ namespace CrudeServer
                     Hosts = new List<string> { "http://localhost:9000/" },
                     AuthenticationPath = "/login"
                 })
-                .AddRequestTagging()
-                .AddAuthentication()
                 .AddCommands()
-                .AddFiles("wwwroot", typeof(Program).Assembly)
-                .AddViews("views", typeof(Program).Assembly);
+                .AddFiles(fileRoot, 60 * 24 * 30)
+                .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));
 
             serverBuilder.AddCommand<DemoHttpCommand>("/", HttpMethod.GET);
             serverBuilder.AddCommand<LoginCommand>("/login", HttpMethod.GET);
