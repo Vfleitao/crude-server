@@ -1,4 +1,4 @@
-(/Content/logo.png)
+![CrudeServer](/Content/logo_small.png)
 # Crude Server - A rough and simple webserver in .NET
 Crude Server, is a simple server written in .NET and using a HttpListener to answer requests in an async fashion.
 
