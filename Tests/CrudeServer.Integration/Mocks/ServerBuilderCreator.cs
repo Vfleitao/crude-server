@@ -12,7 +12,7 @@ namespace CrudeServer.Integration.Mocks
             serverBuilder
                 .SetConfiguration(new ServerConfig()
                 {
-                    Hosts = new List<string>() { "http://localhost:" + port.ToString() },
+                    Hosts = new List<string>() { "http://localhost:" + port.ToString() + "/" },
                     AuthenticationPath = "/login"
                 })
                 .AddRequestTagging()
