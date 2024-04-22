@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 using CrudeServer.Enums;
@@ -18,17 +19,16 @@ namespace CrudeServer
         {
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
-                .AddLogs()
-                .AddRequestTagging()
-                .AddAuthentication()
-                .AddFiles("wwwroot", typeof(Program).Assembly)
-                .AddViews("views", typeof(Program).Assembly)
                 .SetConfiguration(new ServerConfig()
                 {
-                    Host = "http://localhost",
-                    Port = "9000",
+                    Hosts = new List<string> { "http://localhost:9000/" },
                     AuthenticationPath = "/login"
-                });
+                })
+                .AddRequestTagging()
+                .AddAuthentication()
+                .AddCommands()
+                .AddFiles("wwwroot", typeof(Program).Assembly)
+                .AddViews("views", typeof(Program).Assembly);
 
             serverBuilder.AddCommand<DemoHttpCommand>("/", HttpMethod.GET);
             serverBuilder.AddCommand<LoginCommand>("/login", HttpMethod.GET);
