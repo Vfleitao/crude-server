@@ -1,0 +1,12 @@
+@import "./variables/vars";
+@import "./mixins/mixins";
+
+[data-page="in-depth"] {
+    .in-depth-menu {
+        .nav {
+            .nav-item {
+                border-bottom: 1px solid $light-gray;
+            }
+        }
+    }
+}

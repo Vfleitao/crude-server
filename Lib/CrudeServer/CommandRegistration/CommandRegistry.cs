@@ -68,7 +68,7 @@ namespace CrudeServer.CommandRegistration
         private string GetRegexPath(string path)
         {
             string pattern = "{\\w+:\\\\([^}]+)}";
-            string replacement = "\\$1";
+            string replacement = "(\\$1)";
             string regexPath = Regex.Replace(path, pattern, replacement);
 
             return $"^{regexPath}$";

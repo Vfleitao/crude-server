@@ -42,7 +42,6 @@ namespace CrudeServer.Middleware
                 )
             )
             {
-
                 loggerProvider.Log($"[6] Redirecting to {defaultStatusCodePaths[context.Response.StatusCode].location} for status code {context.Response.StatusCode}");
 
                 (string location, int redirectStatusCode) redirectSetup = defaultStatusCodePaths[context.Response.StatusCode];

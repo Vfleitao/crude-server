@@ -8,15 +8,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="views\InDepth.html" />
+    <None Remove="views\in-depth\start.html" />
     <None Remove="views\index.html" />
     <None Remove="views\layout.html" />
+    <None Remove="views\not-found.html" />
     <None Remove="views\partials\base-scripts.html" />
     <None Remove="views\partials\base-styles.html" />
+    <None Remove="wwwroot\css\**\*.scss" />
+    <None Remove="views\partials\home\title.html" />
+    <None Remove="views\partials\home\whatis.html" />
+    <None Remove="views\partials\home\why.html" />
+    <None Remove="wwwroot\css\bootstrap.min.css" />
+    <None Remove="wwwroot\css\main.css" />
     <None Remove="wwwroot\image.jpg" />
-    <None Remove="wwwroot\main.css" />
+    <None Remove="wwwroot\js\bootstrap.bundle.min.js" />
+    <None Remove="wwwroot\media\fav-icon.png" />
+    <None Remove="wwwroot\media\logo.png" />
+    <None Remove="wwwroot\media\logo_med.png" />
+    <None Remove="wwwroot\media\logo_small.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="views\in-depth\start.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\not-found.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="views\layout.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -29,20 +51,40 @@
     <EmbeddedResource Include="views\partials\base-scripts.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\image.jpg">
+    <EmbeddedResource Include="views\partials\home\why.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\main.css">
+    <EmbeddedResource Include="views\partials\home\whatis.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\partials\home\title.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\bootstrap.min.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\main.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\js\bootstrap.bundle.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\fav-icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\logo_med.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\logo_small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Commands\" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,58 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+:root {
+  --cs-color-white: #ffffff;
+  --cs-color-black: #000000;
+  --cs-color-gray: gray;
+  --cs-color-light-gray: #bfbfbf;
+}
+
+#app {
+  display: grid;
+  grid-template-rows: 100px 1fr 50px;
+}
+#app .text-white {
+  color: #ffffff;
+}
+#app .text-black {
+  color: #000000;
+}
+#app .text-gray {
+  color: gray;
+}
+#app .text-light-gray {
+  color: #bfbfbf;
+}
+#app a.plain {
+  text-decoration: none;
+}
+#app > header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid gray;
+}
+#app > header nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 0;
+}
+#app > header nav ul .logo {
+  max-height: 50px;
+}
+#app > main {
+  padding: 1rem;
+}
+#app > main section:not(:last-child) {
+  margin-bottom: 3rem;
+}
+#app > footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}/*# sourceMappingURL=main.css.map */

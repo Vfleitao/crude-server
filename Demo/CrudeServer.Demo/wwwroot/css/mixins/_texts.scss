@@ -1,0 +1,7 @@
+@mixin text-colours($colourMap) {
+    @each $name, $colour in $colourMap {
+        .text-#{$name} {
+            color: #{$colour};
+        }
+    }
+}

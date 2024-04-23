@@ -1,0 +1,11 @@
+$white: #ffffff;
+$black: #000000;
+$gray: lighten($black, 50%);
+$light-gray: lighten($black, 75%);
+
+$cs_colours: (
+    'white': $white,
+    'black': $black,
+    'gray': $gray,
+    'light-gray': $light-gray
+);
