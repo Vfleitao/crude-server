@@ -1,0 +1,43 @@
+<h2>Responses</h2>
+<p>
+   In Crude Server, the response of a command is of type IHttpResponse.<br>
+   There already exist multiple implementations of IHttpResponse for the most common use cases, such as:<br>
+    <ul>
+        <li>OkResponse</li>
+        <li>JsonResponse</li>
+        <li>NotFoundResponse</li>
+        <li>ForbiddenResponse</li>
+        <li>RedirectResponse</li>
+        <li>StatusCodeResponse</li>
+        <li>UnauthorizedResponse</li>
+        <li>ViewResponse</li>
+    </ul>
+    All of these pretty self explanatory, and you can use them as you would expect but here are some examples:
+    <pre class="rw-100 rw-md-75"><code class="language-dotnet">//Will result in an HTTP 301 redirect to /somepath
+public class RedirectionCommand : BaseCommand
+{
+    protected override async Task<IHttpResponse> Process()
+    {
+        return new RedirectResponse("/somepath", 301);
+    }
+}</code></pre>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">//Will result in an HTTP 401 or a HTTP 200 View
+public class SecureCommand : BaseCommand
+{
+    private readonly IProjectAccessVerifier _verifier;
+
+    public SecureCommand(IProjectAccessVerifier verifier)
+    {
+    }
+
+    protected override async Task<IHttpResponse> Process()
+    {
+        if(await _verifier.HasAccess()){
+            return View("secure.html");
+        }
+        else{
+            return new UnauthorizedResponse();
+        }            
+    }
+}</code></pre>
+</p>

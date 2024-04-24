@@ -1,3 +1,36 @@
 ﻿@@layout in-depth/layout.html
 
-INDEX CONTENT
+<div class="h-100">
+    <h1>Getting started</h1>
+    <p>
+        This is a simple guide to get you started with CrudeServer.<br />
+        Using CrudeServer is simple and easy.<br />
+        <br />
+        Start by creating a new .NET Console Project and add the <a href="" class="text-black" target="_blank">CrudeServer NuGet package</a>.<br />
+    </p>
+    <img src="/media/VSNewProject.png" class="rw-75 rw-md-50 mx-auto" alt="Visual Studio - create new console application" />
+    <br />
+    <br />
+    <p>And setup a server like this:</p>
+    <pre class="rw-100 rw-md-75"><code class="language-dotnet">public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        IServerBuilder serverBuilder = new ServerBuilder();
+        serverBuilder
+            .SetConfiguration(new ServerConfig()
+            {
+                Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
+            })
+            .AddCommands();
+
+            serverBuilder.AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET);
+            
+            IServerRunner server = serverBuilder.Buid();
+            await server.Run();
+    }
+}</code></pre>
+    <p>
+        Once that is done, you now have a server running and listening on your localhost on port 9000.
+    </p>
+</div>

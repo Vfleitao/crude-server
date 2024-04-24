@@ -9,19 +9,15 @@ namespace CrudeServer
 {
     public class InDepthPageCommand : BaseCommand
     {
-        private static Dictionary<string, string> titles = new Dictionary<string, string>
+        private static Dictionary<string, string> titlesandTitleMap = new Dictionary<string, string>
         {
-            { "start", "Getting Started" }
-        };
-
-        private static List<string> availablePages = new List<string>
-        {
-            "start"
+            { "start", "Getting Started" },
+            { "commands", "HttpCommands" },
         };
 
         protected override async Task<IHttpResponse> Process()
         {
-            if (!availablePages.Contains(RequestContext.Items["page"].ToString()))
+            if (!titlesandTitleMap.Keys.Contains(RequestContext.Items["page"].ToString()))
             {
                 return new NotFoundResponse();
             }
@@ -30,9 +26,9 @@ namespace CrudeServer
 
             string page = RequestContext.Items["page"].ToString();
 
-            if(titles.ContainsKey(page))
+            if(titlesandTitleMap.ContainsKey(page))
             {
-                this.RequestContext.Items.Add("title", titles[page]);
+                this.RequestContext.Items.Add("title", titlesandTitleMap[page]);
             }
 
             return await View($"in-depth/{RequestContext.Items["page"]}.html");

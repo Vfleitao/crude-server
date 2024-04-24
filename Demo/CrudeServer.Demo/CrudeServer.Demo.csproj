@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="views\in-depth\commands.html" />
     <None Remove="views\InDepth.html" />
     <None Remove="views\in-depth\start.html" />
     <None Remove="views\index.html" />
@@ -15,11 +16,13 @@
     <None Remove="views\not-found.html" />
     <None Remove="views\partials\base-scripts.html" />
     <None Remove="views\partials\base-styles.html" />
+    <Compile Remove="wwwroot\node_modules\**" />
+    <EmbeddedResource Remove="wwwroot\node_modules\**" />
     <None Remove="wwwroot\css\**\*.scss" />
+    <None Remove="wwwroot\node_modules\**" />
     <None Remove="views\partials\home\title.html" />
     <None Remove="views\partials\home\whatis.html" />
     <None Remove="views\partials\home\why.html" />
-    <None Remove="wwwroot\css\bootstrap.min.css" />
     <None Remove="wwwroot\css\main.css" />
     <None Remove="wwwroot\image.jpg" />
     <None Remove="wwwroot\js\bootstrap.bundle.min.js" />
@@ -27,9 +30,14 @@
     <None Remove="wwwroot\media\logo.png" />
     <None Remove="wwwroot\media\logo_med.png" />
     <None Remove="wwwroot\media\logo_small.png" />
+    <None Remove="wwwroot\package-lock.json" />
+    <None Remove="wwwroot\package.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="views\in-depth\commands.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\start.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -60,9 +68,6 @@
     <EmbeddedResource Include="views\partials\home\title.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\bootstrap.min.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\css\main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -85,6 +90,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="views\in-depth\NewFolder\" />
   </ItemGroup>
 
 </Project>
