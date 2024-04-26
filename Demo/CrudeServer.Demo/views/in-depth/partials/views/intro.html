@@ -1,0 +1,16 @@
+<h1>Views</h1>
+<p>
+    Views in Crude Server are just another type of response that emits bytes to the response directly.<br />
+    The build in system uses <a href="https://github.com/Handlebars-Net/Handlebars.Net" target="_blank" class="plain text-black">HandleBars.net</a>
+    but you can implemt your own quite easily.<br />
+    <br />
+    View Providers implement the following interface:
+    <pre class="rw-100 rw-md-75"><code class="language-dotnet">public interface ITemplatedViewProvider
+{
+    public Task<string> GetTemplate(string templatePath, object data);
+}</code></pre>
+    As long as you implement this interface, you can build views in whatever way you see fit.<br />
+    <br />
+    Currently Crude Server uses the <a href="https://handlebarsjs.com/" target="_blank">HandleBars syntax</a> in with a
+    few built in extensions to build layouts and partial views<br />
+</p>

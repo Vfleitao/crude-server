@@ -6,5 +6,8 @@
         public const string FILE_ASSEMBLY = "fileAssembly";
         public const string VIEW_ROOT = "viewRoot";
         public const string VIEW_ASSEMBLY = "viewAssembly";
+
+
+        public const string RESPONSE_PROCESSOR = nameof(RESPONSE_PROCESSOR);
     }
 }

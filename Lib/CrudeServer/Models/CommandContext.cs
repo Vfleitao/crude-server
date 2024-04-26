@@ -23,6 +23,7 @@ namespace CrudeServer.Models
         public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
         public IList<HttpFile> Files { get; set; } = new List<HttpFile>();
         public IDictionary<string, string> ResponseHeaders { get; set; } = new Dictionary<string, string>();
+        public IEnumerable<HttpCookie> ResponseCookies { get; set; } = new List<HttpCookie>();
 
         public Uri RequestUrl => HttpListenerRequest.Url;
         public HttpMethod RequestHttpMethod => HttpMethodExtensions.FromHttpString(HttpListenerRequest.HttpMethod);

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models;
 
 namespace CrudeServer.HttpCommands.Responses
 {
@@ -13,6 +14,7 @@ namespace CrudeServer.HttpCommands.Responses
         public object ViewData { get; set; }
         public IDictionary<string, object> Items { get; set; }
         public IDictionary<string, string> Headers { get; set; }
+        public IEnumerable<HttpCookie> Cookies { get; set; } = new List<HttpCookie>();
 
         public virtual Task ProcessResponse()
         {

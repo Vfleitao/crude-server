@@ -1,0 +1,30 @@
+<h2>
+    Middleware example
+</h2>
+<p>
+    An example of a middleware that you can think of is this:
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-csharp">public class RequestCancelatorMiddleware : IMiddleware
+{
+    public async Task Process(ICommandContext context, Func<Task> next)
+    {
+        if (context.RequestUrl.AbsolutePath.Contains("teapot"))
+        {
+            context.Response = new StatusCodeResponse()
+            {
+                StatusCode = 418
+            };
+
+            return;
+        }
+
+        await next();
+    }
+}</code></pre>
+<p>
+    This simple middleware will look at the url, and if its a teapot url,
+    simple returns an HTTP 418 response and does not execute the rest of the pipeline.<br />
+    You can perform any operation, both before of after the command is executed, replace the response, add and remove headers, etc.<br /><br />
+    Be aware that at the end, regarless if you call the next() or not, the middleware that writes headers, cookies and content of the Response
+    to the response stream is always executed.
+</p>

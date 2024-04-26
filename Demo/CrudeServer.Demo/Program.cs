@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using CrudeServer.Demo.Middleware;
 using CrudeServer.Enums;
 using CrudeServer.Models;
 using CrudeServer.Providers;
@@ -18,7 +19,11 @@ namespace CrudeServer
             string assemblyPath = System.AppContext.BaseDirectory;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
 
-            string fileparent = Path.Combine(assemblyDir, "../../../");
+#if DEBUG
+            string fileparent = assemblyDir;
+#else
+            string fileparent = Path.Combine(assemblyDir, "..\\..\\..\\");
+#endif
 
             string fileRoot = Path.Combine(fileparent, "wwwroot");
             string viewRoot = Path.Combine(fileparent, "views");
@@ -30,7 +35,9 @@ namespace CrudeServer
                     Hosts = new List<string> { "http://localhost:9000/" },
                     AuthenticationPath = "/login",
                     NotFoundPath = "/not-found",
+                    EnableServerFileCache = true,
                 })
+                .AddRequestTagging()
                 .AddCommands()
                 .AddFiles(fileRoot, 60 * 24 * 30)
                 .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));

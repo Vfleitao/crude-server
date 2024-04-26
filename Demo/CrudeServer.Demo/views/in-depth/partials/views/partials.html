@@ -1,0 +1,30 @@
+<p>
+    <h3>&commat;&commat;partial</h3>
+    Partials are exactly what the name says. Partial views that contain only a small part of your UI.
+    Partials can contain other partials (this page is an example)<br />
+<pre class="rw-100 rw-md-75"><code class="language-markup">//page
+&commat;&commat;layout in-depth/layout.html
+&lt;div class="h-100"&gt;
+    &commat;&commat;partial in-depth/partials/views/intro.html
+    &lt;br /&gt;
+    &commat;&commat;partial in-depth/partials/views/helpers.html
+&lt;/div&gt;
+
+//partial in-depth/partials/views/helpers.html
+
+&lt;h2&gt;
+    Built in Helpers
+&lt;/h2&gt;
+&lt;p&gt;
+    Currently there are 3 built in helpers:
+    &lt;ul&gt;
+        &lt;li&gt;body&lt;/li&gt;
+        &lt;li&gt;layout&lt;/li&gt;
+        &lt;li&gt;partial&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/p&gt;
+&commat;&commat;partial in-depth/partials/views/body-and-layout.html
+&commat;&commat;partial in-depth/partials/views/partials.html
+</code></pre>
+Partials can also have @body, but beware you may end up in an infinite loop which can cause issues.
+</p>

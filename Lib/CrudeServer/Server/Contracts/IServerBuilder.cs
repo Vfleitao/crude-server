@@ -17,7 +17,7 @@ namespace CrudeServer.Server.Contracts
         IServiceCollection Services { get; }
         IServiceProvider ServiceProvider { get; }
 
-        IServerBuilder AddAuthentication();
+        IServerBuilder AddAuthentication(Type authenticationProvider = null);
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
         IServerBuilder AddCommands();
         IServerBuilder AddEmbeddedFiles(string fileRoot, Assembly fileAssembly, long cacheDurationMinutes = 10);

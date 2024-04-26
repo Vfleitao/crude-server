@@ -4,6 +4,10 @@
   grid-gap: 40px;
   height: 100%;
 }
+[data-page=in-depth] .in-depth-menu .nav {
+  position: sticky;
+  top: 10px;
+}
 [data-page=in-depth] .in-depth-menu .nav .nav-item {
   border-bottom: 1px solid #bfbfbf;
 }/*# sourceMappingURL=in-depth.css.map */

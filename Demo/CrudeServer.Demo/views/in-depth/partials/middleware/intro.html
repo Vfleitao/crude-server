@@ -1,0 +1,8 @@
+<h1>Middleware</h1>
+<p>
+    Middleware are at the core of Crude Server. They process the request, perform transformations and operations on a request
+    and at the end, output the content to the UI.<br />
+    All of Crude Server is based off the middleware concept, which is executed in the order that its added, with the last
+    middleware added when you perform the Build() call, which is the middleware that retrieves the
+    response and writes the headers, cookies and content in the response stream.
+</p>

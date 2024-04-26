@@ -1,0 +1,42 @@
+    You can add new middleware in the IServerBuilder like this:
+<pre class="rw-100 rw-md-75"><code class="language-csharp">IServerBuilder serverBuilder = new ServerBuilder();
+serverBuilder
+    .SetConfiguration(new ServerConfig()
+    {
+        Hosts = new List<string>{ "http://localhost:9000/" }
+    })
+    //Your new middleware
+    .AddMiddleware<MyMiddlewareClass>();
+</code></pre>
+<p>
+    With this setup, when a request is made, your middleware will execute in the order you added it on.<br />
+    <br />
+    The recommended order to ensure you execute your middleware correctly would be something like this:
+<pre class="rw-100 rw-md-75"><code class="language-csharp">
+    IServerBuilder serverBuilder = new ServerBuilder();
+    serverBuilder
+    .SetConfiguration(new ServerConfig()
+    {
+        Hosts = new List&lt;string&gt;{ "http://localhost:9000/" }
+    })
+    //Your new middleware to be executed before the command
+    //(ie: headers, tracking to be used later on, measure execution, etc)
+    .AddMiddleware&lt;MiddlewareToRunBeforeCommandIsExecuted&gt;()
+    .AddMiddleware&lt;AnotherMiddlewareToRunBeforeCommandIsExecuted&gt;()
+    //Add the ability to fetch and execute commands
+    .AddCommands()
+    //Your new middleware to be executed after the command
+    //(ie: headers, tracking to be used later on, measure execution, etc)
+    .AddMiddleware&lt;MiddlewareToRunAfterCommandIsExecuted&gt;()
+    .AddMiddleware&lt;AnotherMiddlewareToRunAfterCommandIsExecuted&gt;();
+
+    //ADD ALL YOUR COMMANDS AND IOC
+
+    // At this point, the middleware to write headers, cookies and content is added
+    IServerRunner server = serverBuilder.Buid();
+
+    // At this point everything is now setup and will be executed
+    await server.Run();
+</code></pre>
+    This makes it very simply to add and remove functionality in middlewares.
+</p>

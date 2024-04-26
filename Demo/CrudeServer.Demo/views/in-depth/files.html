@@ -1,0 +1,60 @@
+﻿@@layout in-depth/layout.html
+
+<div class="h-100">
+    <h1>Files</h1>
+    <p>
+        Serving files, such as images, js, css, etc can be done in 2 ways in Crude Server:<br />
+        <ul>
+            <li>Embedded files</li>
+            <li>File System</li>
+        </ul>
+        You can use one or another.<br />
+        The big advantage of using embedded files, is that is it compiled and included with your dll as resources, while using the standard file system
+        is quite flexible, specially for development operations.<br />
+        If you will be uploading files directly into your server, and need to server them later on, you should also use the file system.<br />
+        <br />
+        Below you can see how to setup both system files and embedded files
+    </p>
+    <br />
+    <p>And setup a file system:</p>
+    <pre class="rw-100 rw-md-75"><code class="language-dotnet">// File system in a folder called wwwroot
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        string assemblyPath = System.AppContext.BaseDirectory;
+        string assemblyDir = Path.GetDirectoryName(assemblyPath);
+        // for develoment its easier to not use the copied over files
+        string fileparent = Path.Combine(assemblyDir, "../../../");
+        string fileRoot = Path.Combine(fileparent, "wwwroot");
+
+        IServerBuilder serverBuilder = new ServerBuilder();
+        serverBuilder
+            .SetConfiguration(new ServerConfig() {
+                Hosts = new List<string> { "http://localhost:9000/" }
+            })
+            // Add file system and 30days cache control header
+            .AddFiles(fileRoot, 60 * 24 * 30); 
+    }
+}</code></pre>
+    <p>And setup a embedded files:</p>
+    <pre class="rw-100 rw-md-75"><code class="language-dotnet">// File system in a folder called wwwroot
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        IServerBuilder serverBuilder = new ServerBuilder();
+        serverBuilder
+            .SetConfiguration(new ServerConfig() {
+                Hosts = new List<string> { "http://localhost:9000/" }
+            })           
+            // Add files from the embedded wwwroot with 30 days cache
+            .AddEmbeddedFiles("wwwroot", typeof(Program).Assembly, 60 * 24 * 30);
+    }
+}</code></pre>
+    <br />
+    <p>
+        After this, you can access files looking at paths like <code>http://localhost:9000/css/main.css</code>
+        which would look for files in a folder <code>wwwroot/css/main.css</code>
+    </p>
+</div>

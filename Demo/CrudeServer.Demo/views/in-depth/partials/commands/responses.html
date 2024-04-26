@@ -28,6 +28,7 @@ public class SecureCommand : BaseCommand
 
     public SecureCommand(IProjectAccessVerifier verifier)
     {
+        _verifier = verifier;   
     }
 
     protected override async Task<IHttpResponse> Process()

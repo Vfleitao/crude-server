@@ -45,10 +45,21 @@ namespace CrudeServer.Server
             return this;
         }
 
-        public IServerBuilder AddAuthentication()
+        public IServerBuilder AddAuthentication(Type authenticationProvider = null)
         {
+            if (authenticationProvider == null)
+            {
+                authenticationProvider = typeof(JTWAuthenticationProvider);
+            }
+
+            if (!typeof(IAuthenticationProvider).IsAssignableFrom(authenticationProvider))
+            {
+                throw new ArgumentException("Provider must implement IAuthenticationProvider");
+            }
+
+            this.Services.AddScoped(typeof(IAuthenticationProvider), authenticationProvider);
+
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
-            this.Services.AddScoped<IAuthenticationProvider, JTWAuthenticationProvider>();
 
             return this;
         }
@@ -132,7 +143,7 @@ namespace CrudeServer.Server
 
         public IServerRunner Buid()
         {
-            this.MiddlewareRegistry.AddMiddleware<ResponseProcessorMiddleware>();
+            this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
             this.Services.AddSingleton<IServerConfig>(this.ServerConfiguration);
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
@@ -142,6 +153,7 @@ namespace CrudeServer.Server
         public IServerBuilder AddCommands()
         {
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
+            this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();
 
             return this;
         }

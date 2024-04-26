@@ -13,6 +13,11 @@ namespace CrudeServer
         {
             { "start", "Getting Started" },
             { "commands", "HttpCommands" },
+            { "files", "Files" },
+            { "views", "Views" },
+            { "middleware", "Middleware" },
+            { "authentication", "Authentication" },
+            { "examples", "Examples" },
         };
 
         protected override async Task<IHttpResponse> Process()

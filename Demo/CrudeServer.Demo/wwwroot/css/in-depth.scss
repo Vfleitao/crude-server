@@ -9,6 +9,9 @@
 
     .in-depth-menu {
         .nav {
+            position: sticky;
+            top: 10px;
+
             .nav-item {
                 border-bottom: 1px solid $light-gray;
             }

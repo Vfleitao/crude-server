@@ -8,7 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="views\in-depth\authentication.html" />
     <None Remove="views\in-depth\commands.html" />
+    <None Remove="views\in-depth\files.html" />
+    <None Remove="views\in-depth\middleware.html" />
+    <None Remove="views\in-depth\partials\authentication\intro.html" />
+    <None Remove="views\in-depth\partials\authentication\setup.html" />
+    <None Remove="views\in-depth\partials\commands\httpCommand.html" />
+    <None Remove="views\in-depth\partials\commands\responses.html" />
+    <None Remove="views\in-depth\partials\commands\routes.html" />
+    <None Remove="views\in-depth\partials\middleware\example.html" />
+    <None Remove="views\in-depth\partials\middleware\intro.html" />
+    <None Remove="views\in-depth\partials\middleware\setup.html" />
+    <None Remove="views\in-depth\partials\views\body-and-layout.html" />
+    <None Remove="views\in-depth\partials\views\helpers.html" />
+    <None Remove="views\in-depth\partials\views\intro.html" />
+    <None Remove="views\in-depth\partials\views\partials.html" />
+    <None Remove="views\in-depth\views.html" />
     <None Remove="views\InDepth.html" />
     <None Remove="views\in-depth\start.html" />
     <None Remove="views\index.html" />
@@ -23,19 +39,75 @@
     <None Remove="views\partials\home\title.html" />
     <None Remove="views\partials\home\whatis.html" />
     <None Remove="views\partials\home\why.html" />
+    <None Remove="wwwroot\css\in-depth.css" />
+    <None Remove="wwwroot\css\in-depth.css.map" />
     <None Remove="wwwroot\css\main.css" />
+    <None Remove="wwwroot\css\main.css.map" />
+    <None Remove="wwwroot\css\prism.css" />
     <None Remove="wwwroot\image.jpg" />
     <None Remove="wwwroot\js\bootstrap.bundle.min.js" />
+    <None Remove="wwwroot\js\prism.js" />
     <None Remove="wwwroot\media\fav-icon.png" />
     <None Remove="wwwroot\media\logo.png" />
     <None Remove="wwwroot\media\logo_med.png" />
     <None Remove="wwwroot\media\logo_small.png" />
+    <None Remove="wwwroot\media\notFound.png" />
+    <None Remove="wwwroot\media\notFound.webp" />
+    <None Remove="wwwroot\media\VSNewProject.png" />
     <None Remove="wwwroot\package-lock.json" />
     <None Remove="wwwroot\package.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="views\in-depth\commands.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\middleware.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\authentication.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\authentication\intro.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\authentication\setup.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\commands\httpCommand.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\commands\responses.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\commands\routes.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\middleware\example.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\middleware\intro.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\middleware\setup.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\body-and-layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\helpers.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\intro.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\partials.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\views.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\files.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\start.html">
@@ -68,10 +140,25 @@
     <EmbeddedResource Include="views\partials\home\title.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\in-depth.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\in-depth.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\css\main.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\main.css.map">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\prism.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\js\bootstrap.bundle.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\js\prism.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\media\fav-icon.png">
@@ -86,14 +173,19 @@
     <EmbeddedResource Include="wwwroot\media\logo_small.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\notFound.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\notFound.webp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\media\VSNewProject.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Lib\CrudeServer\CrudeServer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="views\in-depth\NewFolder\" />
   </ItemGroup>
 
 </Project>

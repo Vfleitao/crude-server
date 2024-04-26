@@ -4,11 +4,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
+using CrudeServer.Consts;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 using CrudeServer.Server.Contracts;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Server
 {
@@ -60,6 +63,9 @@ namespace CrudeServer.Server
                 }
 
                 await executionChain();
+
+                IMiddleware responseProcessor = this._serviceProvider.GetKeyedService<IMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
+                await responseProcessor.Process(requestContext, endOfChain);
 
                 response.Close();
             }
