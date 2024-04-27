@@ -26,15 +26,7 @@ namespace CrudeServer.Providers.DataParser
                 return Task.FromResult(httpRequestData);
             }
 
-            string regexPattern = "^";
-
-            foreach (KeyValuePair<string, string> param in commandRegistration.UrlParameters)
-            {
-                regexPattern += $"/({param.Value})";
-            }
-            regexPattern += "$";
-
-            Match match = Regex.Match(request.RequestUrl.AbsolutePath, regexPattern);
+            Match match = commandRegistration.PathRegex.Match(request.RequestUrl.AbsolutePath);
             if (match.Success)
             {
                 for (int i = 0; i < commandRegistration.UrlParameters.Count; i++)

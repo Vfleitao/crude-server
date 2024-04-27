@@ -1,18 +1,27 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
+using CrudeServer.Models;
 using CrudeServer.Providers;
 
 namespace CrudeServer.Lib.Tests.Providers
 {
-    public class HandleBarsViewProviderTests
+    public class FileHandleBarsViewProviderTests
     {
         [Test]
         public async Task ViewSimpleCanBeRendered()
         {
             // Arrange
-            HandleBarsViewProvider viewProvider = new HandleBarsViewProvider(
-                GetType().Assembly,
-                "files");
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+
+            string fileRoot = Path.Combine(assemblyDir, "files");
+
+            FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
+                fileRoot,
+                new ServerConfig()
+            );
 
             // Act
             string result = await viewProvider.GetTemplate(
@@ -35,9 +44,15 @@ namespace CrudeServer.Lib.Tests.Providers
         public async Task ViewWithLayoutCanBeRendered()
         {
             // Arrange
-            HandleBarsViewProvider viewProvider = new HandleBarsViewProvider(
-                GetType().Assembly,
-                "files");
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+
+            string fileRoot = Path.Combine(assemblyDir, "files");
+
+            FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
+                fileRoot,
+                new ServerConfig()
+            );
 
             // Act
             string result = await viewProvider.GetTemplate(
@@ -60,9 +75,15 @@ namespace CrudeServer.Lib.Tests.Providers
         public async Task ViewWithPartialsCanBeRendered()
         {
             // Arrange
-            HandleBarsViewProvider viewProvider = new HandleBarsViewProvider(
-                GetType().Assembly,
-                "files");
+            string assemblyPath = Assembly.GetExecutingAssembly().Location;
+            string assemblyDir = Path.GetDirectoryName(assemblyPath);
+
+            string fileRoot = Path.Combine(assemblyDir, "files");
+
+            FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
+                fileRoot,
+                new ServerConfig()
+            );
 
             // Act
             string result = await viewProvider.GetTemplate(

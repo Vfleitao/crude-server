@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 using CrudeServer.Integration.Mocks;
 using CrudeServer.Server.Contracts;
@@ -14,7 +19,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try
@@ -53,7 +58,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try
@@ -90,7 +95,7 @@ namespace CrudeServer.Integration
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
-            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 
             try

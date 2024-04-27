@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -20,20 +19,17 @@ namespace CrudeServer.HttpCommands
     {
         private readonly IDictionary<string, byte[]> _cache;
 
-        private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
         private readonly IServerConfig serverConfig;
         private readonly ILogger loggerProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
-            [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
             ILogger loggerProvider
         )
         {
-            this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;
             this.serverConfig = serverConfig;
             this.loggerProvider = loggerProvider;
@@ -45,31 +41,34 @@ namespace CrudeServer.HttpCommands
         {
             try
             {
-                string resourceName = $"{this._fileRoot}.{this.RequestContext.RequestUrl.LocalPath.Substring(1).Replace("\\", ".").Replace("/", ".")}";
-                string wantedResource = this._fileAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
+                string requestedFile = this.RequestContext.RequestUrl.LocalPath.Substring(1);
+                string resourceName = $"{this._fileRoot}\\{requestedFile}";
 
-                if (string.IsNullOrEmpty(wantedResource))
+                if (!File.Exists(resourceName))
                 {
-                    loggerProvider.Log($"[4] Resource {resourceName} not found");
+                    loggerProvider.Log($"[FileHttpCommand - 1] Resource {resourceName} not found");
                     return new NotFoundResponse();
                 }
 
                 byte[] fileData;
 
-                if (this._cache.ContainsKey(wantedResource))
+                if (this.serverConfig.EnableServerFileCache && this._cache.ContainsKey(resourceName))
                 {
-                    fileData = this._cache[wantedResource];
+                    fileData = this._cache[resourceName];
                 }
                 else
                 {
-                    fileData = await GetData(wantedResource);
+                    fileData = await File.ReadAllBytesAsync(resourceName);
 
                     if (fileData == null)
                     {
                         return new NotFoundResponse();
                     }
 
-                    this._cache.TryAdd(wantedResource, fileData);
+                    if (this.serverConfig.EnableServerFileCache)
+                    {
+                        this._cache.TryAdd(resourceName, fileData);
+                    }
                 }
 
                 return new OkResponse()
@@ -81,7 +80,7 @@ namespace CrudeServer.HttpCommands
                                             "application/octet-stream",
                     Headers = new Dictionary<string, string>()
                     {
-                        { "Cache-Control", $"max-age={this.serverConfig.CachedDurationMinutes * 60}" }
+                        { "Cache-Control", $"max-age={this.serverConfig.CachedDurationMinutes}" }
                     }
                 };
             }
@@ -92,23 +91,6 @@ namespace CrudeServer.HttpCommands
                 {
                     StatusCode = 500
                 };
-            }
-        }
-
-        private async Task<byte[]> GetData(string wantedResource)
-        {
-            using (Stream resourceStream = this._fileAssembly.GetManifestResourceStream(wantedResource))
-            {
-                if (resourceStream == null)
-                {
-                    return null;
-                }
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    await resourceStream.CopyToAsync(ms);
-                    return ms.ToArray();
-                }
             }
         }
     }

@@ -1,0 +1,20 @@
+@import "./variables/vars";
+@import "./mixins/mixins";
+
+[data-page="in-depth"] {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 40px;
+    height: 100%;
+
+    .in-depth-menu {
+        .nav {
+            position: sticky;
+            top: 10px;
+
+            .nav-item {
+                border-bottom: 1px solid $light-gray;
+            }
+        }
+    }
+}

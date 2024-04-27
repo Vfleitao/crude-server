@@ -1,6 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 using CrudeServer.Integration.Commands;
 using CrudeServer.Integration.Mocks;
@@ -27,7 +33,7 @@ namespace CrudeServer.Integration
             // Arrange
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
-            serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
+            serverBuilder.AddCommand<DataFromRequestCommand>("/path/{id:\\d+}/{page:\\w+}", httpMethod);
 
             DataFromRequestCommand commandInstance = new DataFromRequestCommand();
 
@@ -54,7 +60,7 @@ namespace CrudeServer.Integration
                     HttpRequestMessage request = new HttpRequestMessage()
                     {
                         Method = new HttpMethod(httpMethod.ToString()),
-                        RequestUri = new Uri($"http://localhost:{port}/99")
+                        RequestUri = new Uri($"http://localhost:{port}/path/99/test")
                     };
 
                     HttpResponseMessage response = await client.SendAsync(request);
@@ -66,6 +72,8 @@ namespace CrudeServer.Integration
                     Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
                     Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
                     Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("page"));
+                    Assert.That(commandInstance.RequestContext.Items["page"], Is.EqualTo("test"));
                 }
             }
             catch (Exception ex)

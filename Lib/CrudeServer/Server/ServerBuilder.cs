@@ -24,7 +24,8 @@ namespace CrudeServer.Server
 {
     public class ServerBuilder : IServerBuilder
     {
-        private IServerConfig __ServerConfiguration;
+        private IServerConfig ServerConfiguration;
+
         public IServiceCollection Services { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
         public ICommandRegistry CommandRegistry { get; private set; }
@@ -34,32 +35,43 @@ namespace CrudeServer.Server
         {
             this.RegisterBaseIOCItems();
 
-            this.__ServerConfiguration = new ServerConfig() { };
+            this.ServerConfiguration = new ServerConfig() { };
         }
 
         public IServerBuilder SetConfiguration(ServerConfig config)
         {
-            this.__ServerConfiguration = config;
+            this.ServerConfiguration = config;
 
             return this;
         }
 
-        public IServerBuilder AddAuthentication()
+        public IServerBuilder AddAuthentication(Type authenticationProvider = null)
         {
+            if (authenticationProvider == null)
+            {
+                authenticationProvider = typeof(JTWAuthenticationProvider);
+            }
+
+            if (!typeof(IAuthenticationProvider).IsAssignableFrom(authenticationProvider))
+            {
+                throw new ArgumentException("Provider must implement IAuthenticationProvider");
+            }
+
+            this.Services.AddScoped(typeof(IAuthenticationProvider), authenticationProvider);
+
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
-            this.Services.AddScoped<IAuthenticationProvider, JTWAuthenticationProvider>();
 
             return this;
         }
 
-        public IServerBuilder AddFiles(
+        public IServerBuilder AddEmbeddedFiles(
             string fileRoot,
             Assembly fileAssembly,
             long cacheDurationMinutes = 10
         )
         {
-            this.__ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
-            this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
+            this.ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
+            this.CommandRegistry.RegisterCommand<EmbeddedFileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
 
             this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
             this.Services.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
@@ -67,15 +79,28 @@ namespace CrudeServer.Server
             return this;
         }
 
+        public IServerBuilder AddFiles(
+            string fileRoot,
+            long cacheDurationMinutes = 10
+        )
+        {
+            this.ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
+            this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
+
+            this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
+
+            return this;
+        }
+
         public IServerBuilder AddViews(
             string viewRoot,
-            Assembly viewAssembly,
+            Assembly viewAssembly = null,
             Type viewProvider = null
         )
         {
             if (viewProvider == null)
             {
-                viewProvider = typeof(HandleBarsViewProvider);
+                viewProvider = typeof(EmbeddedHandleBarsViewProvider);
             }
 
             if (!typeof(ITemplatedViewProvider).IsAssignableFrom(viewProvider))
@@ -84,7 +109,11 @@ namespace CrudeServer.Server
             }
 
             this.Services.AddKeyedSingleton<string>(ServerConstants.VIEW_ROOT, viewRoot);
-            this.Services.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
+
+            if (viewAssembly != null)
+            {
+                this.Services.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
+            }
 
             this.Services.AddSingleton(typeof(ITemplatedViewProvider), viewProvider);
             this.Services.AddTransient<IHttpViewResponse, ViewResponse>();
@@ -114,8 +143,8 @@ namespace CrudeServer.Server
 
         public IServerRunner Buid()
         {
-            this.MiddlewareRegistry.AddMiddleware<ResponseProcessorMiddleware>();
-            this.Services.AddSingleton<IServerConfig>(this.__ServerConfiguration);
+            this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
+            this.Services.AddSingleton<IServerConfig>(this.ServerConfiguration);
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
@@ -124,6 +153,7 @@ namespace CrudeServer.Server
         public IServerBuilder AddCommands()
         {
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
+            this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();
 
             return this;
         }

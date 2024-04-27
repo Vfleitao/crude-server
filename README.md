@@ -22,7 +22,6 @@ It uses a simple middleware mechanism to process, execute and handle all respons
 To see examples, look into the Integration Tests or the project website [Crude Server](https://crudeserver.devtestplayground.com/)
 
 ## TO DO's
-
 - [ ] Build Nuget Packages
 - [ ] Antiforgery Tokens
 - [ ] Request Size Limiting
@@ -31,3 +30,9 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [ ] Commands as functions
 - [ ] Metrics Dashboard
 - [ ] Websocket support
+- [x] Non embedded file support
+- [x] Non view file support
+- [x] Crude Server Documentation and Demo app
+- [ ] Add cookie based auth
+- [ ] Allow Replacing default status responses (ie: 401, 404, etc)
+- [ ] Allow support for sections

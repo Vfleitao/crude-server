@@ -1,0 +1,41 @@
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public interface IAuthenticationProvider
+{
+    Task<IPrincipal> GetUser(ICommandContext requestContext);
+}</code></pre>
+<p>
+    When you add Authentication into the middleware and provide the type, it will be used as a scoped service.<br />
+    Bellow you can see the recomended way of adding the authentication middleware.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-csharp">IServerBuilder serverBuilder = new ServerBuilder();
+serverBuilder
+    .SetConfiguration(new ServerConfig()
+    {
+        Hosts = new List<string> { "http://localhost:9000/" },
+        AuthenticationPath = "/login",
+        NotFoundPath = "/not-found"
+    })
+    // Add authentication middleware before any execution in case someone needs the user
+    .AddAuthentication(typeof(MyAuthenticationMiddleware))
+    .AddRequestTagging()
+    .AddCommands()
+    .AddFiles(fileRoot, 60 * 24 * 30)
+    .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));
+</code></pre>
+<br />
+<p>
+    By if you do not specify a type, a basic JTW middleware that only checks Authorization Headers will be used.<br />
+    <br />
+    You can then configure a route needing authentication
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-csharp">
+    serverBuilder.AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET);
+    // Add a command that requires an Admin Role
+    serverBuilder
+        .AddCommand&lt;AdminHomeCommand&gt;("/admin", HttpMethod.GET)
+        .RequireAuthentication(new List&lt;string&gt;(){ "Admin" });
+
+    // Add a command that requires only an Authentication IPrincipal
+    serverBuilder
+        .AddCommand&lt;AccountCommand&gt;("/account", HttpMethod.GET)
+        .RequireAuthentication();
+</code></pre>

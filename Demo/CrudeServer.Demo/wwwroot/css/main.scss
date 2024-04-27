@@ -1,0 +1,25 @@
+@import "./core";
+@import "./variables/vars";
+@import "./mixins/mixins";
+
+html,
+body,
+#app{
+    height: 100%;
+}
+
+:root {
+    @include css_vars('cs-color', $cs_colours);
+}
+
+#app{
+    display: grid;
+    grid-template-rows: 100px 1fr 50px;
+    
+    @include text-colours($cs_colours);
+
+    @import "./components/_links.scss";
+    @import "./components/_header.scss";
+    @import "./components/_content.scss";
+    @import "./components/_footer.scss";
+}

@@ -1,4 +1,7 @@
-﻿using CrudeServer.HttpCommands;
+﻿using System;
+using System.Threading.Tasks;
+
+using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 
 namespace CrudeServer.Integration.Commands

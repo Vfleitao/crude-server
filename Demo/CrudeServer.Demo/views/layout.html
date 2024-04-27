@@ -3,11 +3,51 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/media/fav-icon.png">
     <title>{{viewData.title}}</title>
-
-    <link href="main.css" type="text/css" rel="stylesheet" />
+    @@partial partials/base-styles.html
 </head>
 <body>
-    @@body
+    <div class="h-100 container-fluid container-xxl" id="app">
+        <header>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="/">
+                            <img src="/media/logo_small.png" class="logo" />
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/" class="plain text-black">
+                            Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#whatis" class="plain text-black">
+                            What is?
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/#why" class="plain text-black">
+                            Why?
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/in-depth" class="plain text-black">
+                            In-Depth
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            @@body
+        </main>
+        <footer>
+            <p>{{viewData.Year}} - Crude Server</p>
+        </footer>
+    </div>
+    @@partial partials/base-scripts.html
 </body>
 </html>

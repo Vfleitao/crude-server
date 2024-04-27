@@ -1,0 +1,52 @@
+<p>
+    <h3>&commat;&commat;layout and &commat;&commat;body</h3>
+    This is used to indicate in a layout that there will be a replacement for the body at &commat;&commat;body and which layout to use with &commat;&commat;layout.<br />
+    Views are processed from the top to bottom. ie:<br />
+    <pre class="rw-100 rw-md-75"><code class="language-markup">// index.html
+&commat;&commat;layout layout2.html
+&lt;h1&gt;HELLO WORLD&lt;/h1&gt;
+
+// layout2.html
+&commat;&commat;layout layout.html
+&lt;div class="side-menu"&gt;&commat;&commat;partial side-menu.html&lt;/div&gt;
+&lt;div class="content"&gt;&commat;&commat;body&lt;/div&gt;
+
+// layout1.html
+&lt;html lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8" /&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;link rel="icon" type="image/x-icon" href="/media/fav-icon.png"&gt;
+        &lt;title&gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class="h-100 container-fluid container-xxl" id="app"&gt;
+            &lt;main&gt;
+                &commat;&commat;body
+            &lt;/main&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+    <br />
+    Will result<br />
+    <pre class="rw-100 rw-md-75"><code class="language-markup">&lt;html lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8" /&gt;
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+        &lt;link rel="icon" type="image/x-icon" href="/media/fav-icon.png"&gt;
+        &lt;title&gt;&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div class="h-100 container-fluid container-xxl" id="app"&gt;
+            &lt;main&gt;
+                &lt;div class="side-menu"&gt;[WHAT EVER CONTENT WAS ON THE PARTIAL VIEW]&lt;/div&gt;
+                &lt;div class="content"&gt;
+                    &lt;h1&gt;HELLO WORLD&lt;/h1&gt;
+                &lt;/div&gt;
+            &lt;/main&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</p>

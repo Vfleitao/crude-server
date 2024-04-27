@@ -1,0 +1,68 @@
+<h1>Http Command</h1>
+<p>
+    Command are very simple classes, which should perform a single operation, and return a response.<br />
+    Think of them as the extreme example of SRP.<br />
+    Unline a .NET Controller, a command is far simpler and should not depend on other commands.<br />
+    <br />
+    It can return anything, from a View, to a string, to a file, to a JSON object.<br />
+    <br />
+    Here is an example of a simple command:
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public class HomeCommand : HttpCommand
+{
+    protected override async Task<IHttpResponse> Process()
+    {
+        return await View("index.html");
+    }
+}
+</code></pre>
+<p>
+    Of course since we are using an IServiceProvider to start up any command, you can inject any service you need into the command, and use it as you would in any other class.<br />
+    Commands are registered in the server builder, like below:
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public class Program
+{
+public static async Task Main(string[] args)
+{
+    IServerBuilder serverBuilder = new ServerBuilder();
+    serverBuilder
+        .SetConfiguration(new ServerConfig()
+        {
+            Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
+        })
+        .AddCommands(); // Add command middleware
+
+        // Register the command to the server
+        serverBuilder.AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET);
+}
+}</code></pre>
+<p>
+    Commands are registered as Scoped Services, so ensure you do not store any state in the command, since it will not be reusable.<br />
+</p>
+<br>
+<p>
+    Routes can also be marked as Authorized only, and have Role Matching, which is enforced against an IPrincipal.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        IServerBuilder serverBuilder = new ServerBuilder();
+        serverBuilder
+            .SetConfiguration(new ServerConfig()
+            {
+                Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
+            })
+            .AddCommands()// Add command middleware
+            .AddAuthentication(); // Add auth validation middleware
+    
+        // Register the command to the server
+        serverBuilder
+            .AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET)
+            // Require an authenticated user with the role "Admin"
+            .RequireAuthentication(new string[] { "Admin" });
+    }
+}</code></pre>
+<p>
+    This will generate a route that requires an IPrincipal to have the role "Admin" in order to access the route.
+</p>

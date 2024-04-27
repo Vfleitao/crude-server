@@ -69,7 +69,7 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
             HttpCommandRegistration registeredModel = commandRegistry.GetCommand("/9/test", HttpMethod.GET);
             Assert.That(registeredModel, Is.Not.Null);
             Assert.That(registeredModel.Path, Is.EqualTo("/{id:\\d+}/{action:\\w+}"));
-            Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/\\d+/\\w+$"));
+            Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/(\\d+)/(\\w+)$"));
             Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("id"));
             Assert.That(registeredModel.UrlParameters[0].Value, Is.EqualTo("\\d+"));
             Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("action"));

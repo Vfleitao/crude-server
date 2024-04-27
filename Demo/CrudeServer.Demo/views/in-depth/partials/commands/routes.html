@@ -1,0 +1,15 @@
+<h2>Registering Routes</h2>
+<p>
+    Commands are registered against a route and an HttpMethod.<br />
+    Currently the methods supported are GET, POST, PUT, DELETE, OPTIONS and HEAD which are the most common methods used in HTTP.<br />
+    <br />
+    In order to make more complex routes, such as /api/users/{id}, you can use the following syntax:<br />
+    <code class="language-css"> /{id:\\d+} </code><br />
+    This will match any number, and store it in the id parameter that you can retrieve later.<br />
+    The format for a parameter in the url is the following:<br />
+    <code class="language-css"> {parameterName:regex} </code><br />
+    Where the regex is a valid regex pattern.<br />
+    You can of course make much more complicated patterns such as
+    <code class="language-css"> /users/{id:\\d+}/account/{area:\w+} </code><br />
+    Which will match <code class="language-css">/users/123/account/area1</code>, and store 123 in id and area1 in a Request Context which you can access at any time.<br />
+</p>

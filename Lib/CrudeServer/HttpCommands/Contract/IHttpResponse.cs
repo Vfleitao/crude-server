@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using CrudeServer.Models;
+
 namespace CrudeServer.HttpCommands.Contract
 {
     public interface IHttpResponse : IHttpResponse<object> { }
@@ -13,6 +15,7 @@ namespace CrudeServer.HttpCommands.Contract
         IDictionary<string, object> Items { get; set; }
 
         IDictionary<string, string> Headers { get; set; }
+        IEnumerable<HttpCookie> Cookies { get; set; }
 
         /// <summary>
         /// Response Status Code

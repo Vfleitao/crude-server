@@ -18,7 +18,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
         public async Task FilesDoesNotExist_Returns404()
         {
             // Arrange
-            FileHttpCommand fileHttpCommand = new FileHttpCommand(
+            EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },
@@ -42,7 +42,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands
         public async Task FilesExists_Returns200WithData()
         {
             // Arrange
-            FileHttpCommand fileHttpCommand = new FileHttpCommand(
+            EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },

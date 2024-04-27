@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models;
 using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.HttpCommands.Responses
@@ -18,6 +19,7 @@ namespace CrudeServer.HttpCommands.Responses
         public IDictionary<string, object> Items { get; set; }
         public object ViewModel { get; set; }
         public IDictionary<string, string> Headers { get; set; }
+        public IEnumerable<HttpCookie> Cookies { get; set; } = new List<HttpCookie>();
 
         public ViewResponse(ITemplatedViewProvider templatedViewProvider)
         {
