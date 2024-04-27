@@ -28,14 +28,20 @@ namespace CrudeServer.Providers
         protected override async Task<string> GetTemplateFile(string templatePath)
         {
             string resourceName = $"{this._viewRoot}.{templatePath.Replace("\\", ".").Replace("/", ".")}";
-            string wantedResource = this._viewAssembly.GetManifestResourceNames().FirstOrDefault(x => x.EndsWith(resourceName));
-            string templateString = null;
+            string[] allEmbededResources = this._viewAssembly.GetManifestResourceNames();
+            string wantedResource = allEmbededResources.FirstOrDefault(x => x.EndsWith(resourceName));
+
+            if (wantedResource == null) {
+                resourceName = resourceName.Replace("-", "_");
+                wantedResource = allEmbededResources.FirstOrDefault(x => x.EndsWith(resourceName));
+            }
 
             if (string.IsNullOrEmpty(wantedResource))
             {
-                return templateString;
+                return null;
             }
 
+            string templateString = null;
             using (Stream resourceStream = this._viewAssembly.GetManifestResourceStream(wantedResource))
             {
                 if (resourceStream == null)

@@ -42,7 +42,7 @@ namespace CrudeServer.HttpCommands
             try
             {
                 string requestedFile = this.RequestContext.RequestUrl.LocalPath.Substring(1);
-                string resourceName = $"{this._fileRoot}\\{requestedFile}";
+                string resourceName = $"{this._fileRoot}/{requestedFile}";
 
                 if (!File.Exists(resourceName))
                 {
