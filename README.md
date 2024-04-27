@@ -32,7 +32,7 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [ ] Websocket support
 - [x] Non embedded file support
 - [x] Non view file support
-- [ ] Crude Server Documentation and Demo app
+- [x] Crude Server Documentation and Demo app
 - [ ] Add cookie based auth
 - [ ] Allow Replacing default status responses (ie: 401, 404, etc)
 - [ ] Allow support for sections
