@@ -46,8 +46,6 @@ namespace CrudeServer
                 .AddCommands()
                 .AddFiles(fileRoot, 60 * 24 * 30)
                 .AddViews(viewRoot, null, typeof(FileHandleBarsViewProvider));
-            //.AddEmbeddedFiles("wwwroot", typeof(Program).Assembly, 60 * 24 * 30)
-            //.AddViews("views", typeof(Program).Assembly, typeof(EmbeddedHandleBarsViewProvider));
 
             serverBuilder.AddCommand<HomeCommand>("/", HttpMethod.GET);
             serverBuilder.AddCommand<NotFoundCommand>("/not-found", HttpMethod.GET);
