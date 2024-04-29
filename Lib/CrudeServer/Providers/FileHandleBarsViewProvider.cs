@@ -23,7 +23,7 @@ namespace CrudeServer.Providers
         protected override async Task<string> GetTemplateFile(string templatePath)
         {
             string requestedFile = templatePath;
-            string resourceName = $"{this._viewRoot}\\{requestedFile}";
+            string resourceName = $"{this._viewRoot}/{requestedFile}";
 
             if (!File.Exists(resourceName))
             {

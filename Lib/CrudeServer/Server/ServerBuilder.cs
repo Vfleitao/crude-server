@@ -115,7 +115,7 @@ namespace CrudeServer.Server
                 this.Services.AddKeyedSingleton<Assembly>(ServerConstants.VIEW_ASSEMBLY, viewAssembly);
             }
 
-            this.Services.AddSingleton(typeof(ITemplatedViewProvider), viewProvider);
+            this.Services.AddScoped(typeof(ITemplatedViewProvider), viewProvider);
             this.Services.AddTransient<IHttpViewResponse, ViewResponse>();
 
             return this;

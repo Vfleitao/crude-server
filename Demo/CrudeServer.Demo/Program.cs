@@ -2,7 +2,6 @@
 using System.IO;
 using System.Threading.Tasks;
 
-using CrudeServer.Demo.Middleware;
 using CrudeServer.Enums;
 using CrudeServer.Models;
 using CrudeServer.Providers;
@@ -16,13 +15,19 @@ namespace CrudeServer
 
         public static async Task Main(string[] args)
         {
+            string host = "http://localhost:9000/";
+            if (args.Length > 0)
+            {
+                host = args[0];
+            }
+
             string assemblyPath = System.AppContext.BaseDirectory;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
 
 #if DEBUG
-            string fileparent = assemblyDir;
+            string fileparent = Path.Combine(assemblyDir, "../../../");
 #else
-            string fileparent = Path.Combine(assemblyDir, "..\\..\\..\\");
+            string fileparent = assemblyDir;
 #endif
 
             string fileRoot = Path.Combine(fileparent, "wwwroot");
@@ -32,7 +37,7 @@ namespace CrudeServer
             serverBuilder
                 .SetConfiguration(new ServerConfig()
                 {
-                    Hosts = new List<string> { "http://localhost:9000/" },
+                    Hosts = new List<string> { host },
                     AuthenticationPath = "/login",
                     NotFoundPath = "/not-found",
                     EnableServerFileCache = true,
@@ -40,7 +45,7 @@ namespace CrudeServer
                 .AddRequestTagging()
                 .AddCommands()
                 .AddFiles(fileRoot, 60 * 24 * 30)
-                .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));
+                .AddViews(viewRoot, null, typeof(FileHandleBarsViewProvider));
 
             serverBuilder.AddCommand<HomeCommand>("/", HttpMethod.GET);
             serverBuilder.AddCommand<NotFoundCommand>("/not-found", HttpMethod.GET);
