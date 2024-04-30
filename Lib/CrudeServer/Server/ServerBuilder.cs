@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 using CrudeServer.CommandRegistration;
@@ -59,6 +60,8 @@ namespace CrudeServer.Server
 
             this.Services.AddScoped(typeof(IAuthenticationProvider), authenticationProvider);
 
+            this.AddEncryption();
+
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
 
             return this;
@@ -117,6 +120,16 @@ namespace CrudeServer.Server
 
             this.Services.AddScoped(typeof(ITemplatedViewProvider), viewProvider);
             this.Services.AddTransient<IHttpViewResponse, ViewResponse>();
+
+            return this;
+        }
+
+        public IServerBuilder AddEncryption()
+        {
+            if (!this.Services.Any(x => x.ServiceType == typeof(IEncryptionProvider)))
+            {
+                this.Services.AddScoped<IEncryptionProvider, EncryptionProvider>();
+            }
 
             return this;
         }

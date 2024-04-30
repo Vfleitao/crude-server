@@ -6,5 +6,6 @@
         public string Audience { get; set; }
         public string SigningKey { get; set; }
         public long ExpiresAfter { get; set; }
+        public string CookieName { get; set; }
     }
 }

@@ -7,6 +7,9 @@
     <link rel="icon" type="image/x-icon" href="/media/fav-icon.png">
     <title>{{viewData.title}}</title>
     @@partial partials/base-styles.html
+    {{> page-styles}}
+    {{#*inline "page-styles"}}
+    {{/inline}}
 </head>
 <body>
     <div class="h-100 container-fluid container-xxl" id="app">
@@ -49,5 +52,8 @@
         </footer>
     </div>
     @@partial partials/base-scripts.html
+    {{> page-cripts}}
+    {{#*inline "page-cripts"}}
+    {{/inline}}
 </body>
 </html>

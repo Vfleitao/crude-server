@@ -21,6 +21,7 @@ namespace CrudeServer.Server.Contracts
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
         IServerBuilder AddCommands();
         IServerBuilder AddEmbeddedFiles(string fileRoot, Assembly fileAssembly, long cacheDurationMinutes = 10);
+        IServerBuilder AddEncryption();
         IServerBuilder AddFiles(string fileRoot, long cacheDurationMinutes = 10);
         IServerBuilder AddMiddleware<T>() where T : IMiddleware;
         IServerBuilder AddRequestTagging();

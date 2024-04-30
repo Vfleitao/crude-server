@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Security.Principal;
 
@@ -32,6 +33,7 @@ namespace CrudeServer.Models
         public string RequestHost => HttpListenerRequest.UserHostName;
         public bool IsAjaxRequest => HttpListenerRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
         public NameValueCollection RequestHeaders => HttpListenerRequest.Headers;
+        public IEnumerable<HttpCookie> RequestCookies { get; protected set; }
 
 
         public CommandContext(
@@ -45,6 +47,16 @@ namespace CrudeServer.Models
             HttpListenerRequest = request;
             HttpListenerResponse = response;
             Services = serviceProvider;
+
+            this.RequestCookies = HttpListenerRequest.Cookies.Select(x => new HttpCookie()
+            {
+                Domain = x.Domain,
+                Path = x.Path,
+                Value = x.Value,
+                HttpOnly = x.HttpOnly,
+                Secure = x.Secure,
+                Name = x.Name
+            });
         }
     }
 }
