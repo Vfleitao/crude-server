@@ -22,7 +22,9 @@ namespace CrudeServer.Integration.Mocks
                 })
                 .AddRequestTagging()
                 .AddAuthentication()
-                .AddCommands()
+                .AddCommandRetriever()
+                .AddRequestDataRetriever()
+                .AddCommandExecutor()
                 .AddViews("views", typeof(ServerBuilderCreator).Assembly);
 
             if (useEmbeddedFiles)

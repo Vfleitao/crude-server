@@ -56,6 +56,7 @@ namespace CrudeServer.Server
                 Func<Task> endOfChain = () => Task.CompletedTask;
                 Func<Task> executionChain = endOfChain;
 
+
                 IEnumerable<Type> reversedList = middlewareTypes.AsReadOnly().Reverse();
                 foreach (Type type in reversedList)
                 {
@@ -89,12 +90,12 @@ namespace CrudeServer.Server
         {
             return async () =>
             {
-                loggerProvider.Log($"Executing middleware {middlewareType.Name}");
+                loggerProvider.Log($"[HttpRequestExecutor] Executing middleware {middlewareType.Name}");
 
                 IMiddleware middleware = (IMiddleware)serviceProvider.GetService(middlewareType);
                 await middleware.Process(context, next);
 
-                loggerProvider.Log($"Executed middleware {middlewareType.Name}");
+                loggerProvider.Log($"[HttpRequestExecutor] Executed middleware {middlewareType.Name}");
             };
         }
     }

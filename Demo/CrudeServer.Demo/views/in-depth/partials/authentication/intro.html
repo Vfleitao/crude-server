@@ -10,14 +10,17 @@
 serverBuilder
     .SetConfiguration(new ServerConfig()
     {
-        Hosts = new List<string> { "http://localhost:9000/" },
-        AuthenticationPath = "/login",
-        NotFoundPath = "/not-found"
+        Hosts = new List<string>
+    { "http://localhost:9000/" },
+    AuthenticationPath = "/login",
+    NotFoundPath = "/not-found"
     })
     // Add authentication middleware before any execution in case someone needs the user
     .AddAuthentication(typeof(MyAuthenticationMiddleware))
     .AddRequestTagging()
-    .AddCommands()
+    .AddCommandRetriever()
+    .AddRequestDataRetriever()
+    .AddCommandExecutor()
     .AddFiles(fileRoot, 60 * 24 * 30)
     .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));
 </code></pre>

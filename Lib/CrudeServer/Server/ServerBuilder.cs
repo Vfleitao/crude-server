@@ -163,7 +163,21 @@ namespace CrudeServer.Server
             return this.ServiceProvider.GetService<IServerRunner>();
         }
 
-        public IServerBuilder AddCommands()
+        public IServerBuilder AddRequestDataRetriever()
+        {
+            this.MiddlewareRegistry.AddMiddleware<CommandDataRetrieverMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddCommandRetriever()
+        {
+            this.MiddlewareRegistry.AddMiddleware<CommandRetrieverMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddCommandExecutor()
         {
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();

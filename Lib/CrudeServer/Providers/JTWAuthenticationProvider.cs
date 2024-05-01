@@ -39,7 +39,7 @@ namespace CrudeServer.Providers
                 {
                     if (serverConfig.JTWConfiguration == null)
                     {
-                        this.loggerProvider.Log("JTW Configuration is missing");
+                        this.loggerProvider.Log("[JTWAuthenticationProvider] JTW Configuration is missing");
 
                         return (IPrincipal)null;
                     }
@@ -54,7 +54,7 @@ namespace CrudeServer.Providers
                     string token = requestContext.RequestHeaders[expectedKey];
                     if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer"))
                     {
-                        this.loggerProvider.Log("Authorization Token is not valid");
+                        this.loggerProvider.Log("[JTWAuthenticationProvider] Authorization Token is not valid");
 
                         return (IPrincipal)null;
                     }
@@ -75,13 +75,29 @@ namespace CrudeServer.Providers
         {
             return Task.Run<IPrincipal>(() =>
             {
+                if (serverConfig.JTWConfiguration == null)
+                {
+                    this.loggerProvider.Log("[JTWAuthenticationProvider - GetUserFromCookies] JTW Configuration is missing");
+
+                    return (IPrincipal)null;
+                }
+
+                if (string.IsNullOrEmpty(this.serverConfig.JTWConfiguration.CookieName))
+                {
+                    this.loggerProvider.Log("[JTWAuthenticationProvider - GetUserFromCookies] Cookie name is missing");
+
+                    return (IPrincipal)null;
+                }
+
+                string loweredCookieName = this.serverConfig.JTWConfiguration.CookieName.ToLower();
                 if (requestContext.RequestCookies == null ||
-                    !requestContext.RequestCookies.Any(x => x.Name == this.serverConfig.JTWConfiguration.CookieName))
+                    !requestContext.RequestCookies.Any(x => x.Name.ToLower() == loweredCookieName))
                 {
                     return (IPrincipal)null;
                 }
 
-                HttpCookie cookie = requestContext.RequestCookies.First(x => x.Name == this.serverConfig.JTWConfiguration.CookieName);
+                HttpCookie cookie = requestContext.RequestCookies.First(x => x.Name.ToLower() == loweredCookieName);
+
                 string encryptedToken = cookie.Value;
                 string token = this.encryptionProvider.Decrypt(encryptedToken, this.serverConfig.PrivateEncryptionKey);
 

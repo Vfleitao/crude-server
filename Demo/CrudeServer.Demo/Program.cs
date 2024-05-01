@@ -43,7 +43,9 @@ namespace CrudeServer
                     EnableServerFileCache = true,
                 })
                 .AddRequestTagging()
-                .AddCommands()
+                .AddCommandRetriever()
+                .AddRequestDataRetriever()
+                .AddCommandExecutor()
                 .AddFiles(fileRoot, 60 * 24 * 30)
                 .AddViews(viewRoot, null, typeof(FileHandleBarsViewProvider));
 
