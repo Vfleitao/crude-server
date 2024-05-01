@@ -1,10 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
+using CrudeServer.Middleware;
+using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
+using CrudeServer.Providers;
+using CrudeServer.Providers.Contracts;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using Moq;
 
 namespace CrudeServer.Integration.Mocks
 {
@@ -22,8 +34,22 @@ namespace CrudeServer.Integration.Mocks
                 })
                 .AddRequestTagging()
                 .AddAuthentication()
-                .AddCommands()
+                .AddCommandRetriever()
+                .AddRequestDataRetriever()
+                .AddCommandExecutor()
                 .AddViews("views", typeof(ServerBuilderCreator).Assembly);
+
+            serverBuilder.Services.Remove(
+                serverBuilder.Services.First(x => x.ServiceType == typeof(LoggerMiddleware))
+            );
+
+            serverBuilder.Services.AddScoped<LoggerMiddleware>(x => new MockMiddleware(null));
+
+            serverBuilder.Services.Remove(
+               serverBuilder.Services.First(x => x.ServiceType == typeof(ILogger))
+            );
+
+            serverBuilder.Services.AddScoped<ILogger>(x => Mock.Of<ILogger>());
 
             if (useEmbeddedFiles)
             {
@@ -42,5 +68,17 @@ namespace CrudeServer.Integration.Mocks
             return serverBuilder;
         }
 
+    }
+
+    internal class MockMiddleware : LoggerMiddleware
+    {
+        public MockMiddleware(ILogger loggerProvider) : base(loggerProvider)
+        {
+        }
+
+        public override Task Process(ICommandContext context, Func<Task> next)
+        {
+            return next();
+        }
     }
 }

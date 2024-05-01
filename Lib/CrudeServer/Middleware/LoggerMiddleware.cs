@@ -18,7 +18,7 @@ namespace CrudeServer.Middleware
             this._loggerProvider = loggerProvider;
         }
 
-        public async Task Process(ICommandContext context, Func<Task> next)
+        public async virtual Task Process(ICommandContext context, Func<Task> next)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(context.RequestUrl.ToString());

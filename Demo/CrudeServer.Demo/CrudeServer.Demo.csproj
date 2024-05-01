@@ -22,6 +22,7 @@
     <None Remove="views\in-depth\partials\views\helpers.html" />
     <None Remove="views\in-depth\partials\views\intro.html" />
     <None Remove="views\in-depth\partials\views\partials.html" />
+    <None Remove="views\in-depth\partials\views\sections.html" />
     <None Remove="views\in-depth\views.html" />
     <None Remove="views\InDepth.html" />
     <None Remove="views\in-depth\start.html" />
@@ -91,6 +92,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\views\body-and-layout.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\sections.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\views\helpers.html">

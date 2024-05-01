@@ -46,7 +46,7 @@ namespace CrudeServer.HttpCommands
 
                 if (!File.Exists(resourceName))
                 {
-                    loggerProvider.Log($"[FileHttpCommand - 1] Resource {resourceName} not found");
+                    loggerProvider.Log($"[FileHttpCommand] Resource {resourceName} not found");
                     return new NotFoundResponse();
                 }
 
@@ -86,7 +86,7 @@ namespace CrudeServer.HttpCommands
             }
             catch (Exception ex)
             {
-                this.loggerProvider.Error($"[5] An error occurred while reading the embedded resource", ex);
+                this.loggerProvider.Error($"[FileHttpCommand] An error occurred while reading the embedded resource", ex);
                 return new StatusCodeResponse()
                 {
                     StatusCode = 500

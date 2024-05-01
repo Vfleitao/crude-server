@@ -19,10 +19,13 @@ namespace CrudeServer.Server.Contracts
 
         IServerBuilder AddAuthentication(Type authenticationProvider = null);
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
-        IServerBuilder AddCommands();
+        IServerBuilder AddCommandExecutor();
+        IServerBuilder AddCommandRetriever();
         IServerBuilder AddEmbeddedFiles(string fileRoot, Assembly fileAssembly, long cacheDurationMinutes = 10);
+        IServerBuilder AddEncryption();
         IServerBuilder AddFiles(string fileRoot, long cacheDurationMinutes = 10);
         IServerBuilder AddMiddleware<T>() where T : IMiddleware;
+        IServerBuilder AddRequestDataRetriever();
         IServerBuilder AddRequestTagging();
         IServerBuilder AddViews(string viewRoot, Assembly viewAssembly = null, Type viewProvider = null);
         IServerRunner Buid();

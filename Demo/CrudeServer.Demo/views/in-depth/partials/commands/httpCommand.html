@@ -30,7 +30,9 @@ public static async Task Main(string[] args)
         {
             Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
         })
-        .AddCommands(); // Add command middleware
+        .AddCommandRetriever()
+        .AddRequestDataRetriever()
+        .AddCommandExecutor();
 
         // Register the command to the server
         serverBuilder.AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET);

@@ -17,7 +17,7 @@ namespace CrudeServer.Middleware
                 context.ResponseHeaders = new Dictionary<string, string>();
             }
 
-            loggerProvider.Log($"[10] Tagging Request");
+            loggerProvider.Log($"[RequestTaggerMiddleware] Tagging Request");
             context.ResponseHeaders.Add("X-Request-Id", Guid.NewGuid().ToString());
 
             await next();

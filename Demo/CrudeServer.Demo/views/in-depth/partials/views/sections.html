@@ -1,0 +1,45 @@
+<h2>
+    Sections
+</h2>
+<p>
+    At times, you have some pages that require specific styles (ie: this page has 2 stylesheet and a script for the code highlight).<br />
+    For this, there is no need for partials of custom helpers. Using standard inline partials works perfectly.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-markup">
+    // html head element
+    &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="icon" type="image/x-icon" href="/media/fav-icon.png"&gt;
+    &lt;title&gt;
+    &#x2774;&#x2774;viewData.title&#x2775;&#x2775;
+    &lt;/title&gt;
+    &commat;&commat;partial partials/base-styles.html
+    &#x2774;&#x2774;&gt; page-styles&#x2775;&#x2775;
+    &#x2774;&#x2774;#*inline "page-styles"&#x2775;&#x2775;
+    &#x2774;&#x2774;/inline&#x2775;&#x2775;
+
+    &lt;/head&gt;
+
+    // Page that needs custom styles / scripts
+    &commat;&commat; layout.html
+
+    &#x2774;&#x2774;#*inline "page-styles"&#x2775;&#x2775;
+    &lt;link href="/css/prism.css" rel="stylesheet"&gt;
+    &lt;link href="/css/in-depth.css" rel="stylesheet"&gt;
+    &lt;script defer src="/js/prism.js"&gt;&lt;/script&gt;
+    &#x2774;&#x2774;/inline&#x2775;&#x2775;
+
+    // Will result in
+    &lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;link rel="icon" type="image/x-icon" href="/media/fav-icon.png"&gt;
+    &lt;title&gt;
+    &#x2774;&#x2774;viewData.title&#x2775;&#x2775;
+    &lt;/title&gt;
+    &commat;&commat;partial partials/base-styles.html
+    &lt;link href="/css/prism.css" rel="stylesheet"&gt;
+    &lt;link href="/css/in-depth.css" rel="stylesheet"&gt;
+    &lt;script defer src="/js/prism.js"&gt;&lt;/script&gt;
+</code></pre>

@@ -17,7 +17,9 @@ serverBuilder
     // Add authentication middleware before any execution in case someone needs the user
     .AddAuthentication(typeof(MyAuthenticationMiddleware))
     .AddRequestTagging()
-    .AddCommands()
+    .AddCommandRetriever()
+    .AddRequestDataRetriever()
+    .AddCommandExecutor()
     .AddFiles(fileRoot, 60 * 24 * 30)
     .AddViews(viewRoot, viewProvider: typeof(FileHandleBarsViewProvider));
 </code></pre>

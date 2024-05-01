@@ -6,11 +6,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Integration.Commands;
 using CrudeServer.Integration.Mocks;
-using CrudeServer.Models;
-using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
 
 namespace CrudeServer.Integration

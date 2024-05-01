@@ -26,6 +26,7 @@ namespace CrudeServer.Models.Contracts
         HttpListenerRequest HttpListenerRequest { get; }
         HttpListenerResponse HttpListenerResponse { get; }
         NameValueCollection RequestHeaders { get; }
+        IEnumerable<HttpCookie> RequestCookies { get; }
 
         HttpCommandRegistration HttpRegistration { get; set; }
         IServiceProvider Services { get; }

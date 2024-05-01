@@ -11,5 +11,7 @@ namespace CrudeServer.Models.Contracts
         JTWConfig JTWConfiguration { get; set; }
         long CachedDurationMinutes { get; set; }
         bool EnableServerFileCache { get; set; }
+        string PrivateEncryptionKey { get; set; }
+        string PublicEncryptionKey { get; set; }
     }
 }

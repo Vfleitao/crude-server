@@ -23,7 +23,10 @@
             {
                 Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
             })
-            .AddCommands();
+            .AddCommandRetriever() // Allows Retrieving the registration
+            .AddRequestDataRetriever() // Allows Retrieving the request data
+            //Add any other middleware here that needs the data (ie: special parsing, etc)
+            .AddCommandExecutor(); // Allows Executing the command
 
             serverBuilder.AddCommand&lt;HomeCommand&gt;("/", HttpMethod.GET);
             

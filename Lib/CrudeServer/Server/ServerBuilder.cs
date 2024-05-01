@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 
 using CrudeServer.CommandRegistration;
@@ -58,6 +59,8 @@ namespace CrudeServer.Server
             }
 
             this.Services.AddScoped(typeof(IAuthenticationProvider), authenticationProvider);
+
+            this.AddEncryption();
 
             this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
 
@@ -121,6 +124,16 @@ namespace CrudeServer.Server
             return this;
         }
 
+        public IServerBuilder AddEncryption()
+        {
+            if (!this.Services.Any(x => x.ServiceType == typeof(IEncryptionProvider)))
+            {
+                this.Services.AddScoped<IEncryptionProvider, EncryptionProvider>();
+            }
+
+            return this;
+        }
+
         public HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
         {
             return this.CommandRegistry.RegisterCommand<T>(path, httpMethod);
@@ -150,7 +163,21 @@ namespace CrudeServer.Server
             return this.ServiceProvider.GetService<IServerRunner>();
         }
 
-        public IServerBuilder AddCommands()
+        public IServerBuilder AddRequestDataRetriever()
+        {
+            this.MiddlewareRegistry.AddMiddleware<CommandDataRetrieverMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddCommandRetriever()
+        {
+            this.MiddlewareRegistry.AddMiddleware<CommandRetrieverMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddCommandExecutor()
         {
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();

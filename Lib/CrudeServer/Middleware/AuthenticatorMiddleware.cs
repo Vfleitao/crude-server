@@ -19,7 +19,7 @@ namespace CrudeServer.Middleware
 
         public async Task Process(ICommandContext context, Func<Task> next)
         {
-            IPrincipal user = await this._authenticationProvider.GetUser(context);
+            IPrincipal user = await this._authenticationProvider.GetUserFromHeaders(context);
             if (user != null)
             {
                 context.User = user;
