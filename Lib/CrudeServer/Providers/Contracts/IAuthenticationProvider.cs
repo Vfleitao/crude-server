@@ -10,6 +10,7 @@ namespace CrudeServer.Providers.Contracts
     {
         Task<string> GenerateToken(IPrincipal principal);
         Task<HttpCookie> GenerateTokenCookie(IPrincipal principal);
+        Task<IPrincipal> GetUserFromCookies(ICommandContext requestContext);
         Task<IPrincipal> GetUserFromHeaders(ICommandContext requestContext);
     }
 }
