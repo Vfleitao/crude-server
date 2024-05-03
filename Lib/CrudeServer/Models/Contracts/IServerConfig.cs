@@ -13,5 +13,7 @@ namespace CrudeServer.Models.Contracts
         bool EnableServerFileCache { get; set; }
         string PrivateEncryptionKey { get; set; }
         string PublicEncryptionKey { get; set; }
+        string AntiforgeryTokenCookieName { get; set; }
+        string AntiforgeryTokenInputName { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace CrudeServer.Providers
             this._compiledViewCache = new ConcurrentDictionary<string, HandlebarsTemplate<object, object>>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public async Task<string> GetTemplate(string templatePath, object data)
+        public async Task<string> GetTemplate(string templatePath, object data, ICommandContext commandContext)
         {
             HandlebarsTemplate<object, object> compiledTemplate = null;
 
@@ -37,10 +37,11 @@ namespace CrudeServer.Providers
             }
             else
             {
-                string template = await GetTemplateStringFromFiles(templatePath);
-                compiledTemplate = Handlebars.Compile(template);
-                
-                if (this.serverConfig.EnableServerFileCache)
+                (string template, bool eligibleForCache) templateResult = await GetTemplateStringFromFiles(templatePath, commandContext);
+
+                compiledTemplate = Handlebars.Compile(templateResult.template);
+
+                if (templateResult.eligibleForCache && this.serverConfig.EnableServerFileCache)
                 {
                     this._compiledViewCache.TryAdd(templatePath, compiledTemplate);
                 }
@@ -51,48 +52,94 @@ namespace CrudeServer.Providers
 
         protected abstract Task<string> GetTemplateFile(string templatePath);
 
-        protected async Task<string> GetTemplateStringFromFiles(string templatePath)
+        protected async Task<(string template, bool eligibleForCache)> GetTemplateStringFromFiles(string templatePath, ICommandContext commandContext)
         {
+            bool canCache = true;
+
             string templateString = await GetTemplateFile(templatePath);
 
             if (string.IsNullOrEmpty(templateString))
             {
-                return null;
+                return (null, false);
             }
 
             if (templateString.Contains("@@layout") && layoutRegex.IsMatch(templateString))
             {
-                Match match = layoutRegex.Match(templateString);
-                string layoutPath = match.Groups[1].Value;
+                (string template, bool eligibleForCache) templateResult = await HandleLayout(templateString, commandContext);
 
-                string layoutTemplate = await GetTemplateStringFromFiles(layoutPath);
-
-                templateString = Regex.Replace(
-                    templateString,
-                    LAYOUT_REGEX,
-                    string.Empty,
-                    RegexOptions.Multiline
-                ).Trim();
-
-                layoutTemplate = layoutTemplate.Replace("@@body", templateString);
-
-                templateString = layoutTemplate;
+                templateString = templateResult.template;
+                canCache = canCache && templateResult.eligibleForCache;
             }
 
             if (templateString.Contains("@@partial"))
             {
-                while (partialRegex.IsMatch(templateString))
-                {
-                    Match match = partialRegex.Match(templateString);
-                    string layoutPath = match.Groups[1].Value;
+                (string template, bool eligibleForCache) partialProcess = await HandlePartials(templateString, commandContext);
+                templateString = partialProcess.template;
+                canCache = canCache && partialProcess.eligibleForCache;
+            }
 
-                    string partial = await GetTemplateStringFromFiles(layoutPath);
+            if (templateString.Contains("@@antiforgerytoken"))
+            {
+                canCache = false;
+                templateString = HandleAntiforgeryToken(templateString, commandContext);
+            }
 
-                    templateString = templateString.Replace($"@@partial {layoutPath}", partial);
-                }
+            return (templateString, canCache);
+        }
+
+        private string HandleAntiforgeryToken(string templateString, ICommandContext commandContext)
+        {
+            string inputName = this.serverConfig.AntiforgeryTokenInputName ?? "___csrt";
+            string cookieName = this.serverConfig.AntiforgeryTokenCookieName;
+            string token = commandContext.GetCookie(cookieName);
+
+            string inputHtml = $"<input type=\"hidden\" name=\"{inputName}\" value=\"{token}\" />";
+
+            while (templateString.Contains("@@antiforgerytoken"))
+            {
+                templateString = templateString.Replace("@@antiforgerytoken", inputHtml);
             }
 
             return templateString;
+        }
+
+        private async Task<(string template, bool eligibleForCache)> HandlePartials(string templateString, ICommandContext commandContext)
+        {
+            bool canCache = true;
+
+            while (partialRegex.IsMatch(templateString))
+            {
+                Match match = partialRegex.Match(templateString);
+                string layoutPath = match.Groups[1].Value;
+
+                (string template, bool eligibleForCache) partial = await GetTemplateStringFromFiles(layoutPath, commandContext);
+
+                templateString = templateString.Replace($"@@partial {layoutPath}", partial.template);
+                canCache = canCache && partial.eligibleForCache;
+            }
+
+            return (templateString, canCache);
+        }
+
+        private async Task<(string template, bool eligibleForCache)> HandleLayout(string templateString, ICommandContext commandContext)
+        {
+            Match match = layoutRegex.Match(templateString);
+            string layoutPath = match.Groups[1].Value;
+
+            (string template, bool eligibleForCache) layoutTemplateResult = await GetTemplateStringFromFiles(layoutPath, commandContext);
+
+            templateString = Regex.Replace(
+                templateString,
+                LAYOUT_REGEX,
+                string.Empty,
+                RegexOptions.Multiline
+            ).Trim();
+
+            layoutTemplateResult.template = layoutTemplateResult.template.Replace("@@body", templateString);
+
+            templateString = layoutTemplateResult.template;
+
+            return (templateString, layoutTemplateResult.eligibleForCache);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using Moq;
@@ -16,7 +17,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands.Responses
         {
             // Arrange
             Mock<ITemplatedViewProvider> mockTemplatedViewProvider = new Mock<ITemplatedViewProvider>();
-            mockTemplatedViewProvider.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<object>())).ReturnsAsync(string.Empty);
+            mockTemplatedViewProvider.Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<ICommandContext>())).ReturnsAsync(string.Empty);
 
             ViewResponse viewResponse = new ViewResponse(mockTemplatedViewProvider.Object);
             viewResponse.SetTemplatePath("emptyTemplate");
@@ -35,7 +36,7 @@ namespace CrudeServer.Lib.Tests.HttpCommands.Responses
             // Arrange
             Mock<ITemplatedViewProvider> mockTemplatedViewProvider = new Mock<ITemplatedViewProvider>();
             mockTemplatedViewProvider
-                .Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<object>()))
+                .Setup(x => x.GetTemplate(It.IsAny<string>(), It.IsAny<object>(), It.IsAny<ICommandContext>()))
                 .ReturnsAsync("Hello world!");
 
             ViewResponse viewResponse = new ViewResponse(mockTemplatedViewProvider.Object);
