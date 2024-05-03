@@ -15,7 +15,7 @@ namespace CrudeServer
 
         public static async Task Main(string[] args)
         {
-            string host = "http://localhost:9000/";
+            string host = "http://*:9000/";
             if (args.Length > 0)
             {
                 host = args[0];
