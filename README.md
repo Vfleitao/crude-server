@@ -22,17 +22,17 @@ It uses a simple middleware mechanism to process, execute and handle all respons
 To see examples, look into the Integration Tests or the project website [Crude Server](https://crudeserver.devtestplayground.com/)
 
 ## TO DO's
-- [ ] Build Nuget Packages
+- [x] Build Nuget Packages
 - [ ] Antiforgery Tokens
 - [ ] Request Size Limiting
 - [ ] Named routes
-- [ ] Common UI Helpers for HandleBards
+- [x] Common UI Helpers for HandleBards
 - [ ] Commands as functions
 - [ ] Metrics Dashboard
 - [ ] Websocket support
 - [x] Non embedded file support
 - [x] Non view file support
 - [x] Crude Server Documentation and Demo app
-- [ ] Add cookie based auth
+- [x] Add cookie based auth
 - [ ] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
