@@ -56,7 +56,12 @@ namespace CrudeServer.Middleware
                 foreach (Models.HttpCookie cookie in context.ResponseCookies)
                 {
                     Cookie newCookie = new Cookie(cookie.Name, cookie.Value);
-                    newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
+
+                    if (cookie.ExpireTimeMinutes > 0)
+                    {
+                        newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
+                    }
+
                     newCookie.HttpOnly = cookie.HttpOnly;
                     newCookie.Secure = cookie.Secure;
 

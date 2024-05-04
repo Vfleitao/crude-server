@@ -1,7 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
+
+using Moq;
 
 namespace CrudeServer.Lib.Tests.Providers
 {
@@ -20,13 +24,11 @@ namespace CrudeServer.Lib.Tests.Providers
             // Act
             string result = await viewProvider.GetTemplate(
                 "simpleView.html",
-                new
+                new Dictionary<string, object>
                 {
-                    viewModel = new
-                    {
-                        name = "John Doe"
-                    }
-                }
+                    { "viewModel", new { name = "John Doe" } }
+                },
+                Mock.Of<ICommandContext>()
             );
 
             // Assert
@@ -46,13 +48,11 @@ namespace CrudeServer.Lib.Tests.Providers
             // Act
             string result = await viewProvider.GetTemplate(
                 "viewWithLayout.html",
-                new
+                new Dictionary<string, object>
                 {
-                    viewModel = new
-                    {
-                        name = "John Doe"
-                    }
-                }
+                    { "viewModel", new { name = "John Doe" } }
+                },
+                Mock.Of<ICommandContext>()
             );
 
             // Assert
@@ -78,7 +78,8 @@ namespace CrudeServer.Lib.Tests.Providers
                     {
                         name = "John Doe"
                     }
-                }
+                },
+                Mock.Of<ICommandContext>()
             );
 
             // Assert

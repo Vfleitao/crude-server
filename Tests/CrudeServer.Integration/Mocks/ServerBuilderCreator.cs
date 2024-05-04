@@ -6,10 +6,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using CrudeServer.Middleware;
-using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
-using CrudeServer.Providers;
 using CrudeServer.Providers.Contracts;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
@@ -22,7 +20,11 @@ namespace CrudeServer.Integration.Mocks
 {
     public static class ServerBuilderCreator
     {
-        public static IServerBuilder CreateTestServerBuilder(int port, bool useEmbeddedFiles = true)
+        public static IServerBuilder CreateTestServerBuilder(
+            int port,
+            bool useEmbeddedFiles = true,
+            bool useAntiforgeryTokens = false
+        )
         {
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
@@ -30,12 +32,21 @@ namespace CrudeServer.Integration.Mocks
                 {
                     Hosts = new List<string>() { "http://localhost:" + port.ToString() + "/" },
                     AuthenticationPath = "/login",
-                    EnableServerFileCache = false
+                    EnableServerFileCache = false,
+                    AntiforgeryTokenCookieName = "XSRF-T",
+                    AntiforgeryTokenInputName = "X-XSRF-T"
                 })
                 .AddRequestTagging()
                 .AddAuthentication()
                 .AddCommandRetriever()
-                .AddRequestDataRetriever()
+                .AddRequestDataRetriever();
+
+            if (useAntiforgeryTokens)
+            {
+                serverBuilder.AddAntiforgeryTokens();
+            }
+
+            serverBuilder
                 .AddCommandExecutor()
                 .AddViews("views", typeof(ServerBuilderCreator).Assembly);
 

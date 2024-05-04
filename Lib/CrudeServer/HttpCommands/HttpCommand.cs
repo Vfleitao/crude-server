@@ -30,6 +30,7 @@ namespace CrudeServer.HttpCommands
         {
             IHttpViewResponse viewResponse = this.RequestContext.Services.GetService<IHttpViewResponse>();
 
+            viewResponse.CommandContext = RequestContext;
             viewResponse.ViewModel = data ?? new { };
             viewResponse.Items = new Dictionary<string, object>();
             viewResponse.Items.Add("User", RequestContext.User);

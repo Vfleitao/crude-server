@@ -13,6 +13,7 @@ namespace CrudeServer.Models
         public List<KeyValuePair<string, string>> UrlParameters { get; set; } = new List<KeyValuePair<string, string>>();
         public HttpMethod HttpMethod { get; set; }
         public bool RequiresAuthentication { get; set; }
+        public bool RequiresAntiforgeryToken { get; set; }
         public IEnumerable<string> AuthenticationRoles { get; set; } = new List<string>();
         public Type Command { get; set; }
 
@@ -29,6 +30,11 @@ namespace CrudeServer.Models
         {
             this.RequiresAuthentication = false;
             this.AuthenticationRoles = new List<string>();
+        }
+
+        public void RequireAntiforgeryToken()
+        {
+            this.RequiresAntiforgeryToken = true;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace CrudeServer.Server
     public class ServerBuilder : IServerBuilder
     {
         private IServerConfig ServerConfiguration;
+        private bool hasAntiforgeryTokens;
 
         public IServiceCollection Services { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
@@ -179,8 +180,21 @@ namespace CrudeServer.Server
 
         public IServerBuilder AddCommandExecutor()
         {
+            if (this.hasAntiforgeryTokens)
+            {
+                this.MiddlewareRegistry.AddMiddleware<AntiforgeryTokenValidationMiddleware>();
+            }
+
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddAntiforgeryTokens()
+        {
+            this.AddMiddleware<AntiforgeryTokenGenerationMiddleware>();
+            this.hasAntiforgeryTokens = true;
 
             return this;
         }
