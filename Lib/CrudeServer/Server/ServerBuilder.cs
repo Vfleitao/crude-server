@@ -191,7 +191,7 @@ namespace CrudeServer.Server
             return this;
         }
 
-        public IServerBuilder AddAntiforgeryTokens<T>()
+        public IServerBuilder AddAntiforgeryTokens()
         {
             this.AddMiddleware<AntiforgeryTokenGenerationMiddleware>();
             this.hasAntiforgeryTokens = true;

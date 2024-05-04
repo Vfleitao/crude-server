@@ -24,6 +24,12 @@ namespace CrudeServer.Middleware
                 throw new ArgumentNullException("Http Registration is null. Middleware may be executing too early");
             }
 
+            if(!context.HttpRegistration.RequiresAntiforgeryToken)
+            {
+                await next();
+                return;
+            }
+
             if (
                 (context.RequestHttpMethod == Enums.HttpMethod.POST ||
                 context.RequestHttpMethod == Enums.HttpMethod.PUT ||

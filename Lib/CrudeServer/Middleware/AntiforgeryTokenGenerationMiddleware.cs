@@ -25,7 +25,7 @@ namespace CrudeServer.Middleware
                 throw new ArgumentNullException("Http Registration is null. Middleware may be executing too early");
             }
 
-            if (context.RequestHttpMethod == HttpMethod.GET || 
+            if (context.RequestHttpMethod == HttpMethod.GET ||
                 context.RequestHttpMethod == HttpMethod.OPTIONS ||
                 context.RequestHttpMethod == HttpMethod.HEAD
             )
@@ -44,7 +44,8 @@ namespace CrudeServer.Middleware
             }
 
             string token = Guid.NewGuid().ToString();
-            context.ResponseCookies.Add(new HttpCookie() { 
+            context.ResponseCookies.Add(new HttpCookie()
+            {
                 Secure = true,
                 HttpOnly = true,
                 Name = this.serverConfig.AntiforgeryTokenCookieName,
