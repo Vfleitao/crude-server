@@ -31,6 +31,8 @@ namespace CrudeServer.Models.Contracts
         HttpCommandRegistration HttpRegistration { get; set; }
         IServiceProvider Services { get; }
         IDictionary<string, string> ResponseHeaders { get; set; }
-        IEnumerable<HttpCookie> ResponseCookies { get; set; }
+        IList<HttpCookie> ResponseCookies { get; set; }
+
+        string GetCookie(string name);
     }
 }

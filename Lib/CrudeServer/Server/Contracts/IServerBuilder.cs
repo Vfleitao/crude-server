@@ -17,6 +17,7 @@ namespace CrudeServer.Server.Contracts
         IServiceCollection Services { get; }
         IServiceProvider ServiceProvider { get; }
 
+        IServerBuilder AddAntiforgeryTokens();
         IServerBuilder AddAuthentication(Type authenticationProvider = null);
         HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
         IServerBuilder AddCommandExecutor();

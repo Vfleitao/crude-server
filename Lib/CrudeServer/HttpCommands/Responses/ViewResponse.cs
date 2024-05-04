@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.HttpCommands.Responses
@@ -21,6 +22,10 @@ namespace CrudeServer.HttpCommands.Responses
         public IDictionary<string, string> Headers { get; set; }
         public IEnumerable<HttpCookie> Cookies { get; set; } = new List<HttpCookie>();
 
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public ICommandContext CommandContext { get; set; }
+
         public ViewResponse(ITemplatedViewProvider templatedViewProvider)
         {
             this.templatedViewProvider = templatedViewProvider;
@@ -33,11 +38,14 @@ namespace CrudeServer.HttpCommands.Responses
 
         public async Task ProcessResponse()
         {
-            string template = await templatedViewProvider.GetTemplate(TemplatePath, new
-            {
-                viewModel = this.ViewModel,
-                viewData = this.Items
-            });
+            string template = await templatedViewProvider.GetTemplate(
+                TemplatePath, new
+                { 
+                    viewModel = this.ViewModel,
+                    viewData = this.Items
+                },
+                this.CommandContext
+            );
 
             if (string.IsNullOrEmpty(template))
             {

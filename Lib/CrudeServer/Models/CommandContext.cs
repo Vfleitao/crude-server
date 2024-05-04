@@ -24,7 +24,7 @@ namespace CrudeServer.Models
         public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
         public IList<HttpFile> Files { get; set; } = new List<HttpFile>();
         public IDictionary<string, string> ResponseHeaders { get; set; } = new Dictionary<string, string>();
-        public IEnumerable<HttpCookie> ResponseCookies { get; set; } = new List<HttpCookie>();
+        public IList<HttpCookie> ResponseCookies { get; set; } = new List<HttpCookie>();
 
         public Uri RequestUrl => HttpListenerRequest.Url;
         public HttpMethod RequestHttpMethod => HttpMethodExtensions.FromHttpString(HttpListenerRequest.HttpMethod);
@@ -57,6 +57,30 @@ namespace CrudeServer.Models
                 Secure = x.Secure,
                 Name = x.Name
             });
+        }
+
+        public string GetCookie(string name)
+        {
+            if (RequestCookies == null && ResponseCookies == null)
+            {
+                return null;
+            }
+
+            // Check if its a cookie that already exists in the request
+            HttpCookie cookie = RequestCookies.FirstOrDefault(x => x.Name == name);
+            if (cookie != null)
+            {
+                return cookie.Value;
+            }
+
+            // Check if its a cookie that was set in the response (ie: setting an antiforgery token for the first time)
+            cookie = ResponseCookies.FirstOrDefault(x => x.Name == name);
+            if (cookie != null)
+            {
+                return cookie.Value;
+            }
+
+            return null;
         }
     }
 }
