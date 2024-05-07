@@ -25,7 +25,6 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Build Nuget Packages
 - [x] Antiforgery Tokens
 - [ ] Request Size Limiting
-- [ ] Named routes
 - [x] Common UI Helpers for HandleBards
 - [ ] Commands as functions
 - [ ] Metrics Dashboard
