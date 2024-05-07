@@ -23,7 +23,7 @@ To see examples, look into the Integration Tests or the project website [Crude S
 
 ## TO DO's
 - [x] Build Nuget Packages
-- [ ] Antiforgery Tokens
+- [x] Antiforgery Tokens
 - [ ] Request Size Limiting
 - [ ] Named routes
 - [x] Common UI Helpers for HandleBards
@@ -36,3 +36,4 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Add cookie based auth
 - [ ] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
+- [ ] Add Automated security scans for code
