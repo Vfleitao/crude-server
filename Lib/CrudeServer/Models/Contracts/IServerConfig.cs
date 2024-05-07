@@ -15,5 +15,6 @@ namespace CrudeServer.Models.Contracts
         string PublicEncryptionKey { get; set; }
         string AntiforgeryTokenCookieName { get; set; }
         string AntiforgeryTokenInputName { get; set; }
+        long MaxRequestSizeMB { get; set; }
     }
 }

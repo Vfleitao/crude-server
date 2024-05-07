@@ -23,7 +23,8 @@ namespace CrudeServer.Integration.Mocks
         public static IServerBuilder CreateTestServerBuilder(
             int port,
             bool useEmbeddedFiles = true,
-            bool useAntiforgeryTokens = false
+            bool useAntiforgeryTokens = false,
+            bool useRequestSizeLimiter = false
         )
         {
             IServerBuilder serverBuilder = new ServerBuilder();
@@ -38,8 +39,14 @@ namespace CrudeServer.Integration.Mocks
                 })
                 .AddRequestTagging()
                 .AddAuthentication()
-                .AddCommandRetriever()
-                .AddRequestDataRetriever();
+                .AddCommandRetriever();
+
+            if (useRequestSizeLimiter)
+            {
+                serverBuilder.AddRequestSizeLimit(1);
+            }
+
+            serverBuilder.AddRequestDataRetriever();
 
             if (useAntiforgeryTokens)
             {

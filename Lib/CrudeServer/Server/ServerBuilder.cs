@@ -178,6 +178,14 @@ namespace CrudeServer.Server
             return this;
         }
 
+        public IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB)
+        {
+            this.ServerConfiguration.MaxRequestSizeMB = maxRequestSizeMB;
+            this.MiddlewareRegistry.AddMiddleware<RequestSizeLimiterMiddleware>();
+
+            return this;
+        }
+
         public IServerBuilder AddCommandExecutor()
         {
             if (this.hasAntiforgeryTokens)
