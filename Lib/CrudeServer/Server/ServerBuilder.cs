@@ -19,6 +19,9 @@ using CrudeServer.Providers.Contracts;
 using CrudeServer.Providers.DataParser;
 using CrudeServer.Server.Contracts;
 
+using HandlebarsDotNet.Helpers.Enums;
+using HandlebarsDotNet.Helpers;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Server
@@ -174,6 +177,14 @@ namespace CrudeServer.Server
         public IServerBuilder AddCommandRetriever()
         {
             this.MiddlewareRegistry.AddMiddleware<CommandRetrieverMiddleware>();
+
+            return this;
+        }
+
+        public IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB)
+        {
+            this.ServerConfiguration.MaxRequestSizeMB = maxRequestSizeMB;
+            this.MiddlewareRegistry.AddMiddleware<RequestSizeLimiterMiddleware>();
 
             return this;
         }

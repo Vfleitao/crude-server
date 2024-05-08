@@ -1,0 +1,28 @@
+<h2 id="request-limit">
+    &bull; Request Size Limiter Middleware
+</h2>
+<p>
+    RequestSizeLimiterMiddleware is a middleware to allow to block requests that are too big for your server to handle.<br />
+    This middleware is not included in the default middleware pipeline, so you need to add it manually by calling 
+    AddRequestSizeLimit(long maxRequestSizeMB) in the Configure method of your Startup class.<br />
+    <br />
+    This performs a simple check to see if the request size is above the limit and if it is, it will return a 400 Bad Request response.<br />
+    If it cannot determine the request size, it will read the request body 1024 bytes at a time until it reaches the limit or the end of the stream.<br />
+    <br />
+    If the request is bellow the limit, it will call the next middleware in the pipeline.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-csharp">IServerBuilder serverBuilder = new ServerBuilder();
+serverBuilder
+    .SetConfiguration(new ServerConfig()
+    {
+        Hosts = new List<string>() { "http://localhost:" + port.ToString() + "/" }
+    })
+    .AddRequestTagging()
+    .AddAuthentication()
+    .AddCommandRetriever()
+    // Add the size limit middleware before the data
+    // retriever so it can block the request
+    // before it reads the body
+    .AddRequestSizeLimit(1)
+    .AddRequestDataRetriever()
+    .AddCommandExecutor();</code></pre>

@@ -31,7 +31,7 @@ namespace CrudeServer
 
             string page = RequestContext.Items["page"].ToString();
 
-            if(titlesandTitleMap.ContainsKey(page))
+            if (titlesandTitleMap.ContainsKey(page))
             {
                 this.RequestContext.Items.Add("title", titlesandTitleMap[page]);
             }

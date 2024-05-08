@@ -7,11 +7,28 @@ using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using HandlebarsDotNet;
+using HandlebarsDotNet.Helpers;
 
 namespace CrudeServer.Providers
 {
     public abstract class BaseHandleBarsViewProvider : ITemplatedViewProvider
     {
+        private static IHandlebars handlebarsContext;
+
+        private IHandlebars HandlebarsContext
+        {
+            get
+            {
+                if (handlebarsContext == null)
+                {
+                    handlebarsContext = Handlebars.CreateSharedEnvironment();
+                    HandlebarsHelpers.Register(handlebarsContext);
+                }
+
+                return handlebarsContext;
+            }
+        }
+
         private const string LAYOUT_REGEX = @"@@layout\s+(\S+)(?=\s|$)";
         private const string PARTIAL_REGEX = @"@@partial\s+(\S+)(?=\s|$)";
 
@@ -39,7 +56,7 @@ namespace CrudeServer.Providers
             {
                 (string template, bool eligibleForCache) templateResult = await GetTemplateStringFromFiles(templatePath, commandContext);
 
-                compiledTemplate = Handlebars.Compile(templateResult.template);
+                compiledTemplate = HandlebarsContext.Compile(templateResult.template);
 
                 if (templateResult.eligibleForCache && this.serverConfig.EnableServerFileCache)
                 {

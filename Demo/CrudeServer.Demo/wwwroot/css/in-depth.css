@@ -4,10 +4,20 @@
   grid-gap: 40px;
   height: 100%;
 }
-[data-page=in-depth] .in-depth-menu .nav {
+[data-page=in-depth] .in-depth-menu .nav.level-1 {
   position: sticky;
   top: 10px;
 }
-[data-page=in-depth] .in-depth-menu .nav .nav-item {
+[data-page=in-depth] .in-depth-menu .nav.level-1 > .nav-item {
   border-bottom: 1px solid #bfbfbf;
+}
+[data-page=in-depth] .in-depth-menu .nav.level-2 {
+  margin-left: 1rem;
+  margin-bottom: var(--bs-nav-link-padding-y);
+}
+[data-page=in-depth] .in-depth-menu .nav.level-2 .nav-item:not(:first-child) {
+  border-top: 1px solid #bfbfbf;
+}
+[data-page=in-depth] .in-depth-menu .nav.level-2 .nav-item a {
+  padding: var(--bs-nav-link-padding-y) calc(var(--bs-nav-link-padding-x) * 0.5);
 }/*# sourceMappingURL=in-depth.css.map */

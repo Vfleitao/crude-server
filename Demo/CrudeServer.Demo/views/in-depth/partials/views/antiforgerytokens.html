@@ -1,0 +1,16 @@
+<p>
+    <h3 id="antiforgerytoken">&commat;&commat;antiforgerytoken</h3>
+    This helper, will generate an antiforgery token on the hidden input,
+    if antiforgery tokens are enabled in the app's middleware<br />
+<pre class="rw-100 rw-md-75"><code class="language-markup">
+&lt;form&gt;
+&commat;&commat;antiforgerytoken
+&lt;/form&gt;
+Will result in 
+&lt;form&gt;
+&lt;input type="hidden" value="VALUE OF TOKEN" name="NAME OF INPUT" /&gt;
+&lt;/form&gt;
+</code></pre>
+<p>
+    All these values are configurable in the <a href="/in-depth/middleware#antiforgerytoken" class="text-black">app's middleware</a>
+</p>

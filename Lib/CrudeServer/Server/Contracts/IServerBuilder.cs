@@ -31,5 +31,6 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder AddViews(string viewRoot, Assembly viewAssembly = null, Type viewProvider = null);
         IServerRunner Buid();
         IServerBuilder SetConfiguration(ServerConfig config);
+        IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB);
     }
 }

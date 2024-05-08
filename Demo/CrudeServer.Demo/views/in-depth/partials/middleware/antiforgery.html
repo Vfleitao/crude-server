@@ -1,0 +1,31 @@
+<h2 id="antiforgerytoken">
+    &bull; Antiforgery token Middleware
+</h2>
+<p>
+    Adding anti-forgery tokens to your server is a good way to prevent CSRF attacks. This middleware will add a hidden
+    input to your forms with the token value. The token is then checked when the form is submitted. If the token is
+    invalid, the request will be blocked.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-csharp">IServerBuilder serverBuilder = new ServerBuilder();
+serverBuilder
+    .SetConfiguration(new ServerConfig()
+    {
+        Hosts = new List<string>
+    () { "http://localhost:" + port.ToString() + "/" },
+    AntiforgeryTokenCookieName = "XSRF-T", // Cookie name for the token. Used when comparing token to input
+    AntiforgeryTokenInputName = "X-XSRF-T" // Name of the antiforgery token input
+    })
+    .AddRequestTagging()
+    .AddAuthentication()
+    .AddCommandRetriever()
+    .AddRequestDataRetriever()
+    // Add the antiforgery before requests are executed
+    .AddAntiforgeryTokens();
+    .AddCommandExecutor();
+</code></pre>
+<p>
+    To add the antiforgery token middleware, call the view helper <a href="/in-depth/views#antiforgerytoken" class="text-black">&commat;&commat;antiforgerytoken</a> in your view.
+    This will add a hidden input to your form with the token value.<br />
+    <br />
+    This is then compared to the cookie value when the form is submitted. If the token is invalid, the request will be blocked.
+</p>

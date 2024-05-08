@@ -21,6 +21,7 @@
     <None Remove="views\in-depth\partials\views\body-and-layout.html" />
     <None Remove="views\in-depth\partials\views\helpers.html" />
     <None Remove="views\in-depth\partials\views\intro.html" />
+    <None Remove="views\in-depth\partials\views\partials - Copy.html" />
     <None Remove="views\in-depth\partials\views\partials.html" />
     <None Remove="views\in-depth\partials\views\sections.html" />
     <None Remove="views\in-depth\views.html" />
