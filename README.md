@@ -24,7 +24,7 @@ To see examples, look into the Integration Tests or the project website [Crude S
 ## TO DO's
 - [x] Build Nuget Packages
 - [x] Antiforgery Tokens
-- [ ] Request Size Limiting
+- [x] Request Size Limiting
 - [x] Common UI Helpers for HandleBards
 - [ ] Commands as functions
 - [ ] Metrics Dashboard
