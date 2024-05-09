@@ -170,6 +170,8 @@ namespace CrudeServer.Server
             this.Services.AddScoped<ForbiddenResponse>();
             this.Services.AddScoped<NotFoundResponse>();
 
+            
+
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
@@ -228,6 +230,7 @@ namespace CrudeServer.Server
 
         private void RegisterBaseIOCItems()
         {
+
             this.Services = new ServiceCollection();
             this.Services.AddSingleton<IServiceCollection>(Services);
 
@@ -237,7 +240,6 @@ namespace CrudeServer.Server
             this.MiddlewareRegistry = new MiddlewareRegistry(Services);
             this.Services.AddSingleton<IMiddlewareRegistry>(MiddlewareRegistry);
 
-            this.Services.AddSingleton((IServiceProvider provider) => this.ServiceProvider);
             this.Services.AddSingleton<IServerRunner, ServerRunner>();
 
             this.Services.AddScoped<IHttpRequestExecutor, HttpRequestExecutor>();
@@ -252,6 +254,8 @@ namespace CrudeServer.Server
 
             this.StandardResponseRegistry = new StandardResponseRegistry();
             this.Services.AddScoped<IStandardResponseRegistry>((s) => StandardResponseRegistry);
+
+            this.Services.AddScoped<ICommandContext, CommandContext>();
         }
     }
 }
