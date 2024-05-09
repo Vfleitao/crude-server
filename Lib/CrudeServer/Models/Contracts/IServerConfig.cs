@@ -7,6 +7,7 @@ namespace CrudeServer.Models.Contracts
         string AuthenticationPath { get; set; }
         List<string> Hosts { get; set; }
         string NotFoundPath { get; set; }
+        bool RedirectOnNotFound { get; set; }
         bool RedirectOnAjaxCalls { get; set; }
         JTWConfig JTWConfiguration { get; set; }
         long CachedDurationMinutes { get; set; }

@@ -23,7 +23,7 @@ namespace CrudeServer.Middleware
             {
                 this.defaultStatusCodePaths.Add(401, (this._serverConfiguraton.AuthenticationPath, 302));
             }
-            if (!string.IsNullOrEmpty(this._serverConfiguraton.NotFoundPath))
+            if (!string.IsNullOrEmpty(this._serverConfiguraton.NotFoundPath) && this._serverConfiguraton.RedirectOnNotFound)
             {
                 this.defaultStatusCodePaths.Add(404, (this._serverConfiguraton.NotFoundPath, 302));
             }

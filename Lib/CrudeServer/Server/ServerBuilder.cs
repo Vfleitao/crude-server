@@ -23,6 +23,7 @@ using HandlebarsDotNet.Helpers.Enums;
 using HandlebarsDotNet.Helpers;
 
 using Microsoft.Extensions.DependencyInjection;
+using CrudeServer.Providers.Responses;
 
 namespace CrudeServer.Server
 {
@@ -35,6 +36,7 @@ namespace CrudeServer.Server
         public IServiceProvider ServiceProvider { get; private set; }
         public ICommandRegistry CommandRegistry { get; private set; }
         public IMiddlewareRegistry MiddlewareRegistry { get; private set; }
+        public IStandardResponseRegistry StandardResponseRegistry { get; private set; }
 
         public ServerBuilder()
         {
@@ -162,6 +164,12 @@ namespace CrudeServer.Server
         {
             this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
             this.Services.AddSingleton<IServerConfig>(this.ServerConfiguration);
+
+            this.Services.AddScoped<BadRequestResponse>();
+            this.Services.AddScoped<UnauthorizedResponse>();
+            this.Services.AddScoped<ForbiddenResponse>();
+            this.Services.AddScoped<NotFoundResponse>();
+
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
@@ -210,6 +218,14 @@ namespace CrudeServer.Server
             return this;
         }
 
+        public IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse
+        {
+            this.StandardResponseRegistry.ReplaceResponseInstance<T>(defaultStatus);
+            this.Services.AddScoped(typeof(T));
+
+            return this;
+        }
+
         private void RegisterBaseIOCItems()
         {
             this.Services = new ServiceCollection();
@@ -233,6 +249,9 @@ namespace CrudeServer.Server
 
             this.Services.AddScoped<ILogger, ConsoleLogger>();
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
+
+            this.StandardResponseRegistry = new StandardResponseRegistry();
+            this.Services.AddScoped<IStandardResponseRegistry>((s) => StandardResponseRegistry);
         }
     }
 }

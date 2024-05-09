@@ -20,11 +20,6 @@ namespace CrudeServer.Middleware
 
         public async Task Process(ICommandContext context, Func<Task> next)
         {
-            if (context.HttpRegistration == null)
-            {
-                throw new ArgumentNullException("Http Registration is null. Middleware may be executing too early");
-            }
-
             if (context.RequestHttpMethod == HttpMethod.GET ||
                 context.RequestHttpMethod == HttpMethod.OPTIONS ||
                 context.RequestHttpMethod == HttpMethod.HEAD

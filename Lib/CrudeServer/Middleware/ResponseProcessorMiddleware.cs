@@ -32,6 +32,8 @@ namespace CrudeServer.Middleware
                 httpResponse = new NotFoundResponse();
             }
 
+            await httpResponse.ProcessResponse();
+
             context.HttpListenerResponse.StatusCode = httpResponse.StatusCode;
             context.HttpListenerResponse.ContentType = httpResponse.ContentType;
 

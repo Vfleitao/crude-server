@@ -11,6 +11,8 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.Middleware
@@ -26,9 +28,19 @@ namespace CrudeServer.Lib.Tests.Middleware
                 .Setup(x => x.GetCommand(It.IsAny<string>(), It.IsAny<HttpMethod>()))
                 .Returns((HttpCommandRegistration)null);
 
+            Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
+            standardResponseRegistry
+                .Setup(x => x.GetResponseType(DefaultStatusCodes.NotFound))
+                .Returns(typeof(NotFoundResponse));
+
+            ServiceCollection serviceDescriptors = new ServiceCollection();
+            serviceDescriptors.AddScoped<NotFoundResponse>();
+
             CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
                 commandRegistry.Object,
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                standardResponseRegistry.Object,
+                serviceDescriptors.BuildServiceProvider()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -59,9 +71,19 @@ namespace CrudeServer.Lib.Tests.Middleware
                     RequiresAuthentication = true
                 });
 
+            Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
+            standardResponseRegistry
+                .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
+                .Returns(typeof(UnauthorizedResponse));
+
+            ServiceCollection serviceDescriptors = new ServiceCollection();
+            serviceDescriptors.AddScoped<UnauthorizedResponse>();
+
             CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
                 commandRegistry.Object,
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                standardResponseRegistry.Object,
+                serviceDescriptors.BuildServiceProvider()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -93,9 +115,19 @@ namespace CrudeServer.Lib.Tests.Middleware
                     AuthenticationRoles = new List<string>() { "Admin" }
                 });
 
+            Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
+            standardResponseRegistry
+                .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
+                .Returns(typeof(UnauthorizedResponse));
+
+            ServiceCollection serviceDescriptors = new ServiceCollection();
+            serviceDescriptors.AddScoped<UnauthorizedResponse>();
+
             CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
                 commandRegistry.Object,
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                standardResponseRegistry.Object,
+                serviceDescriptors.BuildServiceProvider()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
@@ -133,9 +165,19 @@ namespace CrudeServer.Lib.Tests.Middleware
                     AuthenticationRoles = new List<string>() { "Admin" }
                 });
 
+            Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
+            standardResponseRegistry
+                .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
+                .Returns(typeof(UnauthorizedResponse));
+
+            ServiceCollection serviceDescriptors = new ServiceCollection();
+            serviceDescriptors.AddScoped<UnauthorizedResponse>();
+
             CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
                 commandRegistry.Object,
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                standardResponseRegistry.Object,
+                serviceDescriptors.BuildServiceProvider()
             );
 
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();

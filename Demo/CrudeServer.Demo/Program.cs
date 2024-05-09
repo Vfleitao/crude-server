@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using CrudeServer.Demo.Responses;
 using CrudeServer.Enums;
 using CrudeServer.Models;
 using CrudeServer.Providers;
@@ -39,8 +40,8 @@ namespace CrudeServer
                 {
                     Hosts = new List<string> { host },
                     AuthenticationPath = "/login",
-                    NotFoundPath = "/not-found",
                     EnableServerFileCache = true,
+                    RedirectOnNotFound = false,
                 })
                 .AddRequestTagging()
                 .AddCommandRetriever()
@@ -53,6 +54,8 @@ namespace CrudeServer
             serverBuilder.AddCommand<NotFoundCommand>("/not-found", HttpMethod.GET);
             serverBuilder.AddCommand<InDepthRedirectCommand>("/in-depth", HttpMethod.GET);
             serverBuilder.AddCommand<InDepthPageCommand>("/in-depth/{page:\\w+}", HttpMethod.GET);
+
+            serverBuilder.ReplaceDefaultResponses<NotFoundResponse>(DefaultStatusCodes.NotFound);
 
             IServerRunner server = serverBuilder.Buid();
             await server.Run();

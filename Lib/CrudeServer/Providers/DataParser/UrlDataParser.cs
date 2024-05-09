@@ -18,8 +18,10 @@ namespace CrudeServer.Providers.DataParser
             HttpRequestData httpRequestData = new HttpRequestData();
 
             HttpCommandRegistration commandRegistration = request.HttpRegistration;
-
-            Dictionary<string, string> urlParameters = new Dictionary<string, string>();
+            if (commandRegistration == null)
+            {
+                return Task.FromResult(httpRequestData);
+            }
 
             if (commandRegistration.UrlParameters == null || !commandRegistration.UrlParameters.Any())
             {

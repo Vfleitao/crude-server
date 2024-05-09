@@ -4,6 +4,7 @@ using System.Reflection;
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
+using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 
@@ -32,5 +33,6 @@ namespace CrudeServer.Server.Contracts
         IServerRunner Buid();
         IServerBuilder SetConfiguration(ServerConfig config);
         IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB);
+        IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
     }
 }

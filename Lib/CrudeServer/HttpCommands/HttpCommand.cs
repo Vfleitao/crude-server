@@ -26,28 +26,29 @@ namespace CrudeServer.HttpCommands
 
         protected abstract Task<IHttpResponse> Process();
 
-        protected async Task<IHttpResponse> View(string path, object data = null)
+        protected Task<IHttpResponse> View(string path, object data = null)
         {
-            IHttpViewResponse viewResponse = this.RequestContext.Services.GetService<IHttpViewResponse>();
-
-            viewResponse.CommandContext = RequestContext;
-            viewResponse.ViewModel = data ?? new { };
-            viewResponse.Items = new Dictionary<string, object>();
-            viewResponse.Items.Add("User", RequestContext.User);
-
-            if (RequestContext.Items != null)
+            return Task.Run<IHttpResponse>(() =>
             {
-                foreach (var item in RequestContext.Items)
+                IHttpViewResponse viewResponse = this.RequestContext.Services.GetService<IHttpViewResponse>();
+
+                viewResponse.CommandContext = RequestContext;
+                viewResponse.ViewModel = data ?? new { };
+                viewResponse.Items = new Dictionary<string, object>();
+                viewResponse.Items.Add("User", RequestContext.User);
+
+                if (RequestContext.Items != null)
                 {
-                    viewResponse.Items.Add(item.Key, item.Value);
+                    foreach (var item in RequestContext.Items)
+                    {
+                        viewResponse.Items.Add(item.Key, item.Value);
+                    }
                 }
-            }
 
-            viewResponse.SetTemplatePath(path);
+                viewResponse.SetTemplatePath(path);
 
-            await viewResponse.ProcessResponse();
-
-            return viewResponse;
+                return viewResponse;
+            });
         }
 
         protected T GetModelFromRequest<T>()

@@ -94,23 +94,5 @@ namespace CrudeServer.Lib.Tests.Middleware
             Assert.That(cookies[0].Name, Is.EqualTo("antiforgery"));
             Assert.That(cookies[0].Value, Is.EqualTo("test1234"));
         }
-
-        [Test]
-        public void NoHttpRegistration_ThrowsException()
-        {
-            // Arrange
-
-            AntiforgeryTokenGenerationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenGenerationMiddleware(
-                null
-            );
-
-            // Act
-            // Assert
-            Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            {
-                await antiforgeryTokenMiddleware.Process(Mock.Of<ICommandContext>(), () => Task.CompletedTask);
-            });
-        }
-
     }
 }
