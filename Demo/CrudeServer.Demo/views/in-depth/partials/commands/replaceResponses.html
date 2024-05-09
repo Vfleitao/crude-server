@@ -1,0 +1,44 @@
+<h2 id="replace">Responses</h2>
+<p>
+    We can replace the default responses with for an route that is not matched (HTTP 404), or a Unauthorized (HTTP 401).
+    You can use the <code>serverBuilder.ReplaceDefaultResponses<T>(DefaultStatusCodes);</code> to replace the default responses.<br />
+    This only applies responses from the pipeline, and not from the commands, as the commands are responsible for their own responses.<br />
+    <br />
+    You can still retrive these however by using the <code>IStandardResponseRegistry.GetResponseType(DefaultStatusCodes statusCode);</code> method,
+    and a service provider to retrieve an instance of the response.<br />
+    Below you can see an example of how to replace the default responses.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">// setup the server
+IServerBuilder serverBuilder = new ServerBuilder();
+.... other setup
+serverBuilder.ReplaceDefaultResponses<NotFoundResponse>(DefaultStatusCodes.NotFound);
+</code></pre>
+<p>
+    With this, when a route is not matched, the server will return a <code>NotFoundResponse</code>
+    instead of the default response which is just an empty response with a 404 Status code.<br />
+    <br />
+    To retrieve the default response for some status codes, you can do the following:
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public MyCommand(
+    IStandardResponseRegistry standardResponseRegistry,
+    IServiceProvider serviceProvider
+)
+{
+    this.standardResponseRegistry = standardResponseRegistry;
+    this.serviceProvider = serviceProvider;
+}
+
+protected override async Task<IHttpResponse> Process()
+{
+    if ([SOME CHECK IN YOUR CODE])
+    {
+        Type responseType = standardResponseRegistry.GetResponseType(Enums.DefaultStatusCodes.NotFound);
+        return (IHttpResponse)this.serviceProvider.GetService(responseType);
+    }
+
+    return await View("SOMEVIEWPATH.html");
+}
+</code></pre>
+<p>
+    With this you can retrieve your new default response, and return it from your command.
+</p>

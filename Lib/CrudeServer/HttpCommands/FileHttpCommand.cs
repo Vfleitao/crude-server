@@ -22,17 +22,20 @@ namespace CrudeServer.HttpCommands
         private readonly string _fileRoot;
         private readonly IServerConfig serverConfig;
         private readonly ILogger loggerProvider;
+        private readonly IStandardResponseRegistry standardResponseProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
-            ILogger loggerProvider
+            ILogger loggerProvider,
+            IStandardResponseRegistry standardResponseProvider
         )
         {
             this._fileRoot = fileRoot;
             this.serverConfig = serverConfig;
             this.loggerProvider = loggerProvider;
+            this.standardResponseProvider = standardResponseProvider;
             this._fileExtentionProvider = new FileExtensionContentTypeProvider();
             this._cache = new Dictionary<string, byte[]>();
         }

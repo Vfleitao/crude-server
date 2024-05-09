@@ -18,5 +18,6 @@ namespace CrudeServer.Models
         public string AntiforgeryTokenCookieName { get; set; }
         public string AntiforgeryTokenInputName { get; set; }
         public long MaxRequestSizeMB { get; set; }
+        public bool RedirectOnNotFound { get; set; }
     }
 }

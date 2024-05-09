@@ -12,10 +12,7 @@ namespace CrudeServer
         {
             this.AddGenericItemData();
 
-            IHttpResponse viewResponse = await View("not-found.html", new
-            {
-                name = "Vitor",
-            });
+            IHttpResponse viewResponse = await View("not-found.html");
 
             return viewResponse;
         }

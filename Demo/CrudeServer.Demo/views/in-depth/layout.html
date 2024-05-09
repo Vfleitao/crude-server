@@ -16,6 +16,16 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link text-black" href="/in-depth/commands">Http Commands</a>
+                {{#String.Equal viewData.page "commands" }}
+                <ul class="nav d-inline-flex flex-column level-2">
+                    <li class="nav-item">
+                        <a class="nav-link text-black" href="/in-depth/commands#responses">Responses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-black" href="/in-depth/commands#replace">Replace Responses</a>
+                    </li>
+                </ul>
+                {{/String.Equal}}
             </li>
             <li class="nav-item">
                 <a class="nav-link text-black" href="/in-depth/files">Files</a>

@@ -17,14 +17,20 @@ namespace CrudeServer.Middleware
     {
         private readonly ICommandRegistry _commandRegistry;
         private readonly ILogger loggerProvider;
+        private readonly IStandardResponseRegistry standardResponseProvider;
+        private readonly IServiceProvider serviceProvider;
 
         public CommandRetrieverMiddleware(
             ICommandRegistry commandRegistry,
-            ILogger loggerProvider
+            ILogger loggerProvider,
+            IStandardResponseRegistry standardResponseProvider,
+            IServiceProvider serviceProvider
         )
         {
             this._commandRegistry = commandRegistry;
             this.loggerProvider = loggerProvider;
+            this.standardResponseProvider = standardResponseProvider;
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task Process(ICommandContext context, Func<Task> next)
@@ -43,13 +49,15 @@ namespace CrudeServer.Middleware
             {
                 this.loggerProvider.Log($"[CommandRetrieverMiddleware] Command not found for {context.RequestUrl.AbsolutePath}");
 
-                httpResponse = new NotFoundResponse();
+                Type notFoundResponseType = standardResponseProvider.GetResponseType(DefaultStatusCodes.NotFound);
+                httpResponse = (IHttpResponse)this.serviceProvider.GetService(notFoundResponseType);
             }
             else if (commandRegistration.RequiresAuthentication && !IsUserAuthenticated(commandRegistration, context))
             {
                 this.loggerProvider.Log($"[CommandRetrieverMiddleware] Command is unauthorized for {context.RequestUrl.AbsolutePath}");
 
-                httpResponse = new UnauthorizedResponse();
+                Type unauthorizedResponseType = standardResponseProvider.GetResponseType(DefaultStatusCodes.Unauthorized);
+                httpResponse = (IHttpResponse)this.serviceProvider.GetService(unauthorizedResponseType);
             }
 
             context.Response = httpResponse;

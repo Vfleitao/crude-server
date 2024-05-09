@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CrudeServer.Demo.Commands;
 using CrudeServer.HttpCommands.Contract;
-using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer
 {
@@ -20,11 +21,25 @@ namespace CrudeServer
             { "examples", "Examples" },
         };
 
+        private readonly IStandardResponseRegistry standardResponseRegistry;
+        private readonly IServiceProvider serviceProvider;
+
+        public InDepthPageCommand(
+            IStandardResponseRegistry standardResponseRegistry,
+            IServiceProvider serviceProvider
+        )
+        {
+            this.standardResponseRegistry = standardResponseRegistry;
+            this.serviceProvider = serviceProvider;
+        }
+
         protected override async Task<IHttpResponse> Process()
         {
             if (!titlesandTitleMap.Keys.Contains(RequestContext.Items["page"].ToString()))
             {
-                return new NotFoundResponse();
+                Type responseType = standardResponseRegistry.GetResponseType(Enums.DefaultStatusCodes.NotFound);
+
+                return (IHttpResponse)this.serviceProvider.GetService(responseType);
             }
 
             this.AddGenericItemData();

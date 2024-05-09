@@ -13,6 +13,7 @@
     <None Remove="views\in-depth\partials\authentication\intro.html" />
     <None Remove="views\in-depth\partials\authentication\setup.html" />
     <None Remove="views\in-depth\partials\commands\httpCommand.html" />
+    <None Remove="views\in-depth\partials\commands\replaceResponses.html" />
     <None Remove="views\in-depth\partials\commands\responses.html" />
     <None Remove="views\in-depth\partials\commands\routes.html" />
     <None Remove="views\in-depth\partials\middleware\example.html" />
@@ -75,6 +76,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\commands\httpCommand.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\commands\replaceResponses.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\commands\responses.html">
