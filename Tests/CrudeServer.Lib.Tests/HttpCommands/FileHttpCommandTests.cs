@@ -18,17 +18,16 @@ namespace CrudeServer.Lib.Tests.HttpCommands
         public async Task FilesDoesNotExist_Returns404()
         {
             // Arrange
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
+            requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/files/doesnotexist.txt"));
+
             EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                requestContext.Object
             );
-
-            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
-            requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/files/doesnotexist.txt"));
-
-            fileHttpCommand.SetContext(requestContext.Object);
 
             // Act
             IHttpResponse response = await fileHttpCommand.ExecuteRequest();
@@ -42,17 +41,16 @@ namespace CrudeServer.Lib.Tests.HttpCommands
         public async Task FilesExists_Returns200WithData()
         {
             // Arrange
+            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
+            requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/demo.json"));
+
             EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
                 new ServerConfig() { },
-                Mock.Of<ILogger>()
+                Mock.Of<ILogger>(),
+                requestContext.Object
             );
-
-            Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
-            requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/demo.json"));
-
-            fileHttpCommand.SetContext(requestContext.Object);
 
             // Act
             IHttpResponse response = await fileHttpCommand.ExecuteRequest();

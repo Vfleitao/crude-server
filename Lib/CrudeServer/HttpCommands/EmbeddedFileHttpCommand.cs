@@ -30,8 +30,9 @@ namespace CrudeServer.HttpCommands
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
-            ILogger loggerProvider
-        )
+            ILogger loggerProvider,
+            ICommandContext requestContext
+        ) : base(requestContext)
         {
             this._fileAssembly = fileAssembly;
             this._fileRoot = fileRoot;

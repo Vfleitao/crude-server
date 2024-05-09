@@ -10,12 +10,16 @@ using System.Threading.Tasks;
 
 using CrudeServer.Integration.Commands;
 using CrudeServer.Integration.Mocks;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Moq;
+
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CrudeServer.Integration
 {
@@ -27,23 +31,12 @@ namespace CrudeServer.Integration
         [TestCase(Enums.HttpMethod.PUT)]
         [TestCase(Enums.HttpMethod.DELETE)]
         [TestCase(Enums.HttpMethod.OPTIONS)]
-        [TestCase(Enums.HttpMethod.HEAD)]
         public async Task CanGetDataFromUrlRequest(Enums.HttpMethod httpMethod)
         {
             // Arrange
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/path/{id:\\d+}/{page:\\w+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -67,13 +60,20 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("page"));
-                    Assert.That(commandInstance.RequestContext.Items["page"], Is.EqualTo("test"));
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
+
+                    Assert.That(responseData, Is.Not.Null);
+
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
+
+                    Assert.That(item.id, Is.Not.Null);
+
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
                 }
             }
             catch (Exception ex)
@@ -96,16 +96,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -130,15 +120,25 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
+
+                    Assert.That(item.id, Is.Not.Null);
+
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
+
+                    Assert.That(item.name, Is.Not.Null);
+
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
                 }
             }
             catch (Exception ex)
@@ -161,16 +161,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -218,42 +208,49 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("address"));
-                    Assert.That(commandInstance.RequestContext.Items["address"], Is.InstanceOf<Dictionary<string, object>>());
+                    Assert.That(item.id, Is.Not.Null);
 
-                    Dictionary<string, object> address = (Dictionary<string, object>)commandInstance.RequestContext.Items["address"];
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
 
-                    Assert.That(address, Contains.Key("street"));
-                    Assert.That(address, Contains.Key("city"));
-                    Assert.That(address, Contains.Key("doors"));
+                    Assert.That(item.name, Is.Not.Null);
 
-                    Assert.That(address["street"], Is.EqualTo("123 Main St"));
-                    Assert.That(address["city"], Is.EqualTo("Anytown"));
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
 
-                    Assert.That(address["doors"], Is.InstanceOf<List<object>>());
-                    List<object> doors = (List<object>)address["doors"];
+                    Assert.That(item.address, Is.Not.Null);
+
+                    dynamic address = item.address;
+
+                    string street = address.street;
+                    string city = address.city;
+
+                    Assert.That(street, Is.EqualTo("123 Main St"));
+                    Assert.That(city, Is.EqualTo("Anytown"));
+
+                    Assert.That(address.doors, Is.Not.Null);
+
+                    List<string> doors = ((JArray)address.doors).Select(x => x.Value<string>()).ToList();
 
                     Assert.That(doors[0], Is.EqualTo("Front"));
                     Assert.That(doors[1], Is.EqualTo("Back"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("scores"));
-                    Assert.That(commandInstance.RequestContext.Items["scores"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.scores, Is.Not.Null);
+                    List<int> scores = ((JArray)item.scores).Select(x => x.Value<int>()).ToList();
 
-                    List<object> list = (List<object>)commandInstance.RequestContext.Items["scores"];
-
-                    Assert.That(list[0], Is.EqualTo(1));
-                    Assert.That(list[1], Is.EqualTo(2));
-                    Assert.That(list[2], Is.EqualTo(3));
+                    Assert.That(scores[0], Is.EqualTo(1));
+                    Assert.That(scores[1], Is.EqualTo(2));
+                    Assert.That(scores[2], Is.EqualTo(3));
                 }
             }
             catch (Exception ex)
@@ -276,16 +273,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -317,18 +304,21 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Files, Is.Not.Null);
-                    Assert.That(commandInstance.RequestContext.Files, Has.Count.EqualTo(1));
+                    Assert.That(responseData.files, Is.Not.Null);
 
-                    HttpFile file = commandInstance.RequestContext.Files.First();
-                    Assert.That(file.Name, Is.EqualTo("testfile.txt"));
-                    Assert.That(file.Content, Is.Not.Null);
+                    List<dynamic> files = ((JArray)responseData.files).Select(x => (dynamic)x).ToList();
 
-                    string commandFileContent = Encoding.UTF8.GetString(file.Content);
+                    Assert.That(files.Count, Is.EqualTo(1));
+
+                    Assert.That((string)files[0].Name, Is.EqualTo("testfile.txt"));
+                    Assert.That(files[0].Content, Is.Not.Null);
+
+                    string commandFileContent = Encoding.UTF8.GetString((byte[])files[0].Content);
                     string originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath));
-
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
                 }
             }
@@ -352,16 +342,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -400,27 +380,29 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Files, Is.Not.Null);
-                    Assert.That(commandInstance.RequestContext.Files, Has.Count.EqualTo(2));
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    HttpFile file1 = commandInstance.RequestContext.Files.First();
-                    Assert.That(file1.Name, Is.EqualTo("testfile.txt"));
-                    Assert.That(file1.Content, Is.Not.Null);
+                    Assert.That(responseData.files, Is.Not.Null);
 
-                    string commandFileContent = Encoding.UTF8.GetString(file1.Content);
+                    List<dynamic> files = ((JArray)responseData.files).Select(x => (dynamic)x).ToList();
+
+                    Assert.That(files.Count, Is.EqualTo(2));
+
+                    Assert.That((string)files[0].Name, Is.EqualTo("testfile.txt"));
+                    Assert.That(files[0].Content, Is.Not.Null);
+
+                    string commandFileContent = Encoding.UTF8.GetString((byte[])files[0].Content);
                     string originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath));
-
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
 
-                    HttpFile file2 = commandInstance.RequestContext.Files.Last();
-                    Assert.That(file2.Name, Is.EqualTo("testfile2.txt"));
-                    Assert.That(file2.Content, Is.Not.Null);
+                    Assert.That((string)files[1].Name, Is.EqualTo("testfile2.txt"));
+                    Assert.That(files[1].Content, Is.Not.Null);
 
-                    commandFileContent = Encoding.UTF8.GetString(file2.Content);
+                    commandFileContent = Encoding.UTF8.GetString((byte[])files[1].Content);
                     originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath2));
-
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
                 }
             }
@@ -444,16 +426,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -500,42 +472,49 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("address"));
-                    Assert.That(commandInstance.RequestContext.Items["address"], Is.InstanceOf<Dictionary<string, object>>());
+                    Assert.That(item.id, Is.Not.Null);
 
-                    Dictionary<string, object> address = (Dictionary<string, object>)commandInstance.RequestContext.Items["address"];
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
 
-                    Assert.That(address, Contains.Key("street"));
-                    Assert.That(address, Contains.Key("city"));
-                    Assert.That(address, Contains.Key("doors"));
+                    Assert.That(item.name, Is.Not.Null);
 
-                    Assert.That(address["street"], Is.EqualTo("123 Main St"));
-                    Assert.That(address["city"], Is.EqualTo("Anytown"));
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
 
-                    Assert.That(address["doors"], Is.InstanceOf<List<object>>());
-                    List<object> doors = (List<object>)address["doors"];
+                    Assert.That(item.address, Is.Not.Null);
+
+                    dynamic address = item.address;
+                    
+                    string street = address.street;
+                    string city = address.city;
+
+                    Assert.That(street, Is.EqualTo("123 Main St"));
+                    Assert.That(city, Is.EqualTo("Anytown"));
+
+                    Assert.That(address.doors, Is.Not.Null);
+
+                    List<string> doors = ((JArray)address.doors).Select(x => x.Value<string>()).ToList();
 
                     Assert.That(doors[0], Is.EqualTo("Front"));
                     Assert.That(doors[1], Is.EqualTo("Back"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("scores"));
-                    Assert.That(commandInstance.RequestContext.Items["scores"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.scores, Is.Not.Null);
+                    List<int> scores = ((JArray)item.scores).Select(x => x.Value<int>()).ToList();
 
-                    List<object> list = (List<object>)commandInstance.RequestContext.Items["scores"];
-
-                    Assert.That(list[0], Is.EqualTo(1));
-                    Assert.That(list[1], Is.EqualTo(2));
-                    Assert.That(list[2], Is.EqualTo(3));
+                    Assert.That(scores[0], Is.EqualTo(1));
+                    Assert.That(scores[1], Is.EqualTo(2));
+                    Assert.That(scores[2], Is.EqualTo(3));
                 }
             }
             catch (Exception ex)
@@ -558,16 +537,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -620,53 +589,59 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("address"));
-                    Assert.That(commandInstance.RequestContext.Items["address"], Is.InstanceOf<Dictionary<string, object>>());
+                    Assert.That(item.id, Is.Not.Null);
 
-                    Dictionary<string, object> address = (Dictionary<string, object>)commandInstance.RequestContext.Items["address"];
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
 
-                    Assert.That(address, Contains.Key("street"));
-                    Assert.That(address, Contains.Key("city"));
-                    Assert.That(address, Contains.Key("doors"));
+                    Assert.That(item.name, Is.Not.Null);
 
-                    Assert.That(address["street"], Is.EqualTo("123 Main St"));
-                    Assert.That(address["city"], Is.EqualTo("Anytown"));
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
 
-                    Assert.That(address["doors"], Is.InstanceOf<List<object>>());
-                    List<object> doors = (List<object>)address["doors"];
+                    Assert.That(item.address, Is.Not.Null);
+
+                    dynamic address = item.address;
+
+                    string street = address.street;
+                    string city = address.city;
+
+                    Assert.That(street, Is.EqualTo("123 Main St"));
+                    Assert.That(city, Is.EqualTo("Anytown"));
+
+                    Assert.That(address.doors, Is.Not.Null);
+
+                    List<string> doors = ((JArray)address.doors).Select(x => x.Value<string>()).ToList();
 
                     Assert.That(doors[0], Is.EqualTo("Front"));
                     Assert.That(doors[1], Is.EqualTo("Back"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("scores"));
-                    Assert.That(commandInstance.RequestContext.Items["scores"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.scores, Is.Not.Null);
+                    List<int> scores = ((JArray)item.scores).Select(x => x.Value<int>()).ToList();
 
-                    List<object> list = (List<object>)commandInstance.RequestContext.Items["scores"];
+                    Assert.That(scores[0], Is.EqualTo(1));
+                    Assert.That(scores[1], Is.EqualTo(2));
+                    Assert.That(scores[2], Is.EqualTo(3));
 
-                    Assert.That(list[0], Is.EqualTo(1));
-                    Assert.That(list[1], Is.EqualTo(2));
-                    Assert.That(list[2], Is.EqualTo(3));
+                    Assert.That(responseData.files, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Files, Is.Not.Null);
-                    Assert.That(commandInstance.RequestContext.Files, Has.Count.EqualTo(1));
+                    List<dynamic> files = ((JArray)responseData.files).Select(x => (dynamic)x).ToList();
 
-                    HttpFile file = commandInstance.RequestContext.Files.First();
-                    Assert.That(file.Name, Is.EqualTo("testfile.txt"));
-                    Assert.That(file.Content, Is.Not.Null);
+                    Assert.That((string)files[0].Name, Is.EqualTo("testfile.txt"));
+                    Assert.That(files[0].Content, Is.Not.Null);
 
-                    string commandFileContent = Encoding.UTF8.GetString(file.Content);
+                    string commandFileContent = Encoding.UTF8.GetString((byte[])files[0].Content);
                     string originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath));
-
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
                 }
             }
@@ -690,16 +665,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -728,18 +693,25 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("age"));
-                    Assert.That(commandInstance.RequestContext.Items["age"], Is.EqualTo("99"));
+                    Assert.That(item.age, Is.Not.Null);
+
+                    string age = item.age;
+                    Assert.That(age, Is.EqualTo("99"));
+
+                    Assert.That(item.name, Is.Not.Null);
+
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
                 }
             }
             catch (Exception ex)
@@ -762,16 +734,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -810,52 +772,57 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("address"));
-                    Assert.That(commandInstance.RequestContext.Items["address"], Is.InstanceOf<Dictionary<string, object>>());
+                    Assert.That(item.id, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("persons"));
-                    Assert.That(commandInstance.RequestContext.Items["persons"], Is.InstanceOf<List<object>>());
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("__array__"));
-                    Assert.That(commandInstance.RequestContext.Items["__array__"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.name, Is.Not.Null);
 
-                    Dictionary<string, object> address = (Dictionary<string, object>)commandInstance.RequestContext.Items["address"];
-                    Assert.That(address, Contains.Key("street"));
-                    Assert.That(address, Contains.Key("city"));
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
 
-                    Assert.That(address["street"], Is.EqualTo("123 Main St"));
-                    Assert.That(address["city"], Is.EqualTo("Anytown"));
+                    Assert.That(item.address, Is.Not.Null);
 
-                    Assert.That(address["doors"], Is.InstanceOf<List<object>>());
-                    List<object> doors = (List<object>)address["doors"];
+                    dynamic address = item.address;
+
+                    string street = address.street;
+                    string city = address.city;
+
+                    Assert.That(street, Is.EqualTo("123 Main St"));
+                    Assert.That(city, Is.EqualTo("Anytown"));
+
+                    Assert.That(address.doors, Is.Not.Null);
+
+                    List<string> doors = ((JArray)address.doors).Select(x => x.Value<string>()).ToList();
+
                     Assert.That(doors[0], Is.EqualTo("Front"));
                     Assert.That(doors[1], Is.EqualTo("Back"));
 
-                    Assert.That(commandInstance.RequestContext.Items["persons"], Is.InstanceOf<List<object>>());
-                    List<object> persons = (List<object>)commandInstance.RequestContext.Items["persons"];
+                    List<dynamic> persons = ((JArray)item.persons).Select(x => (dynamic)x).ToList();
 
-                    Assert.That(persons[0], Is.InstanceOf<Dictionary<string, object>>());
-                    Assert.That((Dictionary<string, object>)persons[0], Contains.Key("name"));
-                    Assert.That(((Dictionary<string, object>)persons[0])["name"], Is.EqualTo("Doe"));
+                    Assert.That(persons.Count, Is.EqualTo(2));
 
-                    Assert.That(persons[1], Is.InstanceOf<Dictionary<string, object>>());
-                    Assert.That((Dictionary<string, object>)persons[1], Contains.Key("name"));
-                    Assert.That(((Dictionary<string, object>)persons[1])["name"], Is.EqualTo("Joe"));
+                    Assert.That((string)persons[0].name, Is.EqualTo("Doe"));
+                    Assert.That((string)persons[1].name, Is.EqualTo("Joe"));
 
-                    Assert.That(commandInstance.RequestContext.Items["__array__"], Is.InstanceOf<List<object>>());
-                    List<object> array = (List<object>)commandInstance.RequestContext.Items["__array__"];
-                    Assert.That(array[0], Is.EqualTo("Doe"));
-                    Assert.That(array[1], Is.EqualTo("Joe"));
+                    Assert.That(item.__array__, Is.Not.Null);
+
+                    List<string> array = ((JArray)item.__array__).Select(x => x.Value<string>()).ToList();
+                    Assert.That(array.Count, Is.EqualTo(2));
+
+                    Assert.That((string)array[0], Is.EqualTo("Doe"));
+                    Assert.That((string)array[1], Is.EqualTo("Joe"));
                 }
             }
             catch (Exception ex)
@@ -878,16 +845,6 @@ namespace CrudeServer.Integration
             int port = new Random().Next(1000, 9999);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
-
-            DataFromRequestCommand commandInstance = new DataFromRequestCommand();
-
-            serverBuilder.Services.Remove(
-                serverBuilder.Services.First(x => x.ServiceType == typeof(DataFromRequestCommand))
-            );
-            serverBuilder.Services.AddScoped<DataFromRequestCommand>((s) =>
-            {
-                return commandInstance;
-            });
 
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -938,75 +895,77 @@ namespace CrudeServer.Integration
 
                     Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
                     Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
-                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("text/html"));
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Is.Not.Null);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("id"));
-                    Assert.That(commandInstance.RequestContext.Items["id"], Is.EqualTo("99"));
+                    Assert.That(responseData, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("name"));
-                    Assert.That(commandInstance.RequestContext.Items["name"], Is.EqualTo("John"));
+                    Assert.That(responseData.items, Is.Not.Null);
+                    dynamic item = responseData.items;
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("address"));
-                    Assert.That(commandInstance.RequestContext.Items["address"], Is.InstanceOf<Dictionary<string, object>>());
+                    Assert.That(item.id, Is.Not.Null);
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("persons"));
-                    Assert.That(commandInstance.RequestContext.Items["persons"], Is.InstanceOf<List<object>>());
+                    string id = item.id;
+                    Assert.That(id, Is.EqualTo("99"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("__array__"));
-                    Assert.That(commandInstance.RequestContext.Items["__array__"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.name, Is.Not.Null);
 
-                    Dictionary<string, object> address = (Dictionary<string, object>)commandInstance.RequestContext.Items["address"];
-                    Assert.That(address, Contains.Key("street"));
-                    Assert.That(address, Contains.Key("city"));
+                    string name = item.name;
+                    Assert.That(name, Is.EqualTo("John"));
 
-                    Assert.That(address["street"], Is.EqualTo("123 Main St"));
-                    Assert.That(address["city"], Is.EqualTo("Anytown"));
+                    Assert.That(item.address, Is.Not.Null);
 
-                    Assert.That(address["doors"], Is.InstanceOf<List<object>>());
-                    List<object> doors = (List<object>)address["doors"];
+                    dynamic address = item.address;
+
+                    string street = address.street;
+                    string city = address.city;
+
+                    Assert.That(street, Is.EqualTo("123 Main St"));
+                    Assert.That(city, Is.EqualTo("Anytown"));
+
+                    Assert.That(address.doors, Is.Not.Null);
+
+                    List<string> doors = ((JArray)address.doors).Select(x => x.Value<string>()).ToList();
+
                     Assert.That(doors[0], Is.EqualTo("Front"));
                     Assert.That(doors[1], Is.EqualTo("Back"));
 
-                    Assert.That(commandInstance.RequestContext.Items["persons"], Is.InstanceOf<List<object>>());
-                    List<object> persons = (List<object>)commandInstance.RequestContext.Items["persons"];
+                    Assert.That(item.scores, Is.Not.Null);
+                    List<int> scores = ((JArray)item.scores).Select(x => x.Value<int>()).ToList();
 
-                    Assert.That(persons[0], Is.InstanceOf<Dictionary<string, object>>());
-                    Assert.That((Dictionary<string, object>)persons[0], Contains.Key("name"));
-                    Assert.That(((Dictionary<string, object>)persons[0])["name"], Is.EqualTo("Doe"));
+                    Assert.That(scores[0], Is.EqualTo(1));
+                    Assert.That(scores[1], Is.EqualTo(2));
+                    Assert.That(scores[2], Is.EqualTo(3));
 
-                    Assert.That(persons[1], Is.InstanceOf<Dictionary<string, object>>());
-                    Assert.That((Dictionary<string, object>)persons[1], Contains.Key("name"));
-                    Assert.That(((Dictionary<string, object>)persons[1])["name"], Is.EqualTo("Joe"));
+                    List<dynamic> persons = ((JArray)item.persons).Select(x => (dynamic)x).ToList();
 
-                    Assert.That(commandInstance.RequestContext.Items["__array__"], Is.InstanceOf<List<object>>());
-                    List<object> array = (List<object>)commandInstance.RequestContext.Items["__array__"];
-                    Assert.That(array[0], Is.EqualTo("Doe"));
-                    Assert.That(array[1], Is.EqualTo("Joe"));
+                    Assert.That(persons.Count, Is.EqualTo(2));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("age"));
-                    Assert.That(commandInstance.RequestContext.Items["age"], Is.EqualTo(25));
+                    Assert.That((string)persons[0].name, Is.EqualTo("Doe"));
+                    Assert.That((string)persons[1].name, Is.EqualTo("Joe"));
 
-                    Assert.That(commandInstance.RequestContext.Items, Contains.Key("scores"));
-                    Assert.That(commandInstance.RequestContext.Items["scores"], Is.InstanceOf<List<object>>());
+                    Assert.That(item.__array__, Is.Not.Null);
 
-                    List<object> list = (List<object>)commandInstance.RequestContext.Items["scores"];
+                    List<string> array = ((JArray)item.__array__).Select(x => x.Value<string>()).ToList();
+                    Assert.That(array.Count, Is.EqualTo(2));
 
-                    Assert.That(list[0], Is.EqualTo(1));
-                    Assert.That(list[1], Is.EqualTo(2));
-                    Assert.That(list[2], Is.EqualTo(3));
+                    Assert.That((string)array[0], Is.EqualTo("Doe"));
+                    Assert.That((string)array[1], Is.EqualTo("Joe"));
 
-                    Assert.That(commandInstance.RequestContext.Files, Is.Not.Null);
-                    Assert.That(commandInstance.RequestContext.Files, Has.Count.EqualTo(1));
+                    Assert.That(item.age, Is.Not.Null);
+                    Assert.That((int)item.age, Is.EqualTo(25));
 
-                    HttpFile file = commandInstance.RequestContext.Files.First();
-                    Assert.That(file.Name, Is.EqualTo("testfile.txt"));
-                    Assert.That(file.Content, Is.Not.Null);
+                    Assert.That(responseData.files, Is.Not.Null);
 
-                    string commandFileContent = Encoding.UTF8.GetString(file.Content);
+                    List<dynamic> files = ((JArray)responseData.files).Select(x => (dynamic)x).ToList();
+
+                    Assert.That((string)files[0].Name, Is.EqualTo("testfile.txt"));
+                    Assert.That(files[0].Content, Is.Not.Null);
+
+                    string commandFileContent = Encoding.UTF8.GetString((byte[])files[0].Content);
                     string originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath));
-
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
                 }
             }

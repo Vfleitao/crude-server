@@ -145,14 +145,14 @@ namespace CrudeServer.Providers.Utilities
                         list = (List<object>)currentField[arrayFieldName];
                     }
 
-                    while (list.Count <= index)
+                    while (list.Count < index + 1)
                     {
                         list.Add(null); // Add nulls or a default value for missing indices
                     }
 
-                    if (isLastPart)
+                    if (isLastPart && value != null)
                     {
-                        list.Insert(index, value);
+                        list[index] = value;
                     }
                     else
                     {

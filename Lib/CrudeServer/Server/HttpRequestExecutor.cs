@@ -20,16 +20,19 @@ namespace CrudeServer.Server
         private readonly IMiddlewareRegistry _middlewareRegistry;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger loggerProvider;
+        private readonly ICommandContext commandContext;
 
         public HttpRequestExecutor(
             IMiddlewareRegistry middlewareRegistry,
             IServiceProvider serviceProvider,
-            ILogger loggerProvider
+            ILogger loggerProvider,
+            ICommandContext commandContext
         )
         {
             this._middlewareRegistry = middlewareRegistry;
             this._serviceProvider = serviceProvider;
             this.loggerProvider = loggerProvider;
+            this.commandContext = commandContext;
         }
 
         public async Task Execute(HttpListenerContext context)
@@ -39,13 +42,6 @@ namespace CrudeServer.Server
 
             try
             {
-                ICommandContext requestContext = new CommandContext(
-                    context,
-                    request,
-                    response,
-                    this._serviceProvider
-                );
-
                 List<Type> middlewareTypes = this._middlewareRegistry.GetMiddlewares().ToList();
 
                 if (!middlewareTypes.Any())
@@ -56,17 +52,18 @@ namespace CrudeServer.Server
                 Func<Task> endOfChain = () => Task.CompletedTask;
                 Func<Task> executionChain = endOfChain;
 
+                commandContext.ConfigureContext(context, request, response);
 
                 IEnumerable<Type> reversedList = middlewareTypes.AsReadOnly().Reverse();
                 foreach (Type type in reversedList)
                 {
-                    executionChain = BuildNextItemInChain(_serviceProvider, type, executionChain, requestContext);
+                    executionChain = BuildNextItemInChain(_serviceProvider, type, executionChain, commandContext);
                 }
 
                 await executionChain();
 
                 IMiddleware responseProcessor = this._serviceProvider.GetKeyedService<IMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
-                await responseProcessor.Process(requestContext, endOfChain);
+                await responseProcessor.Process(commandContext, endOfChain);
 
                 response.Close();
             }
@@ -78,7 +75,8 @@ namespace CrudeServer.Server
                 {
                     response.OutputStream.SetLength(0);
                 }
-                catch (Exception) { 
+                catch (Exception)
+                {
                 }
 
                 response.StatusCode = 500;

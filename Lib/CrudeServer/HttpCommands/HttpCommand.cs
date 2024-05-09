@@ -14,9 +14,9 @@ namespace CrudeServer.HttpCommands
     {
         public ICommandContext RequestContext { get; private set; }
 
-        public void SetContext(ICommandContext context)
+        protected HttpCommand(ICommandContext requestContext)
         {
-            this.RequestContext = context;
+            RequestContext = requestContext;
         }
 
         public async virtual Task<IHttpResponse> ExecuteRequest()

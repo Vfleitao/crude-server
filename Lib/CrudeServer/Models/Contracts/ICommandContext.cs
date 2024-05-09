@@ -33,6 +33,7 @@ namespace CrudeServer.Models.Contracts
         IDictionary<string, string> ResponseHeaders { get; set; }
         IList<HttpCookie> ResponseCookies { get; set; }
 
+        void ConfigureContext(HttpListenerContext context, HttpListenerRequest request, HttpListenerResponse response);
         string GetCookie(string name);
     }
 }
