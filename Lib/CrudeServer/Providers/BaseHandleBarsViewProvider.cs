@@ -21,7 +21,12 @@ namespace CrudeServer.Providers
             {
                 if (handlebarsContext == null)
                 {
-                    handlebarsContext = Handlebars.CreateSharedEnvironment();
+                    handlebarsContext = Handlebars.CreateSharedEnvironment(new HandlebarsConfiguration() {
+                        ThrowOnUnresolvedBindingExpression = false
+                    });
+
+                    handlebarsContext.Configuration.UnresolvedBindingFormatter = "{0}";
+
                     HandlebarsHelpers.Register(handlebarsContext);
                 }
 

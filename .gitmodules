@@ -1,0 +1,3 @@
+[submodule "Handlebars.Net.Helpers"]
+	path = Handlebars.Net.Helpers
+	url = https://github.com/Vfleitao/Handlebars.Net.Helpers.git

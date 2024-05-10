@@ -40,9 +40,9 @@ namespace CrudeServer.HttpCommands.Responses
         {
             string template = await templatedViewProvider.GetTemplate(
                 TemplatePath, new
-                { 
-                    viewModel = this.ViewModel,
-                    viewData = this.Items
+                {
+                    viewModel = this.ViewModel ?? new { },
+                    viewData = this.Items ?? new Dictionary<string, object> { }
                 },
                 this.CommandContext
             );
