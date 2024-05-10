@@ -13,10 +13,11 @@ namespace CrudeServer.Models
 {
     public class CommandContext : ICommandContext
     {
-        public HttpListenerContext HttpListenerContext { get; }
-        public HttpListenerRequest HttpListenerRequest { get; }
-        public HttpListenerResponse HttpListenerResponse { get; }
-        public IServiceProvider Services { get; }
+
+        public HttpListenerContext HttpListenerContext { get; private set; }
+        public HttpListenerRequest HttpListenerRequest { get; private set; }
+        public HttpListenerResponse HttpListenerResponse { get; private set; }
+        public IServiceProvider Services { get; private set; }
 
         public HttpCommandRegistration HttpRegistration { get; set; }
         public IPrincipal User { get; set; }
@@ -35,18 +36,19 @@ namespace CrudeServer.Models
         public NameValueCollection RequestHeaders => HttpListenerRequest.Headers;
         public IEnumerable<HttpCookie> RequestCookies { get; protected set; }
 
+        public CommandContext(IServiceProvider serviceProvider)
+        {
+            Services = serviceProvider;
+        }
 
-        public CommandContext(
+        public void ConfigureContext(
             HttpListenerContext context,
             HttpListenerRequest request,
-            HttpListenerResponse response,
-            IServiceProvider serviceProvider
-        )
-        {
+            HttpListenerResponse response
+        ) {
             HttpListenerContext = context;
             HttpListenerRequest = request;
             HttpListenerResponse = response;
-            Services = serviceProvider;
 
             this.RequestCookies = HttpListenerRequest.Cookies.Select(x => new HttpCookie()
             {

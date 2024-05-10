@@ -29,8 +29,9 @@ namespace CrudeServer.HttpCommands
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
             IServerConfig serverConfig,
             ILogger loggerProvider,
-            IStandardResponseRegistry standardResponseProvider
-        )
+            IStandardResponseRegistry standardResponseProvider,
+            ICommandContext requestContext
+        ): base(requestContext)
         {
             this._fileRoot = fileRoot;
             this.serverConfig = serverConfig;

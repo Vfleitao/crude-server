@@ -25,7 +25,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             Mock<IServiceProvider> serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock
                 .Setup(x => x.GetService(It.IsAny<Type>()))
-                .Returns(new MockCommand());
+                .Returns(new MockCommand(Mock.Of<ICommandContext>()));
 
             CommandExecutorMiddleware middleware = new CommandExecutorMiddleware(
                 serviceProviderMock.Object,

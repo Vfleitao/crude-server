@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using CrudeServer.Demo.Commands;
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer
@@ -26,8 +27,9 @@ namespace CrudeServer
 
         public InDepthPageCommand(
             IStandardResponseRegistry standardResponseRegistry,
-            IServiceProvider serviceProvider
-        )
+            IServiceProvider serviceProvider,
+            ICommandContext requestContext
+        ) : base(requestContext)
         {
             this.standardResponseRegistry = standardResponseRegistry;
             this.serviceProvider = serviceProvider;

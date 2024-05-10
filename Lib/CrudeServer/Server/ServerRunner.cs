@@ -56,7 +56,7 @@ namespace CrudeServer.Server
                     {
                         try
                         {
-                            using (var scope = this._serviceProvider.CreateAsyncScope())
+                            using (AsyncServiceScope scope = this._serviceProvider.CreateAsyncScope())
                             {
                                 IHttpRequestExecutor httpRequestExecutor = (IHttpRequestExecutor)scope.ServiceProvider.GetService(typeof(IHttpRequestExecutor));
                                 await httpRequestExecutor.Execute(context);

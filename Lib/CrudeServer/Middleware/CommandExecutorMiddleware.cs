@@ -54,8 +54,6 @@ namespace CrudeServer.Middleware
             else
             {
                 this.loggerProvider.Log($"[CommandExecutorMiddleware] Command found for {context.RequestUrl.AbsolutePath}");
-
-                command.SetContext(context);
                 httpResponse = await command.ExecuteRequest();
             }
 
