@@ -11,7 +11,7 @@ using CrudeServer.Server.Contracts;
 
 namespace CrudeServer
 {
-    public partial class Program
+    public class Program
     {
 
         public static async Task Main(string[] args)
