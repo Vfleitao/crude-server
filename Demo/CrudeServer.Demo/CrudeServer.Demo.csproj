@@ -16,9 +16,12 @@
     <None Remove="views\in-depth\partials\commands\replaceResponses.html" />
     <None Remove="views\in-depth\partials\commands\responses.html" />
     <None Remove="views\in-depth\partials\commands\routes.html" />
+    <None Remove="views\in-depth\partials\middleware\antiforgery.html" />
     <None Remove="views\in-depth\partials\middleware\example.html" />
     <None Remove="views\in-depth\partials\middleware\intro.html" />
+    <None Remove="views\in-depth\partials\middleware\requestsize.html" />
     <None Remove="views\in-depth\partials\middleware\setup.html" />
+    <None Remove="views\in-depth\partials\views\antiforgerytokens.html" />
     <None Remove="views\in-depth\partials\views\body-and-layout.html" />
     <None Remove="views\in-depth\partials\views\helpers.html" />
     <None Remove="views\in-depth\partials\views\intro.html" />
@@ -87,13 +90,22 @@
     <EmbeddedResource Include="views\in-depth\partials\commands\routes.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\middleware\antiforgery.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\middleware\example.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\middleware\intro.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\middleware\requestsize.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\middleware\setup.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="views\in-depth\partials\views\antiforgerytokens.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="views\in-depth\partials\views\body-and-layout.html">
