@@ -61,6 +61,11 @@ namespace CrudeServer.Providers
             {
                 (string template, bool eligibleForCache) templateResult = await GetTemplateStringFromFiles(templatePath, commandContext);
 
+                if (string.IsNullOrEmpty(templateResult.template))
+                {
+                    return null;
+                }
+
                 compiledTemplate = HandlebarsContext.Compile(templateResult.template);
 
                 if (templateResult.eligibleForCache && this.serverConfig.EnableServerFileCache)
