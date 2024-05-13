@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Handlebars.Net" Version="2.1.6" />
+		<PackageReference Include="Handlebars.Net.Helpers" Version="2.4.3" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<None Include="..\..\Content\logo_extra_small.png">
@@ -46,10 +47,6 @@
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Handlebars.Net.Helpers\src\Handlebars.Net.Helpers\Handlebars.Net.Helpers.csproj" />
 	</ItemGroup>
 
 </Project>
