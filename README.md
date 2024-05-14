@@ -35,4 +35,4 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Add cookie based auth
 - [ ] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
-- [ ] Add Automated security scans for code
+- [x] Add Automated security scans for code
