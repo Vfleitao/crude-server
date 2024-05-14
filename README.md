@@ -1,3 +1,4 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2f935788913c45cc8264706ee210c1b3)](https://app.codacy.com/gh/Vfleitao/crude-server/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 ![CrudeServer](/Content/logo_small.png)
 # Crude Server - A rough and simple webserver in .NET
 Crude Server, is a simple server written in .NET and using a HttpListener to answer requests in an async fashion.
