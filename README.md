@@ -33,6 +33,6 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Non view file support
 - [x] Crude Server Documentation and Demo app
 - [x] Add cookie based auth
-- [ ] Allow Replacing default status responses (ie: 401, 404, etc)
+- [x] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
 - [x] Add Automated security scans for code

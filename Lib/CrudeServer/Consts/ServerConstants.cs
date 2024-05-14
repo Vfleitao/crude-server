@@ -1,13 +1,11 @@
 ﻿namespace CrudeServer.Consts
 {
-    public static class ServerConstants
+    internal static class ServerConstants
     {
-        public const string FILE_ROOT = "fileRoot";
-        public const string FILE_ASSEMBLY = "fileAssembly";
-        public const string VIEW_ROOT = "viewRoot";
-        public const string VIEW_ASSEMBLY = "viewAssembly";
-
-
-        public const string RESPONSE_PROCESSOR = nameof(RESPONSE_PROCESSOR);
+        internal const string FILE_ROOT = "fileRoot";
+        internal const string FILE_ASSEMBLY = "fileAssembly";
+        internal const string VIEW_ROOT = "viewRoot";
+        internal const string VIEW_ASSEMBLY = "viewAssembly";
+        internal const string RESPONSE_PROCESSOR = nameof(RESPONSE_PROCESSOR);
     }
 }

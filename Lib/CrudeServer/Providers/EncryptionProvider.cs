@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ConnectUs.Utilities;
+
 using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.Providers
@@ -18,44 +19,30 @@ namespace CrudeServer.Providers
 
         public string Encrypt(string text, string publicKey)
         {
-            try
-            {
-                byte[] dataToEncrypt = Encoding.UTF8.GetBytes(text);
-                byte[] encryptedBytes = Encrypt(dataToEncrypt, publicKey);
+            byte[] dataToEncrypt = Encoding.UTF8.GetBytes(text);
+            byte[] encryptedBytes = Encrypt(dataToEncrypt, publicKey);
 
-                return Convert.ToBase64String(encryptedBytes);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return Convert.ToBase64String(encryptedBytes);
         }
 
         public byte[] Encrypt(byte[] dataToEncrypt, string publicKey)
         {
-            try
+            using (Aes aes = Aes.Create())
             {
-                using (Aes aes = Aes.Create())
-                {
-                    aes.GenerateKey();
-                    aes.GenerateIV();
+                aes.GenerateKey();
+                aes.GenerateIV();
 
-                    byte[] symmetricKey = aes.Key;
-                    byte[] symmetricIV = aes.IV;
+                byte[] symmetricKey = aes.Key;
+                byte[] symmetricIV = aes.IV;
 
-                    byte[] encryptedData = EncryptWithAes(dataToEncrypt, symmetricKey, symmetricIV);
+                byte[] encryptedData = EncryptWithAes(dataToEncrypt, symmetricKey, symmetricIV);
 
-                    byte[] encryptedSymmetricKey = EncryptWithRsa(symmetricKey, publicKey);
-                    byte[] encryptedSymmetricIV = EncryptWithRsa(symmetricIV, publicKey);
+                byte[] encryptedSymmetricKey = EncryptWithRsa(symmetricKey, publicKey);
+                byte[] encryptedSymmetricIV = EncryptWithRsa(symmetricIV, publicKey);
 
-                    byte[] combinedEncryptedData = CombineEncryptedKeyAndData(encryptedSymmetricKey, encryptedSymmetricIV, encryptedData);
+                byte[] combinedEncryptedData = CombineEncryptedKeyAndData(encryptedSymmetricKey, encryptedSymmetricIV, encryptedData);
 
-                    return combinedEncryptedData;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
+                return combinedEncryptedData;
             }
         }
 
@@ -220,15 +207,11 @@ namespace CrudeServer.Providers
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
                 using (MemoryStream msDecrypt = new MemoryStream(dataToDecrypt))
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (var reader = new MemoryStream())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (var reader = new MemoryStream())
-                        {
-                            csDecrypt.CopyTo(reader);
-                            return reader.ToArray();
-                        }
-                    }
+                    csDecrypt.CopyTo(reader);
+                    return reader.ToArray();
                 }
             }
         }

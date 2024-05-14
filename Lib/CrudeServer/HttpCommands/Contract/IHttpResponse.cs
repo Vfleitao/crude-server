@@ -5,15 +5,12 @@ using CrudeServer.Models;
 
 namespace CrudeServer.HttpCommands.Contract
 {
-    public interface IHttpResponse : IHttpResponse<object> { }
-
-    public interface IHttpResponse<T>
+    public interface IHttpResponse
     {
         /// <summary>
         /// Data passed to the view. Contains generic data and is created from the middlewares.
         /// </summary>
         IDictionary<string, object> Items { get; set; }
-
         IDictionary<string, string> Headers { get; set; }
         IEnumerable<HttpCookie> Cookies { get; set; }
 

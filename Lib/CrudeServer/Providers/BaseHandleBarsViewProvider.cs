@@ -15,7 +15,7 @@ namespace CrudeServer.Providers
     {
         private static IHandlebars handlebarsContext;
 
-        private IHandlebars HandlebarsContext
+        private static IHandlebars HandlebarsContext
         {
             get
             {
@@ -43,7 +43,7 @@ namespace CrudeServer.Providers
         private readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
         private readonly IServerConfig serverConfig;
 
-        public BaseHandleBarsViewProvider(IServerConfig serverConfig)
+        protected BaseHandleBarsViewProvider(IServerConfig serverConfig)
         {
             this.serverConfig = serverConfig;
             this._compiledViewCache = new ConcurrentDictionary<string, HandlebarsTemplate<object, object>>(StringComparer.OrdinalIgnoreCase);

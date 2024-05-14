@@ -42,7 +42,7 @@ namespace CrudeServer.Server
         {
             this.RegisterBaseIOCItems();
 
-            this.ServerConfiguration = new ServerConfig() { };
+            this.ServerConfiguration = new ServerConfig();
         }
 
         public IServerBuilder SetConfiguration(ServerConfig config)
@@ -253,7 +253,7 @@ namespace CrudeServer.Server
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
 
             this.StandardResponseRegistry = new StandardResponseRegistry();
-            this.Services.AddScoped<IStandardResponseRegistry>((s) => StandardResponseRegistry);
+            this.Services.AddScoped<IStandardResponseRegistry>((_) => StandardResponseRegistry);
 
             this.Services.AddScoped<ICommandContext, CommandContext>();
         }

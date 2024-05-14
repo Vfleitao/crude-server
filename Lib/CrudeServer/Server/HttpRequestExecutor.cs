@@ -77,10 +77,14 @@ namespace CrudeServer.Server
                 }
                 catch (Exception)
                 {
+                    /// This should never be hit, but we will ignore it if it does
+                    /// Since we do nto want to throw an exception in the catch block
                 }
-
-                response.StatusCode = 500;
-                response.Close();
+                finally
+                {
+                    response.StatusCode = 500;
+                    response.Close();
+                }
             }
         }
 

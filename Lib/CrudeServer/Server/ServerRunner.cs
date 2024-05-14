@@ -12,45 +12,44 @@ namespace CrudeServer.Server
 {
     public class ServerRunner : IServerRunner
     {
-        private bool _isRunning;
-
-        private readonly HttpListener _listener;
-
-        private readonly IServerConfig _configuration;
+        private readonly HttpListener listener;
+        private readonly IServerConfig configuration;
         private readonly IServiceProvider _serviceProvider;
+
+        private bool isRunning;
 
         public ServerRunner(IServiceProvider serviceProvider, IServerConfig Configuration)
         {
             this._serviceProvider = serviceProvider;
-            this._configuration = Configuration;
+            this.configuration = Configuration;
             bool couldChange = ThreadPool.SetMinThreads(600, 600);
             ServicePointManager.DefaultConnectionLimit = 600;
             ServicePointManager.MaxServicePoints = 600;
 
-            this._listener = new HttpListener() { };
+            this.listener = new HttpListener() { };
         }
 
         public async Task Run()
         {
-            _isRunning = true;
+            isRunning = true;
 
-            foreach (string host in this._configuration.Hosts)
+            foreach (string host in this.configuration.Hosts)
             {
-                _listener.Prefixes.Add(host);
+                listener.Prefixes.Add(host);
             }
 
-            _listener.Start();
+            listener.Start();
 
-            foreach (string host in this._configuration.Hosts)
+            foreach (string host in this.configuration.Hosts)
             {
                 Console.WriteLine("Listening for connections on {0}", host);
             }
 
             try
             {
-                while (_isRunning)
+                while (isRunning)
                 {
-                    HttpListenerContext context = await _listener.GetContextAsync();
+                    HttpListenerContext context = await listener.GetContextAsync();
 
                     Task.Run(async () =>
                     {
@@ -71,18 +70,17 @@ namespace CrudeServer.Server
             }
             catch (Exception e)
             {
-                _isRunning = false;
+                isRunning = false;
             }
             finally
             {
-                _listener.Close();
+                listener.Close();
             }
         }
 
         public Task Stop()
         {
-            _isRunning = false;
-
+            isRunning = false;
             return Task.CompletedTask;
         }
     }
