@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 
 using CrudeServer.Consts;
-using CrudeServer.Models.Contracts;
+using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.Providers
 {
@@ -14,7 +15,7 @@ namespace CrudeServer.Providers
 
         public FileHandleBarsViewProvider(
             [FromKeyedServices(ServerConstants.VIEW_ROOT)] string fileRoot,
-            IServerConfig serverConfig
+            IOptions<ServerConfiguration> serverConfig
         ) : base(serverConfig)
         {
             this._viewRoot = fileRoot;

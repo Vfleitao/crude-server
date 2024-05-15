@@ -19,7 +19,7 @@ namespace CrudeServer.Integration
         public async Task TokenIsGeneratedInCookiesOnAGetRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 
 using CrudeServer.Consts;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.HttpCommands
 {
@@ -20,14 +21,14 @@ namespace CrudeServer.HttpCommands
         private readonly IDictionary<string, byte[]> _cache;
 
         private readonly string _fileRoot;
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
         private readonly ILogger loggerProvider;
         private readonly IStandardResponseRegistry standardResponseProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public FileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
-            IServerConfig serverConfig,
+            IOptions<ServerConfiguration> serverConfig,
             ILogger loggerProvider,
             IStandardResponseRegistry standardResponseProvider,
             ICommandContext requestContext
@@ -56,7 +57,7 @@ namespace CrudeServer.HttpCommands
 
                 byte[] fileData;
 
-                if (this.serverConfig.EnableServerFileCache && this._cache.ContainsKey(resourceName))
+                if (this.serverConfig.Value.EnableServerFileCache && this._cache.ContainsKey(resourceName))
                 {
                     fileData = this._cache[resourceName];
                 }
@@ -69,7 +70,7 @@ namespace CrudeServer.HttpCommands
                         return new NotFoundResponse();
                     }
 
-                    if (this.serverConfig.EnableServerFileCache)
+                    if (this.serverConfig.Value.EnableServerFileCache)
                     {
                         this._cache.TryAdd(resourceName, fileData);
                     }
@@ -84,7 +85,7 @@ namespace CrudeServer.HttpCommands
                                             "application/octet-stream",
                     Headers = new Dictionary<string, string>()
                     {
-                        { "Cache-Control", $"max-age={this.serverConfig.CachedDurationMinutes}" }
+                        { "Cache-Control", $"max-age={this.serverConfig.Value.CachedDurationMinutes}" }
                     }
                 };
             }

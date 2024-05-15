@@ -10,13 +10,7 @@ using System.Threading.Tasks;
 
 using CrudeServer.Integration.Commands;
 using CrudeServer.Integration.Mocks;
-using CrudeServer.Models;
-using CrudeServer.Models.Contracts;
 using CrudeServer.Server.Contracts;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Moq;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -34,7 +28,7 @@ namespace CrudeServer.Integration
         public async Task CanGetDataFromUrlRequest(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/path/{id:\\d+}/{page:\\w+}", httpMethod);
 
@@ -93,7 +87,7 @@ namespace CrudeServer.Integration
         public async Task CanGetDataFromJsonPostRequest(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -158,7 +152,7 @@ namespace CrudeServer.Integration
         public async Task ComplexJsonDataCanBeSet(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -270,7 +264,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormFilesCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -339,7 +333,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormMultipleFilesCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -423,7 +417,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormJsonCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -534,7 +528,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormFilesAndJsonCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -662,7 +656,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormFieldsCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -731,7 +725,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormComplexFieldsCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
@@ -842,7 +836,7 @@ namespace CrudeServer.Integration
         public async Task MultiPartDataFormCanCombineJsonFilesAndFieldsAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 

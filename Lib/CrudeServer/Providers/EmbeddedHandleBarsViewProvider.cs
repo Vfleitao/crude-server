@@ -4,9 +4,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using CrudeServer.Consts;
-using CrudeServer.Models.Contracts;
+using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.Providers
 {
@@ -18,7 +19,7 @@ namespace CrudeServer.Providers
         public EmbeddedHandleBarsViewProvider(
            [FromKeyedServices(ServerConstants.VIEW_ASSEMBLY)] Assembly fileAssembly,
            [FromKeyedServices(ServerConstants.VIEW_ROOT)] string fileRoot,
-           IServerConfig serverConfig
+           IOptions<ServerConfiguration> serverConfig
        ) : base(serverConfig)
         {
             this._viewAssembly = fileAssembly;

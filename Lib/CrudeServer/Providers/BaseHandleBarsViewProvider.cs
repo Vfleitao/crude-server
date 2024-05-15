@@ -3,11 +3,14 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
+
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.Providers
 {
@@ -41,9 +44,9 @@ namespace CrudeServer.Providers
         private readonly Regex partialRegex = new Regex(PARTIAL_REGEX, RegexOptions.Compiled);
 
         private readonly ConcurrentDictionary<string, HandlebarsTemplate<object, object>> _compiledViewCache;
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
 
-        protected BaseHandleBarsViewProvider(IServerConfig serverConfig)
+        protected BaseHandleBarsViewProvider(IOptions<ServerConfiguration> serverConfig)
         {
             this.serverConfig = serverConfig;
             this._compiledViewCache = new ConcurrentDictionary<string, HandlebarsTemplate<object, object>>(StringComparer.OrdinalIgnoreCase);
@@ -53,7 +56,7 @@ namespace CrudeServer.Providers
         {
             HandlebarsTemplate<object, object> compiledTemplate = null;
 
-            if (this.serverConfig.EnableServerFileCache && this._compiledViewCache.ContainsKey(templatePath))
+            if (this.serverConfig.Value.EnableServerFileCache && this._compiledViewCache.ContainsKey(templatePath))
             {
                 compiledTemplate = this._compiledViewCache[templatePath] as HandlebarsTemplate<object, object>;
             }
@@ -68,7 +71,7 @@ namespace CrudeServer.Providers
 
                 compiledTemplate = HandlebarsContext.Compile(templateResult.template);
 
-                if (templateResult.eligibleForCache && this.serverConfig.EnableServerFileCache)
+                if (templateResult.eligibleForCache && this.serverConfig.Value.EnableServerFileCache)
                 {
                     this._compiledViewCache.TryAdd(templatePath, compiledTemplate);
                 }
@@ -116,8 +119,8 @@ namespace CrudeServer.Providers
 
         private string HandleAntiforgeryToken(string templateString, ICommandContext commandContext)
         {
-            string inputName = this.serverConfig.AntiforgeryTokenInputName ?? "___csrt";
-            string cookieName = this.serverConfig.AntiforgeryTokenCookieName;
+            string inputName = this.serverConfig.Value.AntiforgeryTokenInputName ?? "___csrt";
+            string cookieName = this.serverConfig.Value.AntiforgeryTokenCookieName;
             string token = commandContext.GetCookie(cookieName);
 
             string inputHtml = $"<input type=\"hidden\" name=\"{inputName}\" value=\"{token}\" />";

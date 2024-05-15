@@ -18,7 +18,7 @@ namespace CrudeServer.Integration
         public async Task CanGetFiles()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -57,7 +57,7 @@ namespace CrudeServer.Integration
         public async Task CanGetImages()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 
@@ -94,7 +94,7 @@ namespace CrudeServer.Integration
         public async Task CanLoadItemAtSameTime()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = new Random().Next(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
             IServerRunner serverRunner = serverBuilder.Buid();
 

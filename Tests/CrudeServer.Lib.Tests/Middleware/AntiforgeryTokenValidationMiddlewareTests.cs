@@ -9,6 +9,8 @@ using CrudeServer.Middleware;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.Middleware
@@ -38,15 +40,11 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task PostRequestDoesNotHaveInput_ReturnsBadRequest(HttpMethod httpMethod)
         {
             // Arrange
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenInputName)
-                .Returns("antiforgery");
-
             Mock<ICommandContext> context = new Mock<ICommandContext>();
             context
                 .Setup(context => context.HttpRegistration)
-                .Returns(new HttpCommandRegistration() {
+                .Returns(new HttpCommandRegistration()
+                {
                     RequiresAntiforgeryToken = true
                 });
 
@@ -57,8 +55,13 @@ namespace CrudeServer.Lib.Tests.Middleware
                 .Setup(x => x.Items)
                 .Returns(new Dictionary<string, object>());
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration() { AntiforgeryTokenInputName = "antiforgery" });
+
             AntiforgeryTokenValidationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenValidationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             bool nextCalled = false;
@@ -82,15 +85,6 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task PostRequestDoesNotHaveCookie_ReturnsBadRequest(HttpMethod httpMethod)
         {
             // Arrange
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenInputName)
-                .Returns("antiforgery");
-
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenCookieName)
-                .Returns("antiforgery_cookie");
-
             Mock<ICommandContext> context = new Mock<ICommandContext>();
             context
                 .Setup(context => context.HttpRegistration)
@@ -108,8 +102,17 @@ namespace CrudeServer.Lib.Tests.Middleware
                     {"antiforgery", "test1234" }
                 });
 
+
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration() {
+                    AntiforgeryTokenInputName = "antiforgery",
+                    AntiforgeryTokenCookieName = "antiforgery_cookie"
+                });
+
             AntiforgeryTokenValidationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenValidationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             bool nextCalled = false;
@@ -133,16 +136,7 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task CookieAndInputDoNotMatch_ReturnsBadRequest(HttpMethod httpMethod)
         {
             // Arrange
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenInputName)
-                .Returns("antiforgery");
-
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenCookieName)
-                .Returns("antiforgery_cookie");
-
-            Mock<ICommandContext> context = new Mock<ICommandContext>();
+           Mock<ICommandContext> context = new Mock<ICommandContext>();
             context
                 .Setup(context => context.HttpRegistration)
                 .Returns(new HttpCommandRegistration()
@@ -168,8 +162,16 @@ namespace CrudeServer.Lib.Tests.Middleware
                     }
                 });
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration() {
+                    AntiforgeryTokenCookieName = "antiforgery_cookie",
+                    AntiforgeryTokenInputName = "antiforgery"
+                });
+
             AntiforgeryTokenValidationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenValidationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             bool nextCalled = false;
@@ -193,15 +195,6 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task CookieAndInputDoMatch_ExecutedNext(HttpMethod httpMethod)
         {
             // Arrange
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenInputName)
-                .Returns("antiforgery");
-
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenCookieName)
-                .Returns("antiforgery_cookie");
-
             Mock<ICommandContext> context = new Mock<ICommandContext>();
             context
                 .Setup(context => context.HttpRegistration)
@@ -228,8 +221,18 @@ namespace CrudeServer.Lib.Tests.Middleware
                     }
                 });
 
+
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration()
+                {
+                    AntiforgeryTokenCookieName = "antiforgery_cookie",
+                    AntiforgeryTokenInputName = "antiforgery"
+                });
+
             AntiforgeryTokenValidationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenValidationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             bool nextCalled = false;
@@ -237,8 +240,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             // Act
             await antiforgeryTokenMiddleware.Process(context.Object, () =>
             {
-                nextCalled = true
-                ;
+                nextCalled = true;
                 return Task.CompletedTask;
             });
 

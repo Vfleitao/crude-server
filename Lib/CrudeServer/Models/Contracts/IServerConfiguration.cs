@@ -2,7 +2,7 @@
 
 namespace CrudeServer.Models.Contracts
 {
-    public interface IServerConfig
+    public interface IServerConfiguration
     {
         string AuthenticationPath { get; set; }
         List<string> Hosts { get; set; }

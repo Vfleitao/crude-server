@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 using CrudeServer.Demo.Responses;
 using CrudeServer.Enums;
-using CrudeServer.Models;
 using CrudeServer.Providers;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
@@ -36,13 +34,6 @@ namespace CrudeServer
 
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
-                .SetConfiguration(new ServerConfig()
-                {
-                    Hosts = new List<string> { host },
-                    AuthenticationPath = "/login",
-                    EnableServerFileCache = true,
-                    RedirectOnNotFound = false,
-                })
                 .AddRequestTagging()
                 .AddCommandRetriever()
                 .AddRequestDataRetriever()

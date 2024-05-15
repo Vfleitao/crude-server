@@ -12,6 +12,7 @@ using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
 using CrudeServer.Providers.Contracts;
 
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using Moq;
@@ -35,7 +36,7 @@ namespace CrudeServer.Lib.Tests.Providers
                 SigningKey = "{8A7C5026-4348-4E5D-958E-B2052FFA3DB4}"
             };
 
-            ServerConfig serverConfig = new ServerConfig
+            ServerConfiguration serverConfig = new ServerConfiguration
             {
                 JTWConfiguration = jTWConfig
             };
@@ -52,8 +53,13 @@ namespace CrudeServer.Lib.Tests.Providers
                 new Claim(randomClaimName, randomClaimValue)
             });
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(serverConfig);
+
             JTWAuthenticationProvider authenticationProvider = new JTWAuthenticationProvider(
-                serverConfig,
+                options.Object,
                 Mock.Of<ILogger>(),
                 null
             );
@@ -92,7 +98,7 @@ namespace CrudeServer.Lib.Tests.Providers
                 CookieName = "__csauth"
             };
 
-            ServerConfig serverConfig = new ServerConfig
+            ServerConfiguration serverConfig = new ServerConfiguration
             {
                 JTWConfiguration = jTWConfig,
                 PrivateEncryptionKey = PRIVATE_KEY,
@@ -109,8 +115,13 @@ namespace CrudeServer.Lib.Tests.Providers
                 new Claim(randomClaimName, randomClaimValue)
             });
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(serverConfig);
+
             JTWAuthenticationProvider authenticationProvider = new JTWAuthenticationProvider(
-                serverConfig,
+                options.Object,
                 Mock.Of<ILogger>(),
                 new EncryptionProvider()
             );

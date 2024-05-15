@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using CrudeServer.Consts;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.HttpCommands
 {
@@ -22,14 +24,14 @@ namespace CrudeServer.HttpCommands
 
         private readonly Assembly _fileAssembly;
         private readonly string _fileRoot;
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
         private readonly ILogger loggerProvider;
         private readonly FileExtensionContentTypeProvider _fileExtentionProvider;
 
         public EmbeddedFileHttpCommand(
             [FromKeyedServices(ServerConstants.FILE_ASSEMBLY)] Assembly fileAssembly,
             [FromKeyedServices(ServerConstants.FILE_ROOT)] string fileRoot,
-            IServerConfig serverConfig,
+            IOptions<ServerConfiguration> serverConfig,
             ILogger loggerProvider,
             ICommandContext requestContext
         ) : base(requestContext)
@@ -57,7 +59,7 @@ namespace CrudeServer.HttpCommands
 
                 byte[] fileData;
 
-                if (this.serverConfig.EnableServerFileCache && this._cache.ContainsKey(wantedResource))
+                if (this.serverConfig.Value.EnableServerFileCache && this._cache.ContainsKey(wantedResource))
                 {
                     fileData = this._cache[wantedResource];
                 }
@@ -70,7 +72,7 @@ namespace CrudeServer.HttpCommands
                         return new NotFoundResponse();
                     }
 
-                    if (this.serverConfig.EnableServerFileCache)
+                    if (this.serverConfig.Value.EnableServerFileCache)
                     {
                         this._cache.TryAdd(wantedResource, fileData);
                     }
@@ -85,7 +87,7 @@ namespace CrudeServer.HttpCommands
                                             "application/octet-stream",
                     Headers = new Dictionary<string, string>()
                     {
-                        { "Cache-Control", $"max-age={this.serverConfig.CachedDurationMinutes}" }
+                        { "Cache-Control", $"max-age={this.serverConfig.Value.CachedDurationMinutes}" }
                     }
                 };
             }

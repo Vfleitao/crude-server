@@ -1,29 +1,29 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware.Registration.Contracts;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
-using HandlebarsDotNet;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.Middleware
 {
     public class RequestSizeLimiterMiddleware : IMiddleware
     {
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
 
-        public RequestSizeLimiterMiddleware(IServerConfig serverConfig)
+        public RequestSizeLimiterMiddleware(IOptions<ServerConfiguration> serverConfig)
         {
             this.serverConfig = serverConfig;
         }
 
         public async Task Process(ICommandContext context, Func<Task> next)
         {
-            long maxRequestSize = this.serverConfig.MaxRequestSizeMB * 1024 * 1024;
+            long maxRequestSize = this.serverConfig.Value.MaxRequestSizeMB * 1024 * 1024;
 
             if (IsRequestOverMaxSize(context.HttpListenerRequest, maxRequestSize))
             {

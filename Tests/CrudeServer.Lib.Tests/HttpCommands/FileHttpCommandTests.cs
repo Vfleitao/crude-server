@@ -8,6 +8,8 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.HttpCommands
@@ -21,10 +23,15 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/files/doesnotexist.txt"));
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
-                new ServerConfig() { },
+                options.Object,
                 Mock.Of<ILogger>(),
                 requestContext.Object
             );
@@ -44,10 +51,15 @@ namespace CrudeServer.Lib.Tests.HttpCommands
             Mock<ICommandContext> requestContext = new Mock<ICommandContext>();
             requestContext.SetupGet(rc => rc.RequestUrl).Returns(new Uri("http://localhost:8080/demo.json"));
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             EmbeddedFileHttpCommand fileHttpCommand = new EmbeddedFileHttpCommand(
                 GetType().Assembly,
                 "files",
-                new ServerConfig() { },
+                options.Object,
                 Mock.Of<ILogger>(),
                 requestContext.Object
             );
