@@ -10,18 +10,19 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CrudeServer.Providers
 {
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
         private readonly ILogger loggerProvider;
         private readonly IEncryptionProvider encryptionProvider;
 
         public JTWAuthenticationProvider(
-            IServerConfig serverConfig,
+            IOptions<ServerConfiguration> serverConfig,
             ILogger loggerProvider,
             IEncryptionProvider encryptionProvider
         )
@@ -37,7 +38,7 @@ namespace CrudeServer.Providers
             {
                 try
                 {
-                    if (serverConfig.JTWConfiguration == null)
+                    if (serverConfig.Value.JTWConfiguration == null)
                     {
                         this.loggerProvider.Log("[JTWAuthenticationProvider] JTW Configuration is missing");
 
@@ -75,21 +76,21 @@ namespace CrudeServer.Providers
         {
             return Task.Run<IPrincipal>(() =>
             {
-                if (serverConfig.JTWConfiguration == null)
+                if (serverConfig.Value.JTWConfiguration == null)
                 {
                     this.loggerProvider.Log("[JTWAuthenticationProvider - GetUserFromCookies] JTW Configuration is missing");
 
                     return (IPrincipal)null;
                 }
 
-                if (string.IsNullOrEmpty(this.serverConfig.JTWConfiguration.CookieName))
+                if (string.IsNullOrEmpty(this.serverConfig.Value.JTWConfiguration.CookieName))
                 {
                     this.loggerProvider.Log("[JTWAuthenticationProvider - GetUserFromCookies] Cookie name is missing");
 
                     return (IPrincipal)null;
                 }
 
-                string loweredCookieName = this.serverConfig.JTWConfiguration.CookieName.ToLower();
+                string loweredCookieName = this.serverConfig.Value.JTWConfiguration.CookieName.ToLower();
                 if (requestContext.RequestCookies == null ||
                     !requestContext.RequestCookies.Any(x => x.Name.ToLower() == loweredCookieName))
                 {
@@ -99,7 +100,7 @@ namespace CrudeServer.Providers
                 HttpCookie cookie = requestContext.RequestCookies.First(x => x.Name.ToLower() == loweredCookieName);
 
                 string encryptedToken = cookie.Value;
-                string token = this.encryptionProvider.Decrypt(encryptedToken, this.serverConfig.PrivateEncryptionKey);
+                string token = this.encryptionProvider.Decrypt(encryptedToken, this.serverConfig.Value.PrivateEncryptionKey);
 
                 return GetPrincipalFromTokenString(token);
             });
@@ -115,13 +116,13 @@ namespace CrudeServer.Providers
                 SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = identity,
-                    Expires = DateTime.UtcNow.AddMinutes(this.serverConfig.JTWConfiguration.ExpiresAfter),
+                    Expires = DateTime.UtcNow.AddMinutes(this.serverConfig.Value.JTWConfiguration.ExpiresAfter),
                     SigningCredentials = new SigningCredentials(
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.serverConfig.JTWConfiguration.SigningKey)),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.serverConfig.Value.JTWConfiguration.SigningKey)),
                         SecurityAlgorithms.HmacSha256Signature
                     ),
-                    Issuer = this.serverConfig.JTWConfiguration.Issuer,
-                    Audience = this.serverConfig.JTWConfiguration.Audience,
+                    Issuer = this.serverConfig.Value.JTWConfiguration.Issuer,
+                    Audience = this.serverConfig.Value.JTWConfiguration.Audience,
                     IssuedAt = DateTime.UtcNow,
                     NotBefore = DateTime.UtcNow,
                 };
@@ -133,13 +134,13 @@ namespace CrudeServer.Providers
         public async Task<HttpCookie> GenerateTokenCookie(IPrincipal principal)
         {
             string token = await GenerateToken(principal);
-            string encryptedToken = this.encryptionProvider.Encrypt(token, this.serverConfig.PublicEncryptionKey);
+            string encryptedToken = this.encryptionProvider.Encrypt(token, this.serverConfig.Value.PublicEncryptionKey);
 
             return new HttpCookie
             {
-                Name = this.serverConfig.JTWConfiguration.CookieName,
+                Name = this.serverConfig.Value.JTWConfiguration.CookieName,
                 Value = encryptedToken,
-                ExpireTimeMinutes = this.serverConfig.JTWConfiguration.ExpiresAfter,
+                ExpireTimeMinutes = this.serverConfig.Value.JTWConfiguration.ExpiresAfter,
                 Secure = true,
                 HttpOnly = true
             };
@@ -150,11 +151,11 @@ namespace CrudeServer.Providers
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = this.serverConfig.JTWConfiguration.Issuer,
+                ValidIssuer = this.serverConfig.Value.JTWConfiguration.Issuer,
                 ValidateAudience = true,
-                ValidAudience = serverConfig.JTWConfiguration.Audience,
+                ValidAudience = serverConfig.Value.JTWConfiguration.Audience,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(serverConfig.JTWConfiguration.SigningKey)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(serverConfig.Value.JTWConfiguration.SigningKey)),
                 ClockSkew = TimeSpan.FromMinutes(1)
             };
 

@@ -17,21 +17,20 @@ using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
 using CrudeServer.Providers.Contracts;
 using CrudeServer.Providers.DataParser;
+using CrudeServer.Providers.Responses;
 using CrudeServer.Server.Contracts;
 
-using HandlebarsDotNet.Helpers.Enums;
-using HandlebarsDotNet.Helpers;
-
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CrudeServer.Providers.Responses;
 
 namespace CrudeServer.Server
 {
     public class ServerBuilder : IServerBuilder
     {
-        private IServerConfig ServerConfiguration;
         private bool hasAntiforgeryTokens;
 
+        public ConfigurationBuilder ConfigurationBuilder { get; private set; }
+        public IConfiguration Configuration { get; private set; }
         public IServiceCollection Services { get; private set; }
         public IServiceProvider ServiceProvider { get; private set; }
         public ICommandRegistry CommandRegistry { get; private set; }
@@ -41,15 +40,6 @@ namespace CrudeServer.Server
         public ServerBuilder()
         {
             this.RegisterBaseIOCItems();
-
-            this.ServerConfiguration = new ServerConfig();
-        }
-
-        public IServerBuilder SetConfiguration(ServerConfig config)
-        {
-            this.ServerConfiguration = config;
-
-            return this;
         }
 
         public IServerBuilder AddAuthentication(Type authenticationProvider = null)
@@ -79,9 +69,7 @@ namespace CrudeServer.Server
             long cacheDurationMinutes = 10
         )
         {
-            this.ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
             this.CommandRegistry.RegisterCommand<EmbeddedFileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
-
             this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
             this.Services.AddKeyedSingleton<Assembly>(ServerConstants.FILE_ASSEMBLY, fileAssembly);
 
@@ -93,9 +81,7 @@ namespace CrudeServer.Server
             long cacheDurationMinutes = 10
         )
         {
-            this.ServerConfiguration.CachedDurationMinutes = cacheDurationMinutes;
             this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
-
             this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
 
             return this;
@@ -163,14 +149,17 @@ namespace CrudeServer.Server
         public IServerRunner Buid()
         {
             this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
-            this.Services.AddSingleton<IServerConfig>(this.ServerConfiguration);
+
+            this.Configuration = this.ConfigurationBuilder.Build();
+
+            IConfigurationSection section = this.Configuration.GetSection("ServerConfiguration");
+
+            this.Services.Configure<ServerConfiguration>(section);
 
             this.Services.AddScoped<BadRequestResponse>();
             this.Services.AddScoped<UnauthorizedResponse>();
             this.Services.AddScoped<ForbiddenResponse>();
             this.Services.AddScoped<NotFoundResponse>();
-
-            
 
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
@@ -191,9 +180,8 @@ namespace CrudeServer.Server
             return this;
         }
 
-        public IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB)
+        public IServerBuilder AddRequestSizeLimit()
         {
-            this.ServerConfiguration.MaxRequestSizeMB = maxRequestSizeMB;
             this.MiddlewareRegistry.AddMiddleware<RequestSizeLimiterMiddleware>();
 
             return this;
@@ -230,7 +218,11 @@ namespace CrudeServer.Server
 
         private void RegisterBaseIOCItems()
         {
-
+            this.ConfigurationBuilder = new ConfigurationBuilder();
+            this.ConfigurationBuilder.AddJsonFile("appsettings.json");
+#if !DEBUG
+            this.configurationBuilder.AddJsonFile("appsettings.release.json");
+#endif
             this.Services = new ServiceCollection();
             this.Services.AddSingleton<IServiceCollection>(Services);
 

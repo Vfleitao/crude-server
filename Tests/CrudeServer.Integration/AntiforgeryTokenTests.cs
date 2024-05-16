@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,13 +15,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Integration
 {
+    
     public class AntiforgeryTokenTests
     {
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task TokenIsGeneratedInCookiesOnAGetRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
+
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 
@@ -63,11 +67,12 @@ namespace CrudeServer.Integration
             }
         }
 
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task TokenAlreadyExists_DoesNotRegenerate()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 
@@ -132,11 +137,12 @@ namespace CrudeServer.Integration
             }
         }
 
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task RouteRequiresAntiforgery_NoToken_ReturnsBadRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
@@ -180,11 +186,12 @@ namespace CrudeServer.Integration
             }
         }
 
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task RouteRequiresAntiforgery_NoCookie_ReturnsBadRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
@@ -233,11 +240,12 @@ namespace CrudeServer.Integration
             }
         }
 
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task RouteRequiresAntiforgery_CookieAndInputDoNotMatch_ReturnsBadRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
@@ -289,11 +297,12 @@ namespace CrudeServer.Integration
             }
         }
 
-        [Test()]
+        [Test]
+        [NonParallelizable]
         public async Task RouteRequiresAntiforgery_CookieAndInputMatch_ReturnsOK()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)

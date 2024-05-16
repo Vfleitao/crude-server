@@ -8,6 +8,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Server.Contracts
@@ -17,6 +18,8 @@ namespace CrudeServer.Server.Contracts
         ICommandRegistry CommandRegistry { get; }
         IServiceCollection Services { get; }
         IServiceProvider ServiceProvider { get; }
+        IConfiguration Configuration { get; }
+        ConfigurationBuilder ConfigurationBuilder { get; }
 
         IServerBuilder AddAntiforgeryTokens();
         IServerBuilder AddAuthentication(Type authenticationProvider = null);
@@ -31,8 +34,7 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder AddRequestTagging();
         IServerBuilder AddViews(string viewRoot, Assembly viewAssembly = null, Type viewProvider = null);
         IServerRunner Buid();
-        IServerBuilder SetConfiguration(ServerConfig config);
-        IServerBuilder AddRequestSizeLimit(long maxRequestSizeMB);
+        IServerBuilder AddRequestSizeLimit();
         IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
     }
 }

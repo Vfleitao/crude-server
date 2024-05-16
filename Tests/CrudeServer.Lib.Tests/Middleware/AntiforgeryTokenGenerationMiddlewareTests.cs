@@ -8,6 +8,10 @@ using CrudeServer.Middleware;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
+using HandlebarsDotNet;
+
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.Middleware
@@ -36,13 +40,16 @@ namespace CrudeServer.Lib.Tests.Middleware
                 .Setup(context => context.ResponseCookies)
                 .Returns(cookies);
 
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenCookieName)
-                .Returns("antiforgery");
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration()
+                {
+                    AntiforgeryTokenCookieName = "antiforgery"
+                });
 
             AntiforgeryTokenGenerationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenGenerationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             // Act
@@ -77,13 +84,15 @@ namespace CrudeServer.Lib.Tests.Middleware
                 .Setup(context => context.ResponseCookies)
                 .Returns(cookies);
 
-            Mock<IServerConfig> serverConfig = new Mock<IServerConfig>();
-            serverConfig
-                .Setup(serverConfig => serverConfig.AntiforgeryTokenCookieName)
-                .Returns("antiforgery");
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration() {
+                    AntiforgeryTokenCookieName = "antiforgery"
+                });
 
             AntiforgeryTokenGenerationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenGenerationMiddleware(
-                serverConfig.Object
+                options.Object
             );
 
             // Act

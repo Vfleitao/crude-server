@@ -6,12 +6,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using CrudeServer.Middleware;
-using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Moq;
@@ -29,21 +29,18 @@ namespace CrudeServer.Integration.Mocks
         {
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
-                .SetConfiguration(new ServerConfig()
-                {
-                    Hosts = new List<string>() { "http://localhost:" + port.ToString() + "/" },
-                    AuthenticationPath = "/login",
-                    EnableServerFileCache = false,
-                    AntiforgeryTokenCookieName = "XSRF-T",
-                    AntiforgeryTokenInputName = "X-XSRF-T"
-                })
                 .AddRequestTagging()
-                .AddAuthentication()
-                .AddCommandRetriever();
+            .AddAuthentication()
+            .AddCommandRetriever();
+
+            serverBuilder.ConfigurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["ServerConfiguration:Hosts:0"] = $"http://localhost:{port}/"
+            });
 
             if (useRequestSizeLimiter)
             {
-                serverBuilder.AddRequestSizeLimit(1);
+                serverBuilder.AddRequestSizeLimit();
             }
 
             serverBuilder.AddRequestDataRetriever();

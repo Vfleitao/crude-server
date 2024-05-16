@@ -7,13 +7,15 @@ using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
+using Microsoft.Extensions.Options;
+
 namespace CrudeServer.Middleware
 {
     public class AntiforgeryTokenGenerationMiddleware : IMiddleware
     {
-        private readonly IServerConfig serverConfig;
+        private readonly IOptions<ServerConfiguration> serverConfig;
 
-        public AntiforgeryTokenGenerationMiddleware(IServerConfig serverConfig)
+        public AntiforgeryTokenGenerationMiddleware(IOptions<ServerConfiguration> serverConfig)
         {
             this.serverConfig = serverConfig;
         }
@@ -33,7 +35,7 @@ namespace CrudeServer.Middleware
 
         private void CreateCookie(ICommandContext context)
         {
-            if (context.RequestCookies.Any(x => x.Name == this.serverConfig.AntiforgeryTokenCookieName))
+            if (context.RequestCookies.Any(x => x.Name == this.serverConfig.Value.AntiforgeryTokenCookieName))
             {
                 return;
             }
@@ -43,7 +45,7 @@ namespace CrudeServer.Middleware
             {
                 Secure = true,
                 HttpOnly = true,
-                Name = this.serverConfig.AntiforgeryTokenCookieName,
+                Name = this.serverConfig.Value.AntiforgeryTokenCookieName,
                 Value = token,
                 Path = "/",
             });

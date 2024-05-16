@@ -7,6 +7,8 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
 
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.Providers
@@ -22,9 +24,14 @@ namespace CrudeServer.Lib.Tests.Providers
 
             string fileRoot = Path.Combine(assemblyDir, "files");
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
                 fileRoot,
-                new ServerConfig()
+                options.Object
             );
 
             // Act
@@ -54,9 +61,14 @@ namespace CrudeServer.Lib.Tests.Providers
 
             string fileRoot = Path.Combine(assemblyDir, "files");
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
                 fileRoot,
-                new ServerConfig()
+                options.Object
             );
 
             // Act
@@ -86,9 +98,14 @@ namespace CrudeServer.Lib.Tests.Providers
 
             string fileRoot = Path.Combine(assemblyDir, "files");
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
                 fileRoot,
-                new ServerConfig()
+                options.Object
             );
 
             // Act
@@ -121,16 +138,21 @@ namespace CrudeServer.Lib.Tests.Providers
 
             string antiforgeryTokenCookieValue = Guid.NewGuid().ToString();
 
-            ServerConfig serverConfig = new ServerConfig()
+            ServerConfiguration serverConfig = new ServerConfiguration()
             {
                 AntiforgeryTokenCookieName = "XSRF-T",
                 AntiforgeryTokenInputName = "X-XSRF-T",
                 EnableServerFileCache = true
             };
 
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(serverConfig);
+
             FileHandleBarsViewProvider viewProvider = new FileHandleBarsViewProvider(
                 fileRoot,
-                serverConfig
+                options.Object
             );
 
             Mock<ICommandContext> mockCommandContext = new Mock<ICommandContext>();

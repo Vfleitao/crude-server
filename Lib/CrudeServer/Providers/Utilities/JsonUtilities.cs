@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace CrudeServer.Providers.Utilities
 {
-    public class JsonUtilities
+    public static class JsonUtilities
     {
         public static Dictionary<string, object> DictionaryFromString(string input)
         {

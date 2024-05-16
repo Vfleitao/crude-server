@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace CrudeServer.Integration
         public async Task MaximumRequestSizeIsRespected()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 
@@ -63,7 +64,7 @@ namespace CrudeServer.Integration
         public async Task MaximumRequestSizeIsRespectedOnChunckedEncoding()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 
@@ -112,7 +113,7 @@ namespace CrudeServer.Integration
         public async Task RequestIsSmallerThanLimitReturnsOk()
         {
             // Arrange
-            int port = new Random().Next(1000, 9999);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 

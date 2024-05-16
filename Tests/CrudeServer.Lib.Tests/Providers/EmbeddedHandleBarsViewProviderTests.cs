@@ -5,6 +5,8 @@ using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers;
 
+using Microsoft.Extensions.Options;
+
 using Moq;
 
 namespace CrudeServer.Lib.Tests.Providers
@@ -15,10 +17,15 @@ namespace CrudeServer.Lib.Tests.Providers
         public async Task ViewSimpleCanBeRendered()
         {
             // Arrange
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             EmbeddedHandleBarsViewProvider viewProvider = new EmbeddedHandleBarsViewProvider(
                 GetType().Assembly,
                 "files",
-                new ServerConfig()
+                options.Object
             );
 
             // Act
@@ -40,10 +47,15 @@ namespace CrudeServer.Lib.Tests.Providers
         public async Task ViewWithLayoutCanBeRendered()
         {
             // Arrange
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             EmbeddedHandleBarsViewProvider viewProvider = new EmbeddedHandleBarsViewProvider(
                 GetType().Assembly,
                 "files",
-                new ServerConfig());
+                options.Object);
 
             // Act
             string result = await viewProvider.GetTemplate(
@@ -64,10 +76,15 @@ namespace CrudeServer.Lib.Tests.Providers
         public async Task ViewWithPartialsCanBeRendered()
         {
             // Arrange
+            Mock<IOptions<ServerConfiguration>> options = new Mock<IOptions<ServerConfiguration>>();
+            options
+                .Setup(options => options.Value)
+                .Returns(new ServerConfiguration());
+
             EmbeddedHandleBarsViewProvider viewProvider = new EmbeddedHandleBarsViewProvider(
                 GetType().Assembly,
                 "files",
-                new ServerConfig());
+                options.Object);
 
             // Act
             string result = await viewProvider.GetTemplate(

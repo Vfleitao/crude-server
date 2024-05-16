@@ -3,26 +3,27 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-using CrudeServer.Models.Contracts;
+using CrudeServer.Models;
 using CrudeServer.Server.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CrudeServer.Server
 {
     public class ServerRunner : IServerRunner
     {
         private readonly HttpListener listener;
-        private readonly IServerConfig configuration;
+        private readonly IOptions<ServerConfiguration> configuration;
         private readonly IServiceProvider _serviceProvider;
 
         private bool isRunning;
 
-        public ServerRunner(IServiceProvider serviceProvider, IServerConfig Configuration)
+        public ServerRunner(IServiceProvider serviceProvider, IOptions<ServerConfiguration> Configuration)
         {
             this._serviceProvider = serviceProvider;
             this.configuration = Configuration;
-            bool couldChange = ThreadPool.SetMinThreads(600, 600);
+            ThreadPool.SetMinThreads(600, 600);
             ServicePointManager.DefaultConnectionLimit = 600;
             ServicePointManager.MaxServicePoints = 600;
 
@@ -33,14 +34,14 @@ namespace CrudeServer.Server
         {
             isRunning = true;
 
-            foreach (string host in this.configuration.Hosts)
+            foreach (string host in this.configuration.Value.Hosts)
             {
                 listener.Prefixes.Add(host);
             }
 
             listener.Start();
 
-            foreach (string host in this.configuration.Hosts)
+            foreach (string host in this.configuration.Value.Hosts)
             {
                 Console.WriteLine("Listening for connections on {0}", host);
             }

@@ -4,7 +4,7 @@ using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Models
 {
-    public class ServerConfig : IServerConfig
+    public class ServerConfiguration : IServerConfiguration
     {
         public List<string> Hosts { get; set; }
         public string AuthenticationPath { get; set; }
