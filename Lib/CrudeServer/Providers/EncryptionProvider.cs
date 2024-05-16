@@ -130,7 +130,7 @@ namespace CrudeServer.Providers
                     {
                         MaxDegreeOfParallelism = 32
                     },
-                    (bytes, __, index) =>
+                    (bytes, _, index) =>
                     {
                         encryptedChunks[index] = rsa.Encrypt(bytes.ToArray(), RSAEncryptionPadding.Pkcs1);
                     });
