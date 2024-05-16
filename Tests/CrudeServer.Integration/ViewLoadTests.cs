@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 using CrudeServer.Integration.Commands;
@@ -19,7 +20,7 @@ namespace CrudeServer.Integration
         public async Task ViewCanBeLoaded()
         {
             // Arrange
-            int port = new Random().Next(1000, 20000);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<MockViewHttpCommand>("/", Enums.HttpMethod.GET);
 
@@ -60,7 +61,7 @@ namespace CrudeServer.Integration
         public async Task CanLoadViewsAtSameTime()
         {
             // Arrange
-            int port = new Random().Next(1000, 20000);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<MockGuidHttpCommand>("/", Enums.HttpMethod.GET);
             serverBuilder.AddCommand<AnotherMockGuidCommand>("/heya", Enums.HttpMethod.GET);

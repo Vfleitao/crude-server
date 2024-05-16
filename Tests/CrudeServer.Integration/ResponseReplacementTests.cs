@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,7 @@ namespace CrudeServer.Integration
         public async Task TokenIsGeneratedInCookiesOnAGetRequest()
         {
             // Arrange
-            int port = new Random().Next(1000, 20000);
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 
