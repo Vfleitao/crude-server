@@ -38,4 +38,5 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Add cookie based auth
 - [x] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
-- [x] Add Automated security scans for code
+- [x] Add Automated scans for code
+- [ ] OpenAPI Support
