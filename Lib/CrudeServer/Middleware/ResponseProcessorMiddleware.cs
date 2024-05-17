@@ -53,30 +53,40 @@ namespace CrudeServer.Middleware
                 }
             }
 
+            static void SetCookie(ICommandContext context, Models.HttpCookie cookie)
+            {
+                Cookie newCookie = new Cookie(cookie.Name, cookie.Value);
+
+                if (cookie.ExpireTimeMinutes > 0)
+                {
+                    newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
+                }
+
+                newCookie.HttpOnly = cookie.HttpOnly;
+                newCookie.Secure = cookie.Secure;
+
+                if (!string.IsNullOrEmpty(cookie.Domain))
+                {
+                    newCookie.Domain = cookie.Domain;
+                }
+                if (!string.IsNullOrEmpty(cookie.Path))
+                {
+                    newCookie.Path = cookie.Path;
+                }
+                else
+                {
+                    newCookie.Path = "/";
+                }
+
+                context.HttpListenerResponse.SetCookie(newCookie);
+            }
+
+
             if (context.ResponseCookies != null)
             {
                 foreach (Models.HttpCookie cookie in context.ResponseCookies)
                 {
-                    Cookie newCookie = new Cookie(cookie.Name, cookie.Value);
-
-                    if (cookie.ExpireTimeMinutes > 0)
-                    {
-                        newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
-                    }
-
-                    newCookie.HttpOnly = cookie.HttpOnly;
-                    newCookie.Secure = cookie.Secure;
-
-                    if (!string.IsNullOrEmpty(cookie.Domain))
-                    {
-                        newCookie.Domain = cookie.Domain;
-                    }
-                    if (!string.IsNullOrEmpty(cookie.Path))
-                    {
-                        newCookie.Path = cookie.Path;
-                    }
-
-                    context.HttpListenerResponse.SetCookie(newCookie);
+                    SetCookie(context, cookie);
                 }
             }
 
@@ -84,21 +94,7 @@ namespace CrudeServer.Middleware
             {
                 foreach (Models.HttpCookie cookie in httpResponse.Cookies)
                 {
-                    Cookie newCookie = new Cookie(cookie.Name, cookie.Value);
-                    newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
-                    newCookie.HttpOnly = cookie.HttpOnly;
-                    newCookie.Secure = cookie.Secure;
-
-                    if (!string.IsNullOrEmpty(cookie.Domain))
-                    {
-                        newCookie.Domain = cookie.Domain;
-                    }
-                    if (!string.IsNullOrEmpty(cookie.Path))
-                    {
-                        newCookie.Path = cookie.Path;
-                    }
-
-                    context.HttpListenerResponse.SetCookie(newCookie);
+                    SetCookie(context, cookie);
                 }
             }
 

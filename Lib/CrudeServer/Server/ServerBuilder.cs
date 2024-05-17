@@ -154,6 +154,7 @@ namespace CrudeServer.Server
 
             IConfigurationSection section = this.Configuration.GetSection("ServerConfiguration");
 
+            this.Services.AddSingleton<IConfiguration>(this.Configuration);
             this.Services.Configure<ServerConfiguration>(section);
 
             this.Services.AddScoped<BadRequestResponse>();
