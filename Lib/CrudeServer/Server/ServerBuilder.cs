@@ -240,6 +240,7 @@ namespace CrudeServer.Server
             this.Services.AddKeyedScoped<IRequestDataParser, UrlDataParser>("dataparser_urlDataParser");
             this.Services.AddKeyedScoped<IRequestDataParser, JsonDataParser>("dataparser_application/json");
             this.Services.AddKeyedScoped<IRequestDataParser, MultiPartFormDataParser>("dataparser_multipart/form-data");
+            this.Services.AddKeyedScoped<IRequestDataParser, FormUrlEncoded>("dataparser_application/x-www-form-urlencoded");
 
             this.Services.AddScoped<ILogger, ConsoleLogger>();
             this.MiddlewareRegistry.AddMiddleware<LoggerMiddleware>();
