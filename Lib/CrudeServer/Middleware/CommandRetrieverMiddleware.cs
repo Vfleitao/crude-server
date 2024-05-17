@@ -83,8 +83,7 @@ namespace CrudeServer.Middleware
         private bool UserIsLoggedIn(ICommandContext context)
         {
             return context.User != null &&
-                   context.User.Identity != null &&
-                   context.User.Identity.IsAuthenticated;
+                   context.User.IsAuthenticated;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CrudeServer.Middleware;
+using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
@@ -29,7 +30,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             // Assert
             authenticationProvider.Verify(ap => ap.GetUserFromHeaders(It.IsAny<ICommandContext>()), Times.Once);
-            requestContext.VerifySet(rc => rc.User = It.IsAny<IPrincipal>(), Times.Once);
+            requestContext.VerifySet(rc => rc.User = It.IsAny<UserWrapper>(), Times.Once);
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             // Assert
             authenticationProvider.Verify(ap => ap.GetUserFromHeaders(It.IsAny<ICommandContext>()), Times.Once);
-            requestContext.VerifySet(rc => rc.User = It.IsAny<IPrincipal>(), Times.Once);
+            requestContext.VerifySet(rc => rc.User = It.IsAny<UserWrapper>(), Times.Once);
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             authenticationProvider.Verify(ap => ap.GetUserFromHeaders(It.IsAny<ICommandContext>()), Times.Once);
             authenticationProvider.Verify(ap => ap.GetUserFromCookies(It.IsAny<ICommandContext>()), Times.Once);
 
-            requestContext.VerifySet(rc => rc.User = null, Times.Once);
+            requestContext.VerifySet(rc => rc.User = It.IsAny<UserWrapper>(), Times.Never);
         }
     }
 }

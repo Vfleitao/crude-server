@@ -5,6 +5,7 @@ using System.Net;
 using System.Security.Principal;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models.Authentication;
 
 namespace CrudeServer.Models.Contracts
 {
@@ -14,7 +15,7 @@ namespace CrudeServer.Models.Contracts
         IList<HttpFile > Files { get; set; }
 
         IHttpResponse Response { get; set; }
-        IPrincipal User { get; set; }
+        UserWrapper User { get; set; }
 
         HttpMethod RequestHttpMethod { get; }
         bool IsAjaxRequest { get; }

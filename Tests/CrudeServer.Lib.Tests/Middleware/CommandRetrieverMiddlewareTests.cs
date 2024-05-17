@@ -8,6 +8,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware;
 using CrudeServer.Models;
+using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
@@ -143,7 +144,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             requestContext
                 .Setup(x => x.User)
-                .Returns(principal.Object);
+                .Returns(new UserWrapper(principal.Object));
 
             // Act
             await middleware.Process(requestContext.Object, () => Task.CompletedTask);
@@ -193,7 +194,7 @@ namespace CrudeServer.Lib.Tests.Middleware
 
             requestContext
                 .Setup(x => x.User)
-                .Returns(principal.Object);
+                .Returns(new UserWrapper(principal.Object));
 
             // Act
             await middleware.Process(requestContext.Object, () => Task.CompletedTask);

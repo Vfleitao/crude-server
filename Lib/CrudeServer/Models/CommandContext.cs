@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
-using System.Security.Principal;
 
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
 
 namespace CrudeServer.Models
@@ -20,7 +20,7 @@ namespace CrudeServer.Models
         public IServiceProvider Services { get; private set; }
 
         public HttpCommandRegistration HttpRegistration { get; set; }
-        public IPrincipal User { get; set; }
+        public UserWrapper User { get; set; }
         public IHttpResponse Response { get; set; }
         public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
         public IList<HttpFile> Files { get; set; } = new List<HttpFile>();

@@ -3,6 +3,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 
 using CrudeServer.Middleware.Registration.Contracts;
+using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
 
@@ -25,7 +26,10 @@ namespace CrudeServer.Middleware
                 user = await this._authenticationProvider.GetUserFromCookies(context);
             }
 
-            context.User = user;
+            if (user != null)
+            {
+                context.User = new UserWrapper(user);
+            }
 
             await next();
         }
