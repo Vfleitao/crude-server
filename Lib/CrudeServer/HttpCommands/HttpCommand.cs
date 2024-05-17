@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -65,6 +66,21 @@ namespace CrudeServer.HttpCommands
             }
 
             return null;
+        }
+
+        public void AddCookie(HttpCookie httpCookie)
+        {
+            this.RequestContext.ResponseCookies.Add(httpCookie);
+        }
+
+        public void RemoveCookie(string cookieName)
+        {
+            this.RequestContext.ResponseCookies.Add(new HttpCookie()
+            {
+                Name = cookieName,
+                Value = "",
+                ExpireTimeMinutes = -60 * 24 // minus one day
+            });
         }
     }
 }

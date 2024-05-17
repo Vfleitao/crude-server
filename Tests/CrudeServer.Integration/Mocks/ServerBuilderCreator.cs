@@ -29,7 +29,7 @@ namespace CrudeServer.Integration.Mocks
         {
             IServerBuilder serverBuilder = new ServerBuilder();
             serverBuilder
-                .AddRequestTagging()
+            .AddRequestTagging()
             .AddAuthentication()
             .AddCommandRetriever();
 

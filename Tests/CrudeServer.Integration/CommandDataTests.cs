@@ -20,7 +20,7 @@ namespace CrudeServer.Integration
 {
     public class CommandDataTests
     {
-        [Sequential]
+        [NonParallelizable]
         [TestCase(Enums.HttpMethod.GET)]
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
@@ -84,7 +84,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task CanGetDataFromJsonPostRequest(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -149,7 +149,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task ComplexJsonDataCanBeSet(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -261,7 +261,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormFilesCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -330,7 +330,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormMultipleFilesCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -414,7 +414,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormJsonCanBeRetrieved(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -525,7 +525,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormFilesAndJsonCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -653,7 +653,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormFieldsCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -722,7 +722,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormComplexFieldsCanBeRetrievedAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -833,7 +833,7 @@ namespace CrudeServer.Integration
 
         [TestCase(Enums.HttpMethod.POST)]
         [TestCase(Enums.HttpMethod.PUT)]
-        [Sequential]
+        [NonParallelizable]
         public async Task MultiPartDataFormCanCombineJsonFilesAndFieldsAtSameTime(Enums.HttpMethod httpMethod)
         {
             // Arrange
@@ -962,6 +962,76 @@ namespace CrudeServer.Integration
                     string commandFileContent = Encoding.UTF8.GetString((byte[])files[0].Content);
                     string originalFileContent = Encoding.UTF8.GetString(File.ReadAllBytes(filePath));
                     Assert.That(commandFileContent, Is.EqualTo(originalFileContent));
+                }
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+            finally
+            {
+                // Clean up
+                await serverRunner.Stop();
+            }
+        }
+
+        [TestCase(Enums.HttpMethod.POST)]
+        [TestCase(Enums.HttpMethod.PUT)]
+        [NonParallelizable]
+        public async Task CanGetDataFromUrlEncodedForm(Enums.HttpMethod httpMethod)
+        {
+            // Arrange
+            int port = RandomNumberGenerator.GetInt32(1000, 20000);
+            IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
+            serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
+
+            IServerRunner serverRunner = serverBuilder.Buid();
+
+            try
+            {
+                serverRunner.Run();
+                // Just to give time for everything to start
+                await Task.Delay(250);
+
+                // Act
+                // Assert
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpRequestMessage request = new HttpRequestMessage()
+                    {
+                        Method = new HttpMethod(httpMethod.ToString()),
+                        RequestUri = new Uri($"http://localhost:{port}/99"),
+                        Content = new StringContent("test%5B0%5D.name=name&test%5B0%5D.value=value&test%5B1%5D.value=value_1&test%5B1%5D.name=name_1&UserName=test%40test.com&Password=test", Encoding.UTF8, "application/x-www-form-urlencoded")
+                    };
+
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                    Assert.That(response.Content.Headers.Any(x => x.Key == "Content-Type"), Is.True);
+                    Assert.That(response.Content.Headers.First(x => x.Key == "Content-Type").Value.First(), Is.EqualTo("application/json"));
+
+                    string responseContent = await response.Content.ReadAsStringAsync();
+                    dynamic responseData = JObject.Parse(responseContent);
+
+                    Assert.That(responseData, Is.Not.Null);
+                    dynamic item = responseData.items;
+
+                    Assert.That(item.test, Is.Not.Null);
+                    List<dynamic> testArray = ((JArray)item.test).Select(x => (dynamic)x).ToList();
+
+                    Assert.That(testArray.Count, Is.EqualTo(2));
+
+                    Assert.That((string)testArray[0].name, Is.EqualTo("name"));
+                    Assert.That((string)testArray[0].value, Is.EqualTo("value"));
+
+                    Assert.That((string)testArray[1].name, Is.EqualTo("name_1"));
+                    Assert.That((string)testArray[1].value, Is.EqualTo("value_1"));
+
+                    Assert.That((string)item.UserName, Is.Not.Null);
+                    Assert.That((string)item.UserName, Is.EqualTo("test@test.com"));
+
+                    Assert.That((string)item.Password, Is.Not.Null);
+                    Assert.That((string)item.Password, Is.EqualTo("test"));
                 }
             }
             catch (Exception ex)
