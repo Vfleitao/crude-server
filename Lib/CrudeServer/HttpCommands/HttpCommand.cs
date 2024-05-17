@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 
 using CrudeServer.HttpCommands.Contract;
+using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 
@@ -50,6 +51,11 @@ namespace CrudeServer.HttpCommands
 
                 return viewResponse;
             });
+        }
+
+        protected Task<IHttpResponse> Redirect(string path, int statusCode = 302)
+        {
+            return Task.FromResult<IHttpResponse>(new RedirectResponse(path, statusCode));
         }
 
         protected T GetModelFromRequest<T>()

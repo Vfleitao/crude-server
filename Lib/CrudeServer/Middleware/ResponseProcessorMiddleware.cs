@@ -56,11 +56,7 @@ namespace CrudeServer.Middleware
             static void SetCookie(ICommandContext context, Models.HttpCookie cookie)
             {
                 Cookie newCookie = new Cookie(cookie.Name, cookie.Value);
-
-                if (cookie.ExpireTimeMinutes > 0)
-                {
-                    newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
-                }
+                newCookie.Expires = DateTime.UtcNow.AddMinutes(cookie.ExpireTimeMinutes);
 
                 newCookie.HttpOnly = cookie.HttpOnly;
                 newCookie.Secure = cookie.Secure;
