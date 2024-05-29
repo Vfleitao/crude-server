@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using CrudeServer.CommandRegistration.Contracts;
@@ -35,8 +36,6 @@ namespace CrudeServer.CommandRegistration
 
             Type commandType = typeof(T);
 
-
-
             HttpCommandRegistration httpCommandRegistration = new HttpCommandRegistration
             {
                 Path = path,
@@ -68,7 +67,8 @@ namespace CrudeServer.CommandRegistration
 
         private string GetRegexPath(string path)
         {
-            string regexPath = "";
+            StringBuilder builder = new StringBuilder();
+            builder.Append("^");
 
             string[] pathSplits = path.StartsWith("/") ? path.Substring(1).Split('/') : path.Split('/');
             for (int i = 0; i < pathSplits.Length; i++)
@@ -77,15 +77,17 @@ namespace CrudeServer.CommandRegistration
                 {
                     string pathWithoutBrackets = pathSplits[i].Substring(1, pathSplits[i].Length - 2);
                     string regexChunk = pathWithoutBrackets.Substring(pathWithoutBrackets.IndexOf(":") + 1);
-                    regexPath += "/(" + regexChunk + ")";
+                    builder.Append("/(" + regexChunk + ")");
                 }
                 else
                 {
-                    regexPath += "/" + pathSplits[i];
+                    builder.Append("/" + pathSplits[i]);
                 }
             }
 
-            return $"^{regexPath}$";
+            builder.Append("$");
+
+            return builder.ToString();
         }
 
         private List<KeyValuePair<string, string>> GetParameterRegistrations(string path)
