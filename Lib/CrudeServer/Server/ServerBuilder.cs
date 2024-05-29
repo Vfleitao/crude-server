@@ -222,7 +222,7 @@ namespace CrudeServer.Server
             this.ConfigurationBuilder = new ConfigurationBuilder();
             this.ConfigurationBuilder.AddJsonFile("appsettings.json");
 #if !DEBUG
-            this.configurationBuilder.AddJsonFile("appsettings.release.json");
+            this.ConfigurationBuilder.AddJsonFile("appsettings.release.json");
 #endif
             this.Services = new ServiceCollection();
             this.Services.AddSingleton<IServiceCollection>(Services);
