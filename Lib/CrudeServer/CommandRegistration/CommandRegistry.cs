@@ -10,6 +10,7 @@ using CrudeServer.HttpCommands;
 using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace CrudeServer.CommandRegistration
 {
@@ -67,26 +68,43 @@ namespace CrudeServer.CommandRegistration
 
         private string GetRegexPath(string path)
         {
-            string pattern = "{\\w+:\\\\([^}]+)}";
-            string replacement = "(\\$1)";
-            string regexPath = Regex.Replace(path, pattern, replacement);
+            string regexPath = "";
+
+            string[] pathSplits = path.StartsWith("/") ? path.Substring(1).Split('/') : path.Split('/');
+            for (int i = 0; i < pathSplits.Length; i++)
+            {
+                if (pathSplits[i].StartsWith("{") && pathSplits[i].EndsWith("}"))
+                {
+                    string pathWithoutBrackets = pathSplits[i].Substring(1, pathSplits[i].Length - 2);
+                    string regexChunk = pathWithoutBrackets.Substring(pathWithoutBrackets.IndexOf(":") + 1);
+                    regexPath += "/(" + regexChunk + ")";
+                }
+                else
+                {
+                    regexPath += "/" + pathSplits[i];
+                }
+            }
 
             return $"^{regexPath}$";
         }
 
         private List<KeyValuePair<string, string>> GetParameterRegistrations(string path)
         {
-            string pattern = "{(\\w+):(\\\\[^}]+)}";
-
-            MatchCollection matches = Regex.Matches(path, pattern);
             List<KeyValuePair<string, string>> parameterPatterns = new List<KeyValuePair<string, string>>();
 
-            foreach (Match match in matches)
+            string[] pathSplits = path.StartsWith("/") ? path.Substring(1).Split('/') : path.Split('/');
+            for (int i = 0; i < pathSplits.Length; i++)
             {
-                parameterPatterns.Add(
-                    new KeyValuePair<string, string>(match.Groups[1].Value, match.Groups[2].Value)
-                );
+                if (pathSplits[i].StartsWith("{") && pathSplits[i].EndsWith("}"))
+                {
+                    string pathWithoutBrackets = pathSplits[i].Substring(1, pathSplits[i].Length - 2);
+                    string nameChunk = pathWithoutBrackets.Substring(0, pathWithoutBrackets.IndexOf(":"));
+                    string regexChunk = pathWithoutBrackets.Substring(pathWithoutBrackets.IndexOf(":") + 1);
+
+                    parameterPatterns.Add(new KeyValuePair<string, string>(nameChunk, regexChunk));
+                }
             }
+
 
             return parameterPatterns;
         }

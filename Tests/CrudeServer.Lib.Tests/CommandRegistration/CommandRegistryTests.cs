@@ -75,5 +75,24 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
             Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("action"));
             Assert.That(registeredModel.UrlParameters[1].Value, Is.EqualTo("\\w+"));
         }
+
+        [Test]
+        public void PathHasComplexRegex_ConfiguresResgistrationCorrectly()
+        {
+            // Arrange
+            IServiceCollection services = new ServiceCollection();
+            ICommandRegistry commandRegistry = new CommandRegistry(services);
+
+            // Act
+            commandRegistry.RegisterCommand<MockCommand>("/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}", HttpMethod.GET);
+
+            // Assert
+            HttpCommandRegistration registeredModel = commandRegistry.GetCommand("/60614ce3-191d-ef11-82c7-7404f1cc28cd", HttpMethod.GET);
+            Assert.That(registeredModel, Is.Not.Null);
+            Assert.That(registeredModel.Path, Is.EqualTo("/{id:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}}"));
+            Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"));
+            Assert.That(registeredModel.UrlParameters.Select(x => x.Key), Contains.Item("id"));
+            Assert.That(registeredModel.UrlParameters[0].Value, Is.EqualTo("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
+        }
     }
 }
