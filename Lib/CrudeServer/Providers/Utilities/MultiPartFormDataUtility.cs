@@ -74,7 +74,7 @@ namespace CrudeServer.Providers.Utilities
             var content = new byte[contentLength];
             Array.Copy(data, contentStartIndex, content, 0, contentLength);
 
-            Match filenameMatch = Regex.Match(headerSection, @"filename=([^""]*)");
+            Match filenameMatch = Regex.Match(headerSection, @"filename=(""([^""]+)""|([^""]+))");
             if (filenameMatch.Success)
             {
                 HandleFileContent(files, content, filenameMatch);
