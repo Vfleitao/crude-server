@@ -13,7 +13,6 @@ namespace CrudeServer.Models
 {
     public class CommandContext : ICommandContext
     {
-
         public HttpListenerContext HttpListenerContext { get; private set; }
         public HttpListenerRequest HttpListenerRequest { get; private set; }
         public HttpListenerResponse HttpListenerResponse { get; private set; }
@@ -31,6 +30,7 @@ namespace CrudeServer.Models
         public HttpMethod RequestHttpMethod => HttpMethodExtensions.FromHttpString(HttpListenerRequest.HttpMethod);
         public string RequestContentType => HttpListenerRequest.ContentType;
         public string UserAgent => HttpListenerRequest.UserAgent;
+        public string IP => HttpListenerRequest.UserHostAddress;
         public string RequestHost => HttpListenerRequest.UserHostName;
         public bool IsAjaxRequest => HttpListenerRequest.Headers["X-Requested-With"] == "XMLHttpRequest";
         public NameValueCollection RequestHeaders => HttpListenerRequest.Headers;
