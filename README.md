@@ -40,3 +40,5 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Allow support for sections (using inline partials)
 - [x] Add Automated scans for code
 - [ ] OpenAPI Support
+- [ ] Use IHostBuilder Interface
+- [	] Improve support for Error Handling
