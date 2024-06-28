@@ -17,24 +17,30 @@ namespace CrudeServer.Models
         public IEnumerable<string> AuthenticationRoles { get; set; } = new List<string>();
         public Type Command { get; set; }
 
-        public void RequireAuthentication(IEnumerable<string> roles = null)
+        public HttpCommandRegistration RequireAuthentication(IEnumerable<string> roles = null)
         {
             this.RequiresAuthentication = true;
             if (roles != null)
             {
                 this.AuthenticationRoles = roles;
             }
+
+            return this;
         }
 
-        public void AllowAnonymous()
+        public HttpCommandRegistration AllowAnonymous()
         {
             this.RequiresAuthentication = false;
             this.AuthenticationRoles = new List<string>();
+
+            return this;
         }
 
-        public void RequireAntiforgeryToken()
+        public HttpCommandRegistration RequireAntiforgeryToken()
         {
             this.RequiresAntiforgeryToken = true;
+
+            return this;
         }
     }
 }
