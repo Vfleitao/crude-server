@@ -29,6 +29,10 @@ namespace CrudeServer.Server
     {
         private bool hasAntiforgeryTokens;
 
+        private bool hasAuthentication;
+        private Type authenticationProviderType;
+
+
         public ConfigurationBuilder ConfigurationBuilder { get; private set; }
         public IConfiguration Configuration { get; private set; }
         public IServiceCollection Services { get; private set; }
@@ -54,11 +58,10 @@ namespace CrudeServer.Server
                 throw new ArgumentException("Provider must implement IAuthenticationProvider");
             }
 
-            this.Services.AddScoped(typeof(IAuthenticationProvider), authenticationProvider);
+            this.hasAuthentication = true;
+            this.authenticationProviderType = authenticationProvider;
 
-            this.AddEncryption();
 
-            this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
 
             return this;
         }
@@ -81,7 +84,10 @@ namespace CrudeServer.Server
             long cacheDurationMinutes = 10
         )
         {
-            this.CommandRegistry.RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET);
+            this.CommandRegistry
+                .RegisterCommand<FileHttpCommand>(".*\\.\\w+", HttpMethod.GET)
+                .SkipAuthenticationFetch();
+
             this.Services.AddKeyedSingleton<string>(ServerConstants.FILE_ROOT, fileRoot);
 
             return this;
@@ -176,7 +182,16 @@ namespace CrudeServer.Server
 
         public IServerBuilder AddCommandRetriever()
         {
-            this.MiddlewareRegistry.AddMiddleware<CommandRetrieverMiddleware>();
+            this.MiddlewareRegistry.AddMiddleware<CommandRegistrationRetrieverMiddleware>();
+
+            if (this.hasAuthentication)
+            {
+                this.Services.AddScoped(typeof(IAuthenticationProvider), this.authenticationProviderType);
+                this.AddEncryption();
+                this.MiddlewareRegistry.AddMiddleware<AuthenticatorMiddleware>();
+            }
+
+            this.MiddlewareRegistry.AddMiddleware<CommandValidationRetrieverMiddleware>();
 
             return this;
         }

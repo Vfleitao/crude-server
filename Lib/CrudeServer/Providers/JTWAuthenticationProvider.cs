@@ -17,9 +17,9 @@ namespace CrudeServer.Providers
 {
     public class JTWAuthenticationProvider : IAuthenticationProvider
     {
-        private readonly IOptions<ServerConfiguration> serverConfig;
-        private readonly ILogger loggerProvider;
-        private readonly IEncryptionProvider encryptionProvider;
+        protected readonly IOptions<ServerConfiguration> serverConfig;
+        protected readonly ILogger loggerProvider;
+        protected readonly IEncryptionProvider encryptionProvider;
 
         public JTWAuthenticationProvider(
             IOptions<ServerConfiguration> serverConfig,
@@ -32,7 +32,7 @@ namespace CrudeServer.Providers
             this.encryptionProvider = encryptionProvider;
         }
 
-        public Task<IPrincipal> GetUserFromHeaders(ICommandContext requestContext)
+        public virtual Task<IPrincipal> GetUserFromHeaders(ICommandContext requestContext)
         {
             return Task.Run<IPrincipal>(() =>
             {
@@ -72,7 +72,7 @@ namespace CrudeServer.Providers
             });
         }
 
-        public Task<IPrincipal> GetUserFromCookies(ICommandContext requestContext)
+        public virtual Task<IPrincipal> GetUserFromCookies(ICommandContext requestContext)
         {
             return Task.Run<IPrincipal>(() =>
             {
@@ -106,7 +106,7 @@ namespace CrudeServer.Providers
             });
         }
 
-        public Task<string> GenerateToken(IPrincipal principal)
+        public virtual Task<string> GenerateToken(IPrincipal principal)
         {
             return Task.Run<string>(() =>
             {
@@ -131,7 +131,7 @@ namespace CrudeServer.Providers
             });
         }
 
-        public async Task<HttpCookie> GenerateTokenCookie(IPrincipal principal)
+        public virtual async Task<HttpCookie> GenerateTokenCookie(IPrincipal principal)
         {
             string token = await GenerateToken(principal);
             string encryptedToken = this.encryptionProvider.Encrypt(token, this.serverConfig.Value.PublicEncryptionKey);
@@ -146,7 +146,7 @@ namespace CrudeServer.Providers
             };
         }
 
-        private IPrincipal GetPrincipalFromTokenString(string token)
+        protected virtual IPrincipal GetPrincipalFromTokenString(string token)
         {
             TokenValidationParameters validationParameters = new TokenValidationParameters
             {

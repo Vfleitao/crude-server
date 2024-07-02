@@ -16,6 +16,7 @@ namespace CrudeServer.Models
         public bool RequiresAntiforgeryToken { get; set; }
         public IEnumerable<string> AuthenticationRoles { get; set; } = new List<string>();
         public Type Command { get; set; }
+        public bool SkipAuthenticationFetching { get; private set; }
 
         public HttpCommandRegistration RequireAuthentication(IEnumerable<string> roles = null)
         {
@@ -41,6 +42,11 @@ namespace CrudeServer.Models
             this.RequiresAntiforgeryToken = true;
 
             return this;
+        }
+
+        public void SkipAuthenticationFetch()
+        {
+            this.SkipAuthenticationFetching = true;
         }
     }
 }

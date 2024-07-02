@@ -2,10 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands.Contract;
-using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware.Registration.Contracts;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
@@ -13,21 +11,18 @@ using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer.Middleware
 {
-    public class CommandRetrieverMiddleware : IMiddleware
+    public class CommandValidationRetrieverMiddleware : IMiddleware
     {
-        private readonly ICommandRegistry _commandRegistry;
         private readonly ILogger loggerProvider;
         private readonly IStandardResponseRegistry standardResponseProvider;
         private readonly IServiceProvider serviceProvider;
 
-        public CommandRetrieverMiddleware(
-            ICommandRegistry commandRegistry,
+        public CommandValidationRetrieverMiddleware(
             ILogger loggerProvider,
             IStandardResponseRegistry standardResponseProvider,
             IServiceProvider serviceProvider
         )
         {
-            this._commandRegistry = commandRegistry;
             this.loggerProvider = loggerProvider;
             this.standardResponseProvider = standardResponseProvider;
             this.serviceProvider = serviceProvider;
@@ -35,32 +30,22 @@ namespace CrudeServer.Middleware
 
         public async Task Process(ICommandContext context, Func<Task> next)
         {
-            HttpMethod httpMethod = context.RequestHttpMethod;
+            HttpCommandRegistration commandRegistration = context.HttpRegistration;
 
-            HttpCommandRegistration commandRegistration = _commandRegistry.GetCommand(
-                context.RequestUrl.AbsolutePath,
-                httpMethod
-            );
-
-            context.HttpRegistration = commandRegistration;
-
-            IHttpResponse httpResponse = null;
             if (commandRegistration == null)
             {
                 this.loggerProvider.Log($"[CommandRetrieverMiddleware] Command not found for {context.RequestUrl.AbsolutePath}");
 
                 Type notFoundResponseType = standardResponseProvider.GetResponseType(DefaultStatusCodes.NotFound);
-                httpResponse = (IHttpResponse)this.serviceProvider.GetService(notFoundResponseType);
+                context.Response = (IHttpResponse)this.serviceProvider.GetService(notFoundResponseType);
             }
             else if (commandRegistration.RequiresAuthentication && !IsUserAuthenticated(commandRegistration, context))
             {
                 this.loggerProvider.Log($"[CommandRetrieverMiddleware] Command is unauthorized for {context.RequestUrl.AbsolutePath}");
 
                 Type unauthorizedResponseType = standardResponseProvider.GetResponseType(DefaultStatusCodes.Unauthorized);
-                httpResponse = (IHttpResponse)this.serviceProvider.GetService(unauthorizedResponseType);
+                context.Response = (IHttpResponse)this.serviceProvider.GetService(unauthorizedResponseType);
             }
-
-            context.Response = httpResponse;
 
             await next();
         }

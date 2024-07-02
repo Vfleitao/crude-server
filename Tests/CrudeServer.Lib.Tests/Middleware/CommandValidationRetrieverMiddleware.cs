@@ -6,7 +6,6 @@ using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
-using CrudeServer.Middleware;
 using CrudeServer.Models;
 using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
@@ -18,7 +17,7 @@ using Moq;
 
 namespace CrudeServer.Lib.Tests.Middleware
 {
-    public class CommandRetrieverMiddlewareTests
+    public class CommandValidationRetrieverMiddleware
     {
         [Test]
         public async Task NoCommandInRegistry_ReturnsNotFound()
@@ -37,8 +36,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             ServiceCollection serviceDescriptors = new ServiceCollection();
             serviceDescriptors.AddScoped<NotFoundResponse>();
 
-            CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
-                commandRegistry.Object,
+            CrudeServer.Middleware.CommandValidationRetrieverMiddleware middleware = new CrudeServer.Middleware.CommandValidationRetrieverMiddleware(
                 Mock.Of<ILogger>(),
                 standardResponseRegistry.Object,
                 serviceDescriptors.BuildServiceProvider()
@@ -64,14 +62,6 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task EndpointIsSecureAndUserIsNotSet_ReturnsUnauthorized()
         {
             // Arrange
-            Mock<ICommandRegistry> commandRegistry = new Mock<ICommandRegistry>();
-            commandRegistry
-                .Setup(x => x.GetCommand(It.IsAny<string>(), It.IsAny<HttpMethod>()))
-                .Returns(new HttpCommandRegistration()
-                {
-                    RequiresAuthentication = true
-                });
-
             Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
             standardResponseRegistry
                 .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
@@ -80,8 +70,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             ServiceCollection serviceDescriptors = new ServiceCollection();
             serviceDescriptors.AddScoped<UnauthorizedResponse>();
 
-            CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
-                commandRegistry.Object,
+            CrudeServer.Middleware.CommandValidationRetrieverMiddleware middleware = new CrudeServer.Middleware.CommandValidationRetrieverMiddleware(
                 Mock.Of<ILogger>(),
                 standardResponseRegistry.Object,
                 serviceDescriptors.BuildServiceProvider()
@@ -95,6 +84,10 @@ namespace CrudeServer.Lib.Tests.Middleware
             requestContext
                 .Setup(x => x.RequestHttpMethod)
                 .Returns(HttpMethod.POST);
+
+            requestContext
+                .Setup(x => x.HttpRegistration)
+                .Returns(new HttpCommandRegistration() { RequiresAuthentication = true });
 
             // Act
             await middleware.Process(requestContext.Object, () => Task.CompletedTask);
@@ -107,15 +100,6 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task EndpointIsSecureAndUserNotAuthenticated_ReturnsUnauthorized()
         {
             // Arrange
-            Mock<ICommandRegistry> commandRegistry = new Mock<ICommandRegistry>();
-            commandRegistry
-                .Setup(x => x.GetCommand(It.IsAny<string>(), It.IsAny<HttpMethod>()))
-                .Returns(new HttpCommandRegistration()
-                {
-                    RequiresAuthentication = true,
-                    AuthenticationRoles = new List<string>() { "Admin" }
-                });
-
             Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
             standardResponseRegistry
                 .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
@@ -124,8 +108,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             ServiceCollection serviceDescriptors = new ServiceCollection();
             serviceDescriptors.AddScoped<UnauthorizedResponse>();
 
-            CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
-                commandRegistry.Object,
+            CrudeServer.Middleware.CommandValidationRetrieverMiddleware middleware = new CrudeServer.Middleware.CommandValidationRetrieverMiddleware(
                 Mock.Of<ILogger>(),
                 standardResponseRegistry.Object,
                 serviceDescriptors.BuildServiceProvider()
@@ -139,6 +122,14 @@ namespace CrudeServer.Lib.Tests.Middleware
             requestContext
                 .Setup(x => x.RequestHttpMethod)
                 .Returns(HttpMethod.POST);
+
+            requestContext
+                .Setup(x => x.HttpRegistration)
+                .Returns(new HttpCommandRegistration()
+                {
+                    RequiresAuthentication = true,
+                    AuthenticationRoles = new List<string>() { "Admin" }
+                });
 
             Mock<IPrincipal> principal = CreateUserIdentity(false, false);
 
@@ -157,15 +148,6 @@ namespace CrudeServer.Lib.Tests.Middleware
         public async Task EndpointIsSecureAndUserRoleIsNotCorrect_ReturnsUnauthorized()
         {
             // Arrange
-            Mock<ICommandRegistry> commandRegistry = new Mock<ICommandRegistry>();
-            commandRegistry
-                .Setup(x => x.GetCommand(It.IsAny<string>(), It.IsAny<HttpMethod>()))
-                .Returns(new HttpCommandRegistration()
-                {
-                    RequiresAuthentication = true,
-                    AuthenticationRoles = new List<string>() { "Admin" }
-                });
-
             Mock<IStandardResponseRegistry> standardResponseRegistry = new Mock<IStandardResponseRegistry>();
             standardResponseRegistry
                 .Setup(x => x.GetResponseType(DefaultStatusCodes.Unauthorized))
@@ -174,8 +156,7 @@ namespace CrudeServer.Lib.Tests.Middleware
             ServiceCollection serviceDescriptors = new ServiceCollection();
             serviceDescriptors.AddScoped<UnauthorizedResponse>();
 
-            CommandRetrieverMiddleware middleware = new CommandRetrieverMiddleware(
-                commandRegistry.Object,
+            CrudeServer.Middleware.CommandValidationRetrieverMiddleware middleware = new CrudeServer.Middleware.CommandValidationRetrieverMiddleware(
                 Mock.Of<ILogger>(),
                 standardResponseRegistry.Object,
                 serviceDescriptors.BuildServiceProvider()
@@ -195,6 +176,13 @@ namespace CrudeServer.Lib.Tests.Middleware
             requestContext
                 .Setup(x => x.User)
                 .Returns(new UserWrapper(principal.Object));
+
+            requestContext.Setup(x => x.HttpRegistration)
+                .Returns(new HttpCommandRegistration()
+                {
+                    RequiresAuthentication = true,
+                    AuthenticationRoles = new List<string>() { "Admin" }
+                });
 
             // Act
             await middleware.Process(requestContext.Object, () => Task.CompletedTask);
