@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 
+using CrudeServer.Attributes;
 using CrudeServer.CommandRegistration;
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Consts;
@@ -135,6 +138,41 @@ namespace CrudeServer.Server
         public HttpCommandRegistration AddCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
         {
             return this.CommandRegistry.RegisterCommand<T>(path, httpMethod);
+        }
+
+        public IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly)
+        {
+            IEnumerable<Type> commandTypes = assembly
+                .GetTypes()
+                .Where(x => x.GetCustomAttributes<CommandAttribute>().Any());
+
+            List<HttpCommandRegistration> registrations = new List<HttpCommandRegistration>();
+            foreach (Type commandType in commandTypes)
+            {
+                CommandAttribute commandAttribute = commandType.GetCustomAttribute<CommandAttribute>();
+
+                if (commandAttribute == null)
+                {
+                    continue;
+                }
+
+                HttpCommandRegistration registration = this.CommandRegistry.RegisterCommand(commandType, commandAttribute.PathRegex, commandAttribute.Method);
+
+                if (commandType.GetCustomAttributes<RequiresAntiforgeryAttribute>().Any())
+                {
+                    registration.RequireAntiforgeryToken();
+                }
+
+                if (commandType.GetCustomAttributes<RequiresAuthorizationAttribute>().Any())
+                {
+                    RequiresAuthorizationAttribute authAttribute = commandType.GetCustomAttribute<RequiresAuthorizationAttribute>();
+                    registration.RequireAuthentication(authAttribute.Roles);
+                }
+
+                registrations.Add(registration);
+            }
+
+            return registrations;
         }
 
         public IServerBuilder AddMiddleware<T>() where T : IMiddleware

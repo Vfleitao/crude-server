@@ -1,4 +1,6 @@
-﻿using CrudeServer.Enums;
+﻿using System;
+
+using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
 using CrudeServer.Models;
 
@@ -19,5 +21,6 @@ namespace CrudeServer.CommandRegistration.Contracts
         /// It will also automatically register the command withing the Service Provider as a Singleton for automatic IOC resolution
         /// </summary>
         HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
+        HttpCommandRegistration RegisterCommand(Type commandType, string path, HttpMethod httpMethod);
     }
 }

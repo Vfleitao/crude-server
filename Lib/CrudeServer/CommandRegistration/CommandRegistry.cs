@@ -25,7 +25,7 @@ namespace CrudeServer.CommandRegistration
             this._services = services;
         }
 
-        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
+        public HttpCommandRegistration RegisterCommand(Type commandType, string path, HttpMethod httpMethod)
         {
             string key = $"{path}_${httpMethod}";
 
@@ -33,8 +33,6 @@ namespace CrudeServer.CommandRegistration
             {
                 throw new ArgumentException($"Command with path {path} already registered");
             }
-
-            Type commandType = typeof(T);
 
             HttpCommandRegistration httpCommandRegistration = new HttpCommandRegistration
             {
@@ -49,6 +47,11 @@ namespace CrudeServer.CommandRegistration
             this._services.AddScoped(commandType);
 
             return httpCommandRegistration;
+        }
+
+        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
+        {
+            return this.RegisterCommand(typeof(T), path, httpMethod);
         }
 
         public HttpCommandRegistration GetCommand(string path, HttpMethod httpMethod)

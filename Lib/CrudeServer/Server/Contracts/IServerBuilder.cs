@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 using CrudeServer.CommandRegistration.Contracts;
@@ -36,5 +37,6 @@ namespace CrudeServer.Server.Contracts
         IServerRunner Buid();
         IServerBuilder AddRequestSizeLimit();
         IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
+        IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly);
     }
 }
