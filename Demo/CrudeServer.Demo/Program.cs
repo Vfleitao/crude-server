@@ -39,12 +39,8 @@ namespace CrudeServer
                 .AddRequestDataRetriever()
                 .AddCommandExecutor()
                 .AddFiles(fileRoot, 60 * 24 * 30)
-                .AddViews(viewRoot, null, typeof(FileHandleBarsViewProvider));
-
-            serverBuilder.AddCommand<HomeCommand>("/", HttpMethod.GET);
-            serverBuilder.AddCommand<NotFoundCommand>("/not-found", HttpMethod.GET);
-            serverBuilder.AddCommand<InDepthRedirectCommand>("/in-depth", HttpMethod.GET);
-            serverBuilder.AddCommand<InDepthPageCommand>("/in-depth/{page:\\w+}", HttpMethod.GET);
+                .AddViews(viewRoot, null, typeof(FileHandleBarsViewProvider))
+                .AddCommands(typeof(Program).Assembly);
 
             serverBuilder.ReplaceDefaultResponses<NotFoundResponse>(DefaultStatusCodes.NotFound);
 

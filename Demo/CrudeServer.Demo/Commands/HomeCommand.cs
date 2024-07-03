@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
 
+using CrudeServer.Attributes;
 using CrudeServer.Demo.Commands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Models.Contracts;
 
 namespace CrudeServer
 {
+    [Command("/")]
     public class HomeCommand : BaseCommand
     {
         public HomeCommand(ICommandContext requestContext) : base(requestContext)

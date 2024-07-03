@@ -55,8 +55,9 @@ public static async Task Main(string[] args)
             {
                 Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
             })
-            .AddCommands()// Add command middleware
-            .AddAuthentication(); // Add auth validation middleware
+            .AddCommandRetriever()// Add command middleware
+            .AddAuthentication()// Add auth validation middleware
+            .AddCommandExecutor(); 
     
         // Register the command to the server
         serverBuilder
@@ -65,6 +66,39 @@ public static async Task Main(string[] args)
             .RequireAuthentication(new string[] { "Admin" });
     }
 }</code></pre>
+<p>
+    This will generate a route that requires an IPrincipal to have the role "Admin" in order to access the route.
+</p>
+<p>
+    Routes can also be registed by using the <code>[Command]</code> attribute and can be configured by using more attributes (ie: <code>[RequiresAuthorization] and [RequiresAntiforgery]</code>)
+    and calling the <code>serverBuilder.AddCommands(ASSEMBLY OF COMMANDS);</code> method.
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        IServerBuilder serverBuilder = new ServerBuilder();
+        serverBuilder
+            .SetConfiguration(new ServerConfig()
+            {
+                Hosts = new List&lt;string&gt; { "http://localhost:9000/" }
+            })
+            .AddCommands()// Add command middleware
+            .AddAuthentication()  // Add auth validation middleware
+            .AddCommands(typeof(Program).Assembly);
+    }
+}
+
+[Command("/")]
+[RequiresAuthorization("Admin")]
+public class HomeCommand : HttpCommand
+{
+    protected override async Task<IHttpResponse> Process()
+    {
+        return await View("index.html");
+    }
+}
+</code></pre>
 <p>
     This will generate a route that requires an IPrincipal to have the role "Admin" in order to access the route.
 </p>

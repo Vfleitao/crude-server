@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using CrudeServer.Attributes;
 using CrudeServer.Demo.Commands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Models.Contracts;
@@ -9,6 +10,7 @@ using CrudeServer.Providers.Contracts;
 
 namespace CrudeServer
 {
+    [Command("/in-depth/{page:\\w+}")]
     public class InDepthPageCommand : BaseCommand
     {
         private static Dictionary<string, string> titlesandTitleMap = new Dictionary<string, string>
