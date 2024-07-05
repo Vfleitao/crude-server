@@ -205,6 +205,7 @@ namespace CrudeServer.Server
             this.Services.AddScoped<UnauthorizedResponse>();
             this.Services.AddScoped<ForbiddenResponse>();
             this.Services.AddScoped<NotFoundResponse>();
+            this.Services.AddScoped<InternalErrorResponse>();
 
             this.ServiceProvider = Services.BuildServiceProvider(true);
 

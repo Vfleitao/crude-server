@@ -1,7 +1,7 @@
 ﻿namespace CrudeServer.HttpCommands.Responses
 {
-    public class NotFoundResponse : StatusCodeResponse
+    public class InternalErrorResponse : StatusCodeResponse
     {
-        public override int StatusCode { get; set; } = 404;
+        public override int StatusCode { get; set; } = 500;
     }
 }

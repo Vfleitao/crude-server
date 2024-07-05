@@ -74,6 +74,7 @@ namespace CrudeServer.Server
                 try
                 {
                     response.OutputStream.SetLength(0);
+
                 }
                 catch (Exception)
                 {

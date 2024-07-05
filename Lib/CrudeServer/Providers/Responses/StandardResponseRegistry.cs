@@ -15,6 +15,7 @@ namespace CrudeServer.Providers.Responses
             { DefaultStatusCodes.Unauthorized, typeof(UnauthorizedResponse) },
             { DefaultStatusCodes.Forbidden, typeof(ForbiddenResponse) },
             { DefaultStatusCodes.NotFound, typeof(NotFoundResponse) },
+            { DefaultStatusCodes.InternalError, typeof(InternalErrorResponse) },
         };
 
         public StandardResponseRegistry()

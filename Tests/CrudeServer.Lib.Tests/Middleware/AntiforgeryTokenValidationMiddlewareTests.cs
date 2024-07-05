@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using CrudeServer.Enums;
@@ -17,23 +15,6 @@ namespace CrudeServer.Lib.Tests.Middleware
 {
     public class AntiforgeryTokenValidationMiddlewareTests
     {
-        [Test]
-        public void NoHttpRegistration_ThrowsException()
-        {
-            // Arrange
-
-            AntiforgeryTokenValidationMiddleware antiforgeryTokenMiddleware = new AntiforgeryTokenValidationMiddleware(
-                null
-            );
-
-            // Act
-            // Assert
-            Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            {
-                await antiforgeryTokenMiddleware.Process(Mock.Of<ICommandContext>(), () => Task.CompletedTask);
-            });
-        }
-
         [TestCase(HttpMethod.DELETE)]
         [TestCase(HttpMethod.PUT)]
         [TestCase(HttpMethod.POST)]
