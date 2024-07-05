@@ -41,5 +41,5 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Add Automated scans for code
 - [ ] OpenAPI Support
 - [ ] Use IHostBuilder Interface
-- [	] Improve support for Error Handling
+- [x] Improve support for Error Handling
 - [x] Command Registration via attributes
