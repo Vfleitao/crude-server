@@ -60,8 +60,7 @@ namespace CrudeServer.HttpCommands
 
         protected T GetModelFromRequest<T>()
         {
-            string stringedItems = JsonConvert.SerializeObject(RequestContext.Items);
-            return JsonConvert.DeserializeObject<T>(stringedItems);
+            return this.RequestContext.GetModelFromRequest<T>();
         }
 
         protected object GetRequestItem(string key)

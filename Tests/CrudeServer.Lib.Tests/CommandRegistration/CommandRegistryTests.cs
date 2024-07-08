@@ -1,14 +1,16 @@
-using CrudeServer.CommandRegistration.Contracts;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
 using CrudeServer.CommandRegistration;
+using CrudeServer.CommandRegistration.Contracts;
+using CrudeServer.Enums;
+using CrudeServer.HttpCommands.Contract;
+using CrudeServer.HttpCommands.Responses;
+using CrudeServer.Lib.Tests.Mocks;
+using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
-using CrudeServer.Lib.Tests.Mocks;
-using System;
-using CrudeServer.Enums;
-using System.Threading.Tasks;
-using CrudeServer.Models;
-using System.Text.RegularExpressions;
-using System.Linq;
 
 namespace CrudeServer.Lib.Tests.CommandRegistration
 {
@@ -70,9 +72,9 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
             Assert.That(registeredModel, Is.Not.Null);
             Assert.That(registeredModel.Path, Is.EqualTo("/{id:\\d+}/{action:\\w+}"));
             Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/(\\d+)/(\\w+)$"));
-            Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("id"));
+            Assert.That(registeredModel.UrlParameters.Select(x => x.Key), Contains.Item("id"));
             Assert.That(registeredModel.UrlParameters[0].Value, Is.EqualTo("\\d+"));
-            Assert.That(registeredModel.UrlParameters.Select(x=>x.Key), Contains.Item("action"));
+            Assert.That(registeredModel.UrlParameters.Select(x => x.Key), Contains.Item("action"));
             Assert.That(registeredModel.UrlParameters[1].Value, Is.EqualTo("\\w+"));
         }
 
@@ -93,6 +95,29 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
             Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$"));
             Assert.That(registeredModel.UrlParameters.Select(x => x.Key), Contains.Item("id"));
             Assert.That(registeredModel.UrlParameters[0].Value, Is.EqualTo("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"));
+        }
+
+        [Test]
+        public void CanRegisterCommandFunction()
+        {
+            // Arrange
+            IServiceCollection services = new ServiceCollection();
+            ICommandRegistry commandRegistry = new CommandRegistry(services);
+
+            // Act
+            commandRegistry.RegisterCommandFunction("/", HttpMethod.GET, (context) =>
+            {
+                return Task.FromResult<IHttpResponse>(new StatusCodeResponse()
+                {
+                    StatusCode = 200
+                });
+            });
+
+            // Assert
+            HttpCommandRegistration registeredModel = commandRegistry.GetCommand("/", HttpMethod.GET);
+            Assert.That(registeredModel, Is.Not.Null);
+            Assert.That(registeredModel.Path, Is.EqualTo("/"));
+            Assert.That(registeredModel.PathRegex.ToString(), Is.EqualTo("^/$"));
         }
     }
 }

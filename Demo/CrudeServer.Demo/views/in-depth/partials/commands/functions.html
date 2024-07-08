@@ -1,0 +1,18 @@
+<h1 id="functions">Http Functions</h1>
+<p>
+    Commands can also be registered as functions.<br />
+    This is useful for simple operations that do not require a full class (ie: API Calls that return a json).<br />
+    <br />
+    They can be registered by using the <code>serverBuilder.AddCommandFunction</code> method.<br />
+    <br />
+    You can retrieve any dependency or data from the <code>ICommandContext context</code> object (context.Services for the IServiceProvider, context.Items/context.GetModelFromRequest&lt;T&gt; for any data related items).<br />
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">serverBuilder.AddCommandFunction("/", Enums.HttpMethod.GET, (context) =>
+{
+    return Task.FromResult<IHttpResponse>(new StatusCodeResponse()
+    {
+        ContentType = "text/html",
+        StatusCode = 418
+    });
+});
+</code></pre>

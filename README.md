@@ -29,7 +29,8 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Antiforgery Tokens
 - [x] Request Size Limiting
 - [x] Common UI Helpers for HandleBards
-- [ ] Commands as functions
+- [x] Commands as functions
+- [ ] Dependency Injection on commands
 - [ ] Metrics Dashboard
 - [ ] Websocket support
 - [x] Non embedded file support
@@ -40,6 +41,5 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Allow support for sections (using inline partials)
 - [x] Add Automated scans for code
 - [ ] OpenAPI Support
-- [ ] Use IHostBuilder Interface
 - [x] Improve support for Error Handling
 - [x] Command Registration via attributes

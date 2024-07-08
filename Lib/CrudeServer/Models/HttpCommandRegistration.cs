@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
 
 namespace CrudeServer.Models
@@ -16,6 +17,7 @@ namespace CrudeServer.Models
         public bool RequiresAntiforgeryToken { get; set; }
         public IEnumerable<string> AuthenticationRoles { get; set; } = new List<string>();
         public Type Command { get; set; }
+        public CommandFunctionDelegate CommandFunction { get; set; }
         public bool SkipAuthenticationFetching { get; private set; }
 
         public HttpCommandRegistration RequireAuthentication(IEnumerable<string> roles = null)

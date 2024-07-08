@@ -38,5 +38,6 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder AddRequestSizeLimit();
         IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
         IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly);
+        HttpCommandRegistration AddCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction);
     }
 }

@@ -9,6 +9,8 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Models.Authentication;
 using CrudeServer.Models.Contracts;
 
+using Newtonsoft.Json;
+
 namespace CrudeServer.Models
 {
     public class CommandContext : ICommandContext
@@ -83,6 +85,12 @@ namespace CrudeServer.Models
             }
 
             return null;
+        }
+
+        public T GetModelFromRequest<T>()
+        {
+            string stringedItems = JsonConvert.SerializeObject(Items);
+            return JsonConvert.DeserializeObject<T>(stringedItems);
         }
     }
 }

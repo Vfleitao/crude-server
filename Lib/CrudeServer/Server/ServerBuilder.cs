@@ -140,6 +140,11 @@ namespace CrudeServer.Server
             return this.CommandRegistry.RegisterCommand<T>(path, httpMethod);
         }
 
+        public HttpCommandRegistration AddCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction)
+        {
+            return this.CommandRegistry.RegisterCommandFunction(path, httpMethod, delegateFunction);
+        }
+
         public IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly)
         {
             IEnumerable<Type> commandTypes = assembly
@@ -251,6 +256,8 @@ namespace CrudeServer.Server
 
             this.MiddlewareRegistry.AddMiddleware<CommandExecutorMiddleware>();
             this.MiddlewareRegistry.AddMiddleware<DefaultCommandResponseRedirectionMiddleware>();
+
+            this.Services.AddScoped<HttpFunctionCommand>();
 
             return this;
         }

@@ -6,8 +6,11 @@ using CrudeServer.HttpCommands;
 using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Middleware.Registration.Contracts;
+using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CrudeServer.Middleware
 {
@@ -51,7 +54,22 @@ namespace CrudeServer.Middleware
 
                 IHttpResponse httpResponse = null;
 
-                HttpCommand command = (HttpCommand)this._serviceProvider.GetService(context.HttpRegistration.Command);
+                HttpCommandRegistration httpRegistration = context.HttpRegistration;
+
+                HttpCommand command;
+
+                if (httpRegistration.CommandFunction != null)
+                {
+                    HttpFunctionCommand functionHttpCommand = this._serviceProvider.GetService<HttpFunctionCommand>();
+                    functionHttpCommand.DelegateFunction = httpRegistration.CommandFunction;
+
+                    command = functionHttpCommand;
+                }
+                else
+                {
+                    command = (HttpCommand)this._serviceProvider.GetService(httpRegistration.Command);
+                }
+
                 if (command == null)
                 {
                     this.loggerProvider.Log($"[CommandExecutorMiddleware] Command not found in IOC for {context.HttpRegistration.Command}");

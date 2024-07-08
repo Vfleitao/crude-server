@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,7 +11,6 @@ using CrudeServer.HttpCommands;
 using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace CrudeServer.CommandRegistration
 {
@@ -27,6 +26,21 @@ namespace CrudeServer.CommandRegistration
 
         public HttpCommandRegistration RegisterCommand(Type commandType, string path, HttpMethod httpMethod)
         {
+            return RegisterCommandOrFunction(path, httpMethod, commandType, null);
+        }
+
+        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
+        {
+            return this.RegisterCommand(typeof(T), path, httpMethod);
+        }
+
+        public HttpCommandRegistration RegisterCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction)
+        {
+            return RegisterCommandOrFunction(path, httpMethod, null, delegateFunction);
+        }
+
+        private HttpCommandRegistration RegisterCommandOrFunction(string path, HttpMethod httpMethod, Type? command, CommandFunctionDelegate? delegateFunction)
+        {
             string key = $"{path}_${httpMethod}";
 
             if (this._commandRegistry.ContainsKey(key))
@@ -38,20 +52,19 @@ namespace CrudeServer.CommandRegistration
             {
                 Path = path,
                 HttpMethod = httpMethod,
-                Command = commandType,
                 PathRegex = new Regex(GetRegexPath(path)),
-                UrlParameters = GetParameterRegistrations(path)
+                UrlParameters = GetParameterRegistrations(path),
+                CommandFunction = delegateFunction,
+                Command = command
             };
 
             this._commandRegistry.Add(key, httpCommandRegistration);
-            this._services.AddScoped(commandType);
+            if (command != null)
+            {
+                this._services.AddScoped(command);
+            }
 
             return httpCommandRegistration;
-        }
-
-        public HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand
-        {
-            return this.RegisterCommand(typeof(T), path, httpMethod);
         }
 
         public HttpCommandRegistration GetCommand(string path, HttpMethod httpMethod)
