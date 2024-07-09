@@ -9,6 +9,7 @@ using CrudeServer.HttpCommands.Contract;
 using CrudeServer.HttpCommands.Responses;
 using CrudeServer.Lib.Tests.Mocks;
 using CrudeServer.Models;
+using CrudeServer.Models.Contracts;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -105,7 +106,7 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
             ICommandRegistry commandRegistry = new CommandRegistry(services);
 
             // Act
-            commandRegistry.RegisterCommandFunction("/", HttpMethod.GET, (context) =>
+            commandRegistry.RegisterCommandFunction("/", HttpMethod.GET, (ICommandContext context) =>
             {
                 return Task.FromResult<IHttpResponse>(new StatusCodeResponse()
                 {

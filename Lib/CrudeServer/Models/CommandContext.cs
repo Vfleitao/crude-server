@@ -47,7 +47,8 @@ namespace CrudeServer.Models
             HttpListenerContext context,
             HttpListenerRequest request,
             HttpListenerResponse response
-        ) {
+        )
+        {
             HttpListenerContext = context;
             HttpListenerRequest = request;
             HttpListenerResponse = response;
@@ -91,6 +92,13 @@ namespace CrudeServer.Models
         {
             string stringedItems = JsonConvert.SerializeObject(Items);
             return JsonConvert.DeserializeObject<T>(stringedItems);
+        }
+
+        public object GetModelFromRequest(Type objectType)
+        {
+            string stringedItems = JsonConvert.SerializeObject(Items);
+
+            return JsonConvert.DeserializeObject(stringedItems, objectType);
         }
     }
 }
