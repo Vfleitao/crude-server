@@ -140,7 +140,7 @@ namespace CrudeServer.Server
             return this.CommandRegistry.RegisterCommand<T>(path, httpMethod);
         }
 
-        public HttpCommandRegistration AddCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction)
+        public HttpCommandRegistration AddCommandFunction(string path, HttpMethod httpMethod, Delegate delegateFunction)
         {
             return this.CommandRegistry.RegisterCommandFunction(path, httpMethod, delegateFunction);
         }

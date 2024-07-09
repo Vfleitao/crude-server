@@ -22,6 +22,6 @@ namespace CrudeServer.CommandRegistration.Contracts
         /// </summary>
         HttpCommandRegistration RegisterCommand<T>(string path, HttpMethod httpMethod) where T : HttpCommand;
         HttpCommandRegistration RegisterCommand(Type commandType, string path, HttpMethod httpMethod);
-        HttpCommandRegistration RegisterCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction);
+        HttpCommandRegistration RegisterCommandFunction(string path, HttpMethod httpMethod, Delegate delegateFunction);
     }
 }

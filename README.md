@@ -30,7 +30,7 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Request Size Limiting
 - [x] Common UI Helpers for HandleBards
 - [x] Commands as functions
-- [ ] Dependency Injection on commands
+- [x] Dependency Injection on commands
 - [ ] Metrics Dashboard
 - [ ] Websocket support
 - [x] Non embedded file support

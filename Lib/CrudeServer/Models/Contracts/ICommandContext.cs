@@ -38,5 +38,6 @@ namespace CrudeServer.Models.Contracts
         void ConfigureContext(HttpListenerContext context, HttpListenerRequest request, HttpListenerResponse response);
         string GetCookie(string name);
         T GetModelFromRequest<T>();
+        object GetModelFromRequest(Type objectType);
     }
 }

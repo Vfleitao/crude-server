@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 using CrudeServer.CommandRegistration.Contracts;
 using CrudeServer.Enums;
 using CrudeServer.HttpCommands;
+using CrudeServer.HttpCommands.Contract;
 using CrudeServer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -34,12 +37,26 @@ namespace CrudeServer.CommandRegistration
             return this.RegisterCommand(typeof(T), path, httpMethod);
         }
 
-        public HttpCommandRegistration RegisterCommandFunction(string path, HttpMethod httpMethod, CommandFunctionDelegate delegateFunction)
+        public HttpCommandRegistration RegisterCommandFunction(string path, HttpMethod httpMethod, Delegate delegateFunction)
         {
+            MethodInfo methodInfo = delegateFunction.Method;
+            Type returnType = methodInfo.ReturnType;
+
+            if (!returnType.IsGenericType || returnType.GetGenericTypeDefinition() != typeof(Task<>))
+            {
+                throw new ArgumentException("Delegate must return a Task<IHttpResponse> or a type that inherits from IHttpResponse.");
+            }
+
+            Type genericArgument = returnType.GetGenericArguments()[0];
+            if (!typeof(IHttpResponse).IsAssignableFrom(genericArgument))
+            {
+                throw new ArgumentException("Delegate must return a Task<IHttpResponse> or a type that inherits from IHttpResponse.");
+            }
+
             return RegisterCommandOrFunction(path, httpMethod, null, delegateFunction);
         }
 
-        private HttpCommandRegistration RegisterCommandOrFunction(string path, HttpMethod httpMethod, Type? command, CommandFunctionDelegate? delegateFunction)
+        private HttpCommandRegistration RegisterCommandOrFunction(string path, HttpMethod httpMethod, Type? command, Delegate delegateFunction)
         {
             string key = $"{path}_${httpMethod}";
 
