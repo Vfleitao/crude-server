@@ -7,12 +7,31 @@
     <br />
     You can retrieve any dependency or data from the <code>ICommandContext context</code> object (context.Services for the IServiceProvider, context.Items/context.GetModelFromRequest&lt;T&gt; for any data related items).<br />
 </p>
-<pre class="rw-100 rw-md-75"><code class="language-dotnet">serverBuilder.AddCommandFunction("/", Enums.HttpMethod.GET, (context) =>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">serverBuilder.AddCommandFunction("/", Enums.HttpMethod.GET, async () =>
 {
-    return Task.FromResult<IHttpResponse>(new StatusCodeResponse()
+    return new StatusCodeResponse()
     {
         ContentType = "text/html",
         StatusCode = 418
-    });
+    };
 });
+</code></pre>
+<p>
+    You can also Dependency Injection to receive parameters and data from the request.<br />
+    Use the attribute [FromRequestAttribute] to receive the model the request data. Its the same as using the <code>ICommandContext.GetModelFromRequest</code>
+</p>
+<pre class="rw-100 rw-md-75"><code class="language-dotnet">serverBuilder.AddCommandFunction(
+    "/", Enums.HttpMethod.GET, 
+    async (
+        ICommandContext context, 
+        [FromRequestAttribute]UserModel user
+    ) =>
+    {
+        return new StatusCodeResponse()
+        {
+            ContentType = "text/html",
+            StatusCode = 418
+        };
+    }
+);
 </code></pre>
