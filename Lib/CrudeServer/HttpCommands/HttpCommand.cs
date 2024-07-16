@@ -63,7 +63,7 @@ namespace CrudeServer.HttpCommands
             return this.RequestContext.GetModelFromRequest<T>();
         }
 
-        protected object GetRequestItem(string key)
+        protected object GetModelFromRequest(string key)
         {
             if (RequestContext.Items.ContainsKey(key))
             {

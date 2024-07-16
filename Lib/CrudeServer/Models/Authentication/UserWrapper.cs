@@ -46,6 +46,25 @@ namespace CrudeServer.Models.Authentication
             }
         }
 
+        public string Id
+        {
+            get
+            {
+                if (!IsAuthenticated)
+                {
+                    return null;
+                }
+
+                Claim claim = Principal.FindFirst(ClaimTypes.Sid);
+                if (claim == null)
+                {
+                    return null;
+                }
+
+                return claim.Value;
+            }
+        }
+
         public UserWrapper(IPrincipal principal)
         {
             this.principal = principal;
