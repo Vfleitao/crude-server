@@ -31,7 +31,6 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Common UI Helpers for HandleBards
 - [x] Commands as functions
 - [x] Dependency Injection on commands
-- [ ] Metrics Dashboard
 - [ ] Websocket support
 - [x] Non embedded file support
 - [x] Non view file support
@@ -40,6 +39,5 @@ To see examples, look into the Integration Tests or the project website [Crude S
 - [x] Allow Replacing default status responses (ie: 401, 404, etc)
 - [x] Allow support for sections (using inline partials)
 - [x] Add Automated scans for code
-- [ ] OpenAPI Support
 - [x] Improve support for Error Handling
 - [x] Command Registration via attributes
