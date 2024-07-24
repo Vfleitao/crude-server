@@ -39,5 +39,6 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
         IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly);
         HttpCommandRegistration AddCommandFunction(string path, HttpMethod httpMethod, Delegate delegateFunction);
+        IServerBuilder OverrideHosts(params string[] hosts);
     }
 }

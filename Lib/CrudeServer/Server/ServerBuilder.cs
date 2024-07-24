@@ -35,7 +35,6 @@ namespace CrudeServer.Server
         private bool hasAuthentication;
         private Type authenticationProviderType;
 
-
         public ConfigurationBuilder ConfigurationBuilder { get; private set; }
         public IConfiguration Configuration { get; private set; }
         public IServiceCollection Services { get; private set; }
@@ -63,8 +62,6 @@ namespace CrudeServer.Server
 
             this.hasAuthentication = true;
             this.authenticationProviderType = authenticationProvider;
-
-
 
             return this;
         }
@@ -200,7 +197,6 @@ namespace CrudeServer.Server
             this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
 
             this.Configuration = this.ConfigurationBuilder.Build();
-
             IConfigurationSection section = this.Configuration.GetSection("ServerConfiguration");
 
             this.Services.AddSingleton<IConfiguration>(this.Configuration);
@@ -215,6 +211,23 @@ namespace CrudeServer.Server
             this.ServiceProvider = Services.BuildServiceProvider(true);
 
             return this.ServiceProvider.GetService<IServerRunner>();
+        }
+
+        public IServerBuilder OverrideHosts(params string[] hosts)
+        {
+            int counter = 0;
+
+            foreach (string host in hosts)
+            {
+                this.ConfigurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    { $"ServerConfiguration:Hosts:{counter}", host }
+                });
+
+                counter++;
+            }
+
+            return this;
         }
 
         public IServerBuilder AddRequestDataRetriever()

@@ -7,8 +7,6 @@ using CrudeServer.Providers;
 using CrudeServer.Server;
 using CrudeServer.Server.Contracts;
 
-using Microsoft.AspNetCore.Builder;
-
 namespace CrudeServer
 {
     public class Program
@@ -16,7 +14,7 @@ namespace CrudeServer
 
         public static async Task Main(string[] args)
         {
-            string host = "http://localhost:9000/";
+            string host = null;
             if (args.Length > 0)
             {
                 host = args[0];
@@ -45,6 +43,11 @@ namespace CrudeServer
                 .AddCommands(typeof(Program).Assembly);
 
             serverBuilder.ReplaceDefaultResponses<NotFoundResponse>(DefaultStatusCodes.NotFound);
+
+            if(!string.IsNullOrEmpty(host))
+            {
+                serverBuilder.OverrideHosts(host);
+            }
 
             IServerRunner server = serverBuilder.Buid();
             await server.Run();
