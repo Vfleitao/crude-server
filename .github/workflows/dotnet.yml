@@ -20,7 +20,7 @@ jobs:
         dotnet-version: 8.0.204
 
     - name: Restore dependencies NET 8
-      run: dotnet restore --framework net8.0
+      run: dotnet restore
     
     - name: Build NET 8
       run: dotnet build --framework net8.0 --no-restore
