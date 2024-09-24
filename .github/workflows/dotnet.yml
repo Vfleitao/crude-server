@@ -17,16 +17,16 @@ jobs:
     - name: Setup .NET 8
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.204
+        dotnet-version: 8.0.400
 
     - name: Restore dependencies NET 8
-      run: dotnet restore
+      run: dotnet restore -p:TargetFramework=net8.0
     
     - name: Build NET 8
-      run: dotnet build --framework net8.0 --no-restore
+      run: dotnet build -p:TargetFramework=net8.0 --no-restore
 
     - name: Test NET 8
-      run: dotnet test --framework net8.0 --no-build --verbosity normal
+      run: dotnet test -p:TargetFramework=net8.0 --no-build --verbosity normal
 
 env:
   DOTNET_NOLOGO: true
