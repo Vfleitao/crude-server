@@ -1,28 +1,47 @@
 name: .NET
-
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
       with:
-          submodules: 'true'
-    - name: Setup .NET
+        submodules: 'true'
+    
+    - name: Setup .NET 8
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.0.204
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Setup .NET 9
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.100-rc.1
+
+    - name: Restore dependencies NET 8
+      run: dotnet restore --framework net8.0
+    
+    - name: Build NET 8
+      run: dotnet build --framework net8.0 --no-restore
+
+    - name: Test NET 8
+      run: dotnet test --framework net8.0 --no-build --verbosity normal
+      
+    - name: Restore dependencies NET 9
+      run: dotnet restore --framework net9.0
+    
+    - name: Build NET 9
+      run: dotnet build --framework net9.0 --no-restore
+
+    - name: Test NET 9
+      run: dotnet test --framework net9.0 --no-build --verbosity normal
+
 env:
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
