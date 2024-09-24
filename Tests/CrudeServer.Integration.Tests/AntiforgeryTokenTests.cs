@@ -28,7 +28,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -76,7 +76,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useAntiforgeryTokens: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.GET);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -148,7 +148,7 @@ namespace CrudeServer.Integration
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
                 .RequireAntiforgeryToken();
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -197,7 +197,7 @@ namespace CrudeServer.Integration
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
                 .RequireAntiforgeryToken();
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -251,7 +251,7 @@ namespace CrudeServer.Integration
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
                 .RequireAntiforgeryToken();
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -308,7 +308,7 @@ namespace CrudeServer.Integration
                 .AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST)
                 .RequireAntiforgeryToken();
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

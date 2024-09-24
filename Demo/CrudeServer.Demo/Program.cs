@@ -49,7 +49,7 @@ namespace CrudeServer
                 serverBuilder.OverrideHosts(host);
             }
 
-            IServerRunner server = serverBuilder.Buid();
+            IServerRunner server = serverBuilder.Build();
             await server.Run();
         }
     }

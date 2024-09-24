@@ -36,7 +36,7 @@ namespace CrudeServer.Integration
 
             serverBuilder.OverrideHosts($"http://localhost:{port}/");
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

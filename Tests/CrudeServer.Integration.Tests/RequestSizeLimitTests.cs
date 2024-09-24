@@ -21,7 +21,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -68,7 +68,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -117,7 +117,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, useRequestSizeLimiter: true);
             serverBuilder.AddCommand<DataFromRequestCommand>("/", Enums.HttpMethod.POST);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

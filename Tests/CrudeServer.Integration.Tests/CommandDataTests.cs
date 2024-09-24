@@ -33,7 +33,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/path/{id:\\d+}/{page:\\w+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -92,7 +92,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -157,7 +157,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -269,7 +269,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -338,7 +338,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -422,7 +422,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -533,7 +533,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -661,7 +661,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -730,7 +730,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -841,7 +841,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -985,7 +985,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<DataFromRequestCommand>("/{id:\\d+}", httpMethod);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

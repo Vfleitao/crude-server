@@ -35,7 +35,7 @@ namespace CrudeServer.Integration.Mocks
 
             serverBuilder.ConfigurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
             {
-                ["ServerConfiguration:Hosts"] = $"http://localhost:{port}/"
+                ["ServerConfiguration:Hosts:0"] = $"http://localhost:{port}/"
             });
 
             if (useRequestSizeLimiter)

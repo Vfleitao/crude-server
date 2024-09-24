@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net9.0;net8.0</TargetFrameworks>
 		<Description>
 			Crude Server is a simple HTTP Server,
 			powered by <a href="https://learn.microsoft.com/en-us/dotnet/api/system.net.httplistener?view=net-8.0" target="_blank" class="text-black">.NET HTTPListeners</a>
@@ -29,7 +29,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Handlebars.Net" Version="2.1.6" />
-		<PackageReference Include="Handlebars.Net.Helpers" Version="2.4.3" />
+		<PackageReference Include="Handlebars.Net.Helpers" Version="2.4.5" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<None Include="..\..\Content\logo_extra_small.png">
@@ -44,9 +44,9 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.1" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.1" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
 		<PackageReference Include="System.Runtime" Version="4.3.1" />
 	</ItemGroup>
 

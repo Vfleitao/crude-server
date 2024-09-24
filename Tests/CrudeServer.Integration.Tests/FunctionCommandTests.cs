@@ -30,7 +30,7 @@ namespace CrudeServer.Integration.Tests
                 };
             });
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -78,7 +78,7 @@ namespace CrudeServer.Integration.Tests
                 };
             });
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -133,7 +133,7 @@ namespace CrudeServer.Integration.Tests
                 };
             });
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

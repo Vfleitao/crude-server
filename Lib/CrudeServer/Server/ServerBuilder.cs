@@ -192,7 +192,7 @@ namespace CrudeServer.Server
         }
 
 
-        public IServerRunner Buid()
+        public IServerRunner Build()
         {
             this.Services.AddKeyedScoped<IMiddleware, ResponseProcessorMiddleware>(ServerConstants.RESPONSE_PROCESSOR);
 

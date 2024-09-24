@@ -34,7 +34,7 @@ namespace CrudeServer.Server.Contracts
         IServerBuilder AddRequestDataRetriever();
         IServerBuilder AddRequestTagging();
         IServerBuilder AddViews(string viewRoot, Assembly viewAssembly = null, Type viewProvider = null);
-        IServerRunner Buid();
+        IServerRunner Build();
         IServerBuilder AddRequestSizeLimit();
         IServerBuilder ReplaceDefaultResponses<T>(DefaultStatusCodes defaultStatus) where T : IHttpResponse;
         IEnumerable<HttpCommandRegistration> AddCommands(Assembly assembly);

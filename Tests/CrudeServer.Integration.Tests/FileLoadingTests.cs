@@ -21,7 +21,7 @@ namespace CrudeServer.Integration
             // Arrange
             int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -60,7 +60,7 @@ namespace CrudeServer.Integration
             // Arrange
             int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -97,7 +97,7 @@ namespace CrudeServer.Integration
             // Arrange
             int port = RandomNumberGenerator.GetInt32(1000, 20000);
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port, false);
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

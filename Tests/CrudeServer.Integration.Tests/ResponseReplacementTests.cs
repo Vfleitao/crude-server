@@ -26,7 +26,7 @@ namespace CrudeServer.Integration
 
             serverBuilder.ReplaceDefaultResponses<MockNotFoundResponse>(DefaultStatusCodes.NotFound);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {

@@ -24,7 +24,7 @@ namespace CrudeServer.Integration
             IServerBuilder serverBuilder = ServerBuilderCreator.CreateTestServerBuilder(port);
             serverBuilder.AddCommand<MockViewHttpCommand>("/", Enums.HttpMethod.GET);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
@@ -66,7 +66,7 @@ namespace CrudeServer.Integration
             serverBuilder.AddCommand<MockGuidHttpCommand>("/", Enums.HttpMethod.GET);
             serverBuilder.AddCommand<AnotherMockGuidCommand>("/heya", Enums.HttpMethod.GET);
 
-            IServerRunner serverRunner = serverBuilder.Buid();
+            IServerRunner serverRunner = serverBuilder.Build();
 
             try
             {
