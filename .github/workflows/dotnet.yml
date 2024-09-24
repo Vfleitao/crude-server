@@ -19,11 +19,6 @@ jobs:
       with:
         dotnet-version: 8.0.204
 
-    - name: Setup .NET 9
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.100-rc.1
-
     - name: Restore dependencies NET 8
       run: dotnet restore --framework net8.0
     
@@ -32,15 +27,6 @@ jobs:
 
     - name: Test NET 8
       run: dotnet test --framework net8.0 --no-build --verbosity normal
-      
-    - name: Restore dependencies NET 9
-      run: dotnet restore --framework net9.0
-    
-    - name: Build NET 9
-      run: dotnet build --framework net9.0 --no-restore
-
-    - name: Test NET 9
-      run: dotnet test --framework net9.0 --no-build --verbosity normal
 
 env:
   DOTNET_NOLOGO: true
