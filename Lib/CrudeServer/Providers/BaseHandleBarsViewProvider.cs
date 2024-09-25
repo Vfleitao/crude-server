@@ -28,8 +28,6 @@ namespace CrudeServer.Providers
                         ThrowOnUnresolvedBindingExpression = false
                     });
 
-                    handlebarsContext.Configuration.UnresolvedBindingFormatter = "{0}";
-
                     HandlebarsHelpers.Register(handlebarsContext);
                 }
 

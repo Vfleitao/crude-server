@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -69,6 +70,10 @@ namespace CrudeServer.Server
             }
             catch (Exception ex)
             {
+#if DEBUG
+                Debugger.Break();
+#endif
+
                 this.loggerProvider.Error(ex);
 
                 try
