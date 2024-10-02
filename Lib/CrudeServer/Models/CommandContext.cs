@@ -91,7 +91,10 @@ namespace CrudeServer.Models
         public T GetModelFromRequest<T>()
         {
             string stringedItems = JsonConvert.SerializeObject(Items);
-            return JsonConvert.DeserializeObject<T>(stringedItems);
+            return JsonConvert.DeserializeObject<T>(stringedItems, new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
         }
 
         public object GetModelFromRequest(Type objectType)
