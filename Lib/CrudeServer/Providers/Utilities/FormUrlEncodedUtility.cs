@@ -24,6 +24,11 @@ namespace CrudeServer.Providers.Utilities
 
         private static void HandleRegularField(Dictionary<string, object> fields, string field)
         {
+            if(string.IsNullOrEmpty(field))
+            {
+                return;
+            }
+
             string[] fieldParts = field.Split('=');
 
             string fieldName = HttpUtility.UrlDecode(fieldParts[0].Trim());
