@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CrudeServer.Models;
 using CrudeServer.Models.Contracts;
 using CrudeServer.Providers.Contracts;
+using CrudeServer.Providers.Utilities;
 
 using HandlebarsDotNet;
 using HandlebarsDotNet.Helpers;
@@ -24,9 +25,12 @@ namespace CrudeServer.Providers
             {
                 if (handlebarsContext == null)
                 {
-                    handlebarsContext = Handlebars.CreateSharedEnvironment(new HandlebarsConfiguration() {
+                    handlebarsContext = Handlebars.CreateSharedEnvironment(new HandlebarsConfiguration()
+                    {
                         ThrowOnUnresolvedBindingExpression = false
                     });
+
+                    handlebarsContext.AddToArrayHelper();
 
                     HandlebarsHelpers.Register(handlebarsContext);
                 }
