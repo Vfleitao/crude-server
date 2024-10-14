@@ -59,7 +59,7 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
         }
 
         [Test]
-        public void PathHasModel_ConfiguresResgistrationCorrectly()
+        public void PathHasModel_ConfiguresRegistrationCorrectly()
         {
             // Arrange
             IServiceCollection services = new ServiceCollection();
@@ -80,7 +80,7 @@ namespace CrudeServer.Lib.Tests.CommandRegistration
         }
 
         [Test]
-        public void PathHasComplexRegex_ConfiguresResgistrationCorrectly()
+        public void PathHasComplexRegex_ConfiguresRegistrationCorrectly()
         {
             // Arrange
             IServiceCollection services = new ServiceCollection();

@@ -149,29 +149,33 @@ namespace CrudeServer.Server
                 .Where(x => x.GetCustomAttributes<CommandAttribute>().Any());
 
             List<HttpCommandRegistration> registrations = new List<HttpCommandRegistration>();
+
             foreach (Type commandType in commandTypes)
             {
-                CommandAttribute commandAttribute = commandType.GetCustomAttribute<CommandAttribute>();
+                IEnumerable<CommandAttribute> commandAttributes = commandType.GetCustomAttributes<CommandAttribute>();
 
-                if (commandAttribute == null)
+                if (commandAttributes == null || !commandAttributes.Any())
                 {
                     continue;
                 }
 
-                HttpCommandRegistration registration = this.CommandRegistry.RegisterCommand(commandType, commandAttribute.PathRegex, commandAttribute.Method);
-
-                if (commandType.GetCustomAttributes<RequiresAntiforgeryAttribute>().Any())
+                foreach (CommandAttribute commandAttribute in commandAttributes)
                 {
-                    registration.RequireAntiforgeryToken();
-                }
+                    HttpCommandRegistration registration = this.CommandRegistry.RegisterCommand(commandType, commandAttribute.PathRegex, commandAttribute.Method);
 
-                if (commandType.GetCustomAttributes<RequiresAuthorizationAttribute>().Any())
-                {
-                    RequiresAuthorizationAttribute authAttribute = commandType.GetCustomAttribute<RequiresAuthorizationAttribute>();
-                    registration.RequireAuthentication(authAttribute.Roles);
-                }
+                    if (commandType.GetCustomAttributes<RequiresAntiforgeryAttribute>().Any())
+                    {
+                        registration.RequireAntiforgeryToken();
+                    }
 
-                registrations.Add(registration);
+                    if (commandType.GetCustomAttributes<RequiresAuthorizationAttribute>().Any())
+                    {
+                        RequiresAuthorizationAttribute authAttribute = commandType.GetCustomAttribute<RequiresAuthorizationAttribute>();
+                        registration.RequireAuthentication(authAttribute.Roles);
+                    }
+
+                    registrations.Add(registration);
+                }
             }
 
             return registrations;

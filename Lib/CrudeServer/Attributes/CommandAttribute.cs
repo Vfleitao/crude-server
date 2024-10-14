@@ -4,7 +4,7 @@ using CrudeServer.Enums;
 
 namespace CrudeServer.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
     public class CommandAttribute : Attribute
     {
         public string PathRegex { get; }
